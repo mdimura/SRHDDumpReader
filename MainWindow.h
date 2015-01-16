@@ -15,6 +15,8 @@
 #include <QApplication>
 #include <QSoundEffect>
 #include <QStandardPaths>
+#include <QMutex>
+#include <QWaitCondition>
 
 #include "Equipment.h"
 #include "Ship.h"
@@ -36,62 +38,69 @@ class MainWindow;
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-    void readSettings();
-    void writeSettings() const;
-    void closeEvent(QCloseEvent *event);
+	explicit MainWindow(QWidget *parent = 0);
+	~MainWindow();
+	void readSettings();
+	void writeSettings() const;
+	void closeEvent(QCloseEvent *event);
 public slots:
-    bool parseDump();
-    bool openDump();
-    void showAbout();
-    int saveReport() const;
+	bool parseDump();
+	bool openDump();
+	void showAbout();
+	int saveReport() const;
 
 #ifdef _WIN32
 public slots:
-    virtual bool nativeEvent(const QByteArray &eventType, void *message, long*);
-    void saveDumpWin();
+	virtual bool nativeEvent(const QByteArray &eventType, void *message, long*);
+	void saveDumpWin();
 public:
-    bool simulateInput(const std::string& str) const;
-    QImage currentScreen(float kx, float ky, float kw, float kh) const;
+	bool simulateInput(const std::string& str) const;
+	QImage currentScreen(float kx, float ky, float kw, float kh) const;
 #endif
 private:
-    void generateGalaxies();
-    void responsiveSleep(int msec) const
-    {
-        int t;
-        for(t=0; t<msec-shortSleep; t+=shortSleep)
-        {
-            Sleep(shortSleep);
-            QCoreApplication::processEvents();
-        }
-        Sleep(msec-t);
-    }
+	void generateGalaxies();
+	void responsiveSleep(int msec) const
+	{
+		int t;
+		QMutex mutex;
+		QWaitCondition waitCondition;
+		for(t=0; t<msec-shortSleep; t+=shortSleep)
+		{
+			mutex.lock();
+			waitCondition.wait(&mutex, shortSleep);
+			mutex.unlock();
+			QCoreApplication::processEvents();
+		}
+		mutex.lock();
+		waitCondition.wait(&mutex, msec-t);
+		mutex.unlock();
+		QCoreApplication::processEvents();
+	}
 
 private:
-    Ui::MainWindow *ui;
-    QString _filename;
-    Galaxy galaxy;
-    QDateTime _fileModified;
+	Ui::MainWindow *ui;
+	QString _filename;
+	Galaxy galaxy;
+	QDateTime _fileModified;
 
-    TradeTableModel tradeModel;
-    QSortFilterProxyModel tradeProxyModel;
+	TradeTableModel tradeModel;
+	QSortFilterProxyModel tradeProxyModel;
 
-    EquipmentTableModel eqModel;
-    MultiFilterProxyModel eqProxyModel;
+	EquipmentTableModel eqModel;
+	MultiFilterProxyModel eqProxyModel;
 
-    BlackHolesTableModel bhModel;
+	BlackHolesTableModel bhModel;
 
-    QTimer reloadTimer;
+	QTimer reloadTimer;
 
-    QSoundEffect sound;
+	QSoundEffect sound;
 
-    const QString rangersDir=QStandardPaths::locate(QStandardPaths::DocumentsLocation,"SpaceRangersHD",QStandardPaths::LocateDirectory);
-    int maxGenerationTime=80000;
-    int shortSleep=25;
+	const QString rangersDir=QStandardPaths::locate(QStandardPaths::DocumentsLocation,"SpaceRangersHD",QStandardPaths::LocateDirectory);
+	int maxGenerationTime=80000;
+	int shortSleep=25;
 };
 
 #endif // MAINWINDOW_H

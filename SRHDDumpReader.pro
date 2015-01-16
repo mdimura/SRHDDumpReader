@@ -19,10 +19,10 @@ TARGET = SRHDDumpReader
 TEMPLATE = app
 CONFIG += c++11
 
-LIBS += -L"$$_PRO_FILE_PWD_/3rdparty/libs/" -lpsapi
+win32:LIBS += -L"$$_PRO_FILE_PWD_/3rdparty/libs/" -lpsapi
 
 SOURCES += main.cpp\
-        MainWindow.cpp \
+	MainWindow.cpp \
     Equipment.cpp \
     Ship.cpp \
     Planet.cpp \
