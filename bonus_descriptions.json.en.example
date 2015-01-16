@@ -1,0 +1,86 @@
+[
+    {
+        "key": "Myoplasmic:1",
+        "value": "energetic dmg +2, splinter dmg +3, speed -10"
+    },
+    {
+        "key": "Myoplasmic:2",
+        "value": "energetic dmg +3, splinter dmg +4, speed -20"
+    },
+    {
+        "key": "Myoplasmic:3",
+        "value": "energetic dmg +5, splinter dmg +6, speed -30"
+    },
+    {
+        "key": "Pygamore:1",
+        "value": "rocket dmg+2, defence -1, radar -50"
+    },
+    {
+        "key": "Pygamore:2",
+        "value": "rocket dmg+3, defence -2, radar -100"
+    },
+    {
+        "key": "Pygamore:3",
+        "value": "rocket dmg+4, defence -3, radar -250"
+    },
+    {
+        "key": "Transcendental:1",
+        "value": "defence +2, mass +10%"
+    },
+    {
+        "key": "Transcendental:2",
+        "value": "defence +3, mass +20%"
+    },
+    {
+        "key": "Transcendental:3",
+        "value": "defence +4, mass +30%"
+    },
+    {
+        "key": "Upgraded:1",
+        "value": "hook range +10, mobility +1, charizm -2"
+    },
+    {
+        "key": "Upgraded:2",
+        "value": "hook range +15, mobility +1, charizm -2"
+    },
+    {
+        "key": "Upgraded:3",
+        "value": "hook range +20, mobility +1, charizm -2"
+    },
+    {
+        "key": "Biogenic:1",
+        "value": "scaner +3, radar +100, technics -2"
+    },
+    {
+        "key": "Biogenic:2",
+        "value": "scaner +6, radar +200, technics -2"
+    },
+    {
+        "key": "Biogenic:3",
+        "value": "scaner +9, radar +200, technics -2"
+    },
+    {
+        "key": "Nanobrolite:1",
+        "value": "energetic dmg +2, splinter dmg +3, weapon range -10, attack +1, trade -2"
+    },
+    {
+        "key": "Nanobrolite:2",
+        "value": "energetic dmg +4, splinter dmg +5, weapon range -20, attack +1, trade -2"
+    },
+    {
+        "key": "Nanobrolite:3",
+        "value": "energetic dmg +6, splinter dmg +8, weapon range -30, attack +1, trade -2"
+    },
+    {
+        "key": "Ultraalloy:1",
+        "value": "droid +7, engine speed -10, attack -1, technics +1"
+    },
+    {
+        "key": "Ultraalloy:2",
+        "value": "droid +12, engine speed -25, attack -1, technics +1"
+    },
+    {
+        "key": "Ultraalloy:3",
+        "value": "droid +15, engine speed -55, attack -1, technics +1"
+    }
+]

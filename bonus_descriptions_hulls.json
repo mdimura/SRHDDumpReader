@@ -1,0 +1,146 @@
+[
+    {
+        "key": "Быстрый:1",
+        "value": "speed +100"
+    },
+    {
+        "key": "Быстрый:2",
+        "value": "speed +150"
+    },
+    {
+        "key": "Быстрый:3",
+        "value": "speed +200"
+    },
+    {
+        "key": "Быстрый:4",
+        "value": "speed +150"
+    },
+    {
+        "key": "Неуязвимый:1",
+        "value": "defence +3"
+    },
+    {
+        "key": "Неуязвимый:2",
+        "value": "defence +6"
+    },
+    {
+        "key": "Неуязвимый:3",
+        "value": "defence +9"
+    },
+    {
+        "key": "Неуязвимый:4",
+        "value": "defence +6"
+    },
+    {
+        "key": "Ремонтный:1",
+        "value": "droid +10"
+    },
+    {
+        "key": "Ремонтный:2",
+        "value": "droid +25"
+    },
+    {
+        "key": "Ремонтный:3",
+        "value": "droid +40"
+    },
+    {
+        "key": "Ремонтный:4",
+        "value": "droid +25"
+    },
+    {
+        "key": "Миоплазменный:1",
+        "value": "energetic dmg +4, splinter dmg +8, speed -20"
+    },
+    {
+        "key": "Миоплазменный:2",
+        "value": "energetic dmg +7, splinter dmg +12, speed -40"
+    },
+    {
+        "key": "Миоплазменный:3",
+        "value": "energetic dmg +10, splinter dmg +20, speed -60"
+    },
+    {
+        "key": "Миоплазменный:4",
+        "value": "energetic dmg +7, splinter dmg +12, speed -40"
+    },
+    {
+        "key": "Пигамарный:1",
+        "value": "rocket dmg +5, defence -3, radar -200"
+    },
+    {
+        "key": "Пигамарный:2",
+        "value": "rocket dmg +10, defence -5, radar -300"
+    },
+    {
+        "key": "Пигамарный:3",
+        "value": "rocket dmg +15, defence -7, radar -500"
+    },
+    {
+        "key": "Пигамарный:4",
+        "value": "rocket dmg +10, defence -5, radar -300"
+    },
+    {
+        "key": "Броненосец:1",
+        "value": "energetic dmg +2, splinter dmg +1, defence +3, speed -50, manoeuvrability -2"
+    },
+    {
+        "key": "Броненосец:2",
+        "value": "energetic dmg +4, splinter dmg +3, defence +4, speed -75, manoeuvrability -2"
+    },
+    {
+        "key": "Броненосец:3",
+        "value": "energetic dmg +6, splinter dmg +5, defence +6, speed -100, manoeuvrability -2"
+    },
+    {
+        "key": "Броненосец:4",
+        "value": "energetic dmg +4, splinter dmg +3, defence +4, speed -75, manoeuvrability -2"
+    },
+    {
+        "key": "Честный:1",
+        "value": "jump +3, hook +10, mass -10%, trade -3"
+    },
+    {
+        "key": "Честный:2",
+        "value": "jump +5, hook +20, mass -20%, trade -3"
+    },
+    {
+        "key": "Честный:3",
+        "value": "jump +7, hook +30, mass -30%, trade -3"
+    },
+    {
+        "key": "Честный:4",
+        "value": "jump +5, hook +20, mass -20%, trade -3"
+    },
+    {
+        "key": "Добрый:1",
+        "value": "energetic dmg +5, splinter dmg +4, rocket dmg +2"
+    },
+    {
+        "key": "Добрый:2",
+        "value": "energetic dmg +6, splinter dmg +5, rocket dmg +3"
+    },
+    {
+        "key": "Добрый:3",
+        "value": "energetic dmg +7, splinter dmg +6, rocket dmg +4"
+    },
+    {
+        "key": "Добрый:4",
+        "value": "energetic dmg +6, splinter dmg +5, rocket dmg +3"
+    },
+    {
+        "key": "Мирный:1",
+        "value": "armor +1, defence +3, atack -3, technics -3"
+    },
+    {
+        "key": "Мирный:2",
+        "value": "armor +2, defence +6, atack -3, technics -3"
+    },
+    {
+        "key": "Мирный:3",
+        "value": "armor +3, defence +9, atack -3, technics -3"
+    },
+    {
+        "key": "Мирный:4",
+        "value": "armor +2, defence +6, atack -3, technics -3"
+    }
+]

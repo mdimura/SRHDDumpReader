@@ -1,0 +1,62 @@
+[
+    {
+        "key": "Fast:1",
+        "value": "Speed +100"
+    },
+    {
+        "key": "Fast:2",
+        "value": "Speed +150"
+    },
+    {
+        "key": "Fast:3",
+        "value": "Speed +200"
+    },
+    {
+        "key": "Invincible:1",
+        "value": "Defence +3"
+    },
+    {
+        "key": "Invincible:2",
+        "value": "Defence +6"
+    },
+    {
+        "key": "Invincible:3",
+        "value": "Defence +9"
+    },
+    {
+        "key": "Repair:1",
+        "value": "Droid +10"
+    },
+    {
+        "key": "Repair:2",
+        "value": "Droid +25"
+    },
+    {
+        "key": "Repair:3",
+        "value": "Droid +40"
+    },
+    {
+        "key": "Myoplasmic:1",
+        "value": "Energetic dmg +4, Splinter dmg +8, Speed -20"
+    },
+    {
+        "key": "Myoplasmic:2",
+        "value": "Energetic dmg +7, Splinter dmg +12, Speed -40"
+    },
+    {
+        "key": "Myoplasmic:3",
+        "value": "Energetic dmg +10, Splinter dmg +20, Speed -60"
+    },
+    {
+        "key": "Pygamore:1",
+        "value": "Rocket dmg+5, Defence -3, Radar -200"
+    },
+    {
+        "key": "Pygamore:2",
+        "value": "Rocket dmg+10, Defence -5, Radar -300"
+    },
+    {
+        "key": "Pygamore:3",
+        "value": "Rocket dmg+15, Defence -7, Radar -500"
+    }
+]
