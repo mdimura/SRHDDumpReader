@@ -96,7 +96,7 @@ void MainWindow::readSettings()
 {
 	QSettings settings("p-s team", "SRHDDumpReader");
 	shortSleep=settings.value("shortSleep",25).toInt();
-	maxGenerationTime=settings.value("maxGenerationTime",80000).toInt();
+	maxGenerationTime=settings.value("maxGenerationTime",120000).toInt();
 	QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
 	QSize size = settings.value("size", QSize(400, 400)).toSize();
 	resize(size);

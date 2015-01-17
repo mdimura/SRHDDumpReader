@@ -99,7 +99,7 @@ private:
 	QSoundEffect sound;
 
 	const QString rangersDir=QStandardPaths::locate(QStandardPaths::DocumentsLocation,"SpaceRangersHD",QStandardPaths::LocateDirectory);
-	int maxGenerationTime=80000;
+	int maxGenerationTime=120000;
 	int shortSleep=25;
 };
 
