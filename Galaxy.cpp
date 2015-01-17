@@ -19,19 +19,19 @@ void Galaxy::parseDump(QTextStream &stream)
         {
             Ship(stream,*this,0,0);
         }
-        break;
+            break;
 
         case 1://StarList
             readStars(stream, *this);
-        break;
+            break;
 
         case 2://HoleList
             readBlackHoles(stream,*this);
-        break;
+            break;
 
         default:
             //skip record
-        break;
+            break;
         }
 
         line = stream.readLine();
@@ -113,6 +113,7 @@ void Galaxy::addPlanet(const Planet &&planet)
         _minSellPrice=_minSellPrice.min(planet.goodsSale(),planet.goodsCount());
         _maxBuyPrice=_maxBuyPrice.max(planet.goodsBuy());
     }
+    planetVec.push_back(planet.id());
     planetMap.insert(std::make_pair(planet.id(),planet));
 }
 
@@ -387,8 +388,8 @@ unsigned Galaxy::blackHoleId(unsigned row) const
 
 QString Galaxy::blackHoleStar1(unsigned row) const
 {
-     unsigned starId=blackHoles[row].star1Id();
-     return starMap.at(starId).name();
+    unsigned starId=blackHoles[row].star1Id();
+    return starMap.at(starId).name();
 }
 
 float Galaxy::blackHoleStar1Distance(unsigned row) const
@@ -403,8 +404,8 @@ float Galaxy::blackHoleStar1Distance(unsigned row) const
 
 QString Galaxy::blackHoleStar2(unsigned row) const
 {
-     unsigned starId=blackHoles[row].star2Id();
-     return starMap.at(starId).name();
+    unsigned starId=blackHoles[row].star2Id();
+    return starMap.at(starId).name();
 }
 
 float Galaxy::blackHoleStar2Distance(unsigned row) const
@@ -446,7 +447,7 @@ unsigned Galaxy::equipmentStarId(unsigned row) const
     {
         return shipMap.at(locId).starId();
     }
-    break;
+        break;
 
     case Equipment::kJunk:
         return locId;
@@ -456,7 +457,7 @@ unsigned Galaxy::equipmentStarId(unsigned row) const
     {
         return planetMap.at(locId).starId();
     }
-    break;
+        break;
     }
     return 0;
 }

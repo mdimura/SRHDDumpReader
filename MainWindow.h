@@ -30,6 +30,7 @@
 #include "MultiFilterProxyModel.h"
 #include "WidgetHeaderView.h"
 #include "BlackHolesTableModel.h"
+#include "PlanetsTableModel.h"
 
 
 namespace Ui {
@@ -88,6 +89,9 @@ private:
 
 	TradeTableModel tradeModel;
 	QSortFilterProxyModel tradeProxyModel;
+
+    PlanetsTableModel planetsModel;
+    QSortFilterProxyModel planetsProxyModel;
 
 	EquipmentTableModel eqModel;
 	MultiFilterProxyModel eqProxyModel;

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-VERSION = 20150112b
+VERSION = 20150117b
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 RC_FILE = SRHDDumpReader.rc
@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     EquipmentTableModel.cpp \
     WidgetHeaderView.cpp \
     MultiFilterProxyModel.cpp \
-    BlackHolesTableModel.cpp
+    BlackHolesTableModel.cpp \
+    PlanetsTableModel.cpp
 
 HEADERS  += MainWindow.h \
     Equipment.h \
@@ -50,9 +51,13 @@ HEADERS  += MainWindow.h \
     EquipmentTableModel.h \
     WidgetHeaderView.h \
     MultiFilterProxyModel.h \
-    BlackHolesTableModel.h
+    BlackHolesTableModel.h \
+    PlanetsTableModel.h
 
 FORMS    += MainWindow.ui
 
 RESOURCES += \
     icons.qrc
+
+DISTFILES += \
+    .gitignore

@@ -19,7 +19,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow),tradeModel(&galaxy,this),tradeProxyModel(this),eqModel(&galaxy,this),bhModel(&galaxy,this)
+    ui(new Ui::MainWindow),tradeModel(&galaxy,this),tradeProxyModel(this),
+    eqModel(&galaxy,this),bhModel(&galaxy,this),planetsModel(&galaxy,this)
 {
 	ui->setupUi(this);
 	addAction(ui->actionSaveReport);
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	tradeProxyModel.setSourceModel(&tradeModel);
 	eqProxyModel.setSourceModel(&eqModel);
+    planetsProxyModel.setSourceModel(&planetsModel);
 
 	HierarchicalHeaderView* hv=new HierarchicalHeaderView(Qt::Horizontal, ui->tradeTableView);
 	hv->setHighlightSections(true);
@@ -49,6 +51,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	//ui->tradeTableView->resizeRowsToContents();
 	ui->tradeTableView->setColumnWidth(0,tableFontWidth*14);
 	ui->tradeTableView->setColumnWidth(1,tableFontWidth*10);
+
+    ui->planetsTableView->setModel(&planetsProxyModel);
+    ui->planetsTableView->resizeColumnsToContents();
 
 	ui->equipmentTableView->setModel(&eqProxyModel);
 	WidgetHeaderView* whv=new WidgetHeaderView(Qt::Horizontal,ui->equipmentTableView);
@@ -161,7 +166,9 @@ bool MainWindow::parseDump()
 	tradeModel.reload();
 	eqModel.reload();
 	bhModel.reload();
+    planetsModel.reload();
 	ui->tradeTableView->resizeColumnsToContents();
+    ui->planetsTableView->resizeColumnsToContents();
 	//ui->tradeTableView->resizeRowsToContents();
 	//ui->equipmentTableView->resizeColumnsToContents();
 	// //ui->equipmentTableView->resizeRowsToContents();

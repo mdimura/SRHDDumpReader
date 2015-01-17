@@ -63,6 +63,20 @@ public:
     float blackHoleStar2Distance(unsigned row) const;
     unsigned blackHoleTurnsToClose(unsigned row) const;
 
+    const Planet& planet(unsigned row) const
+    {
+        return planetMap.at(planetVec[row]);
+    }
+    float planetDistance(unsigned row) const
+    {
+        unsigned planetStarId=planet(row).starId();
+        unsigned playerStarId=shipMap.at(0).starId();
+        QPointF playerPos=starMap.at(playerStarId).position();
+        QPointF planetPos=starMap.at(planetStarId).position();
+        QPointF delta=playerPos-planetPos;
+        return sqrt(pow(delta.x(), 2) + pow(delta.y(), 2));
+    }
+
     const GoodsArr& maxBuyPrice() const
     {
         return _maxBuyPrice;
@@ -71,8 +85,8 @@ public:
     {
         return _minSellPrice;
     }
-
 private:
+
     unsigned marketStarId(unsigned row) const;
     unsigned equipmentStarId(unsigned row) const;
 private:
@@ -84,6 +98,7 @@ private:
     std::vector<unsigned> planetMarkets;
     std::vector<unsigned> shipMarkets;
     std::vector<unsigned> eqVec;
+    std::vector<unsigned> planetVec;
 
     mutable GoodsArr _maxBuyPrice;
     mutable GoodsArr _minSellPrice;
