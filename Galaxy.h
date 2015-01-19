@@ -6,6 +6,9 @@
 #include "Planet.h"
 #include "BlackHole.h"
 #include "Galaxy.h"
+#include <QImage>
+#include <QPainter>
+#include <QRectF>
 #include <iostream>
 #include <unordered_map>
 
@@ -85,8 +88,14 @@ public:
     {
         return _minSellPrice;
     }
+    QImage map(float scale=10) const;
 private:
+    QStringList bases(const Star& star) const
+    {
+        QStringList list;
+        return list;
 
+    }
     unsigned marketStarId(unsigned row) const;
     unsigned equipmentStarId(unsigned row) const;
 private:
@@ -102,6 +111,7 @@ private:
 
     mutable GoodsArr _maxBuyPrice;
     mutable GoodsArr _minSellPrice;
+    QRectF mapRect;
 };
 
 

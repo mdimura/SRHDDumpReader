@@ -36,6 +36,7 @@ void Galaxy::parseDump(QTextStream &stream)
 
         line = stream.readLine();
     }
+    map(10).save("map.png");
 }
 
 void Galaxy::clear()
@@ -50,6 +51,7 @@ void Galaxy::clear()
     eqVec.clear();
     _minSellPrice.set(std::numeric_limits<unsigned>::max());
     _maxBuyPrice.set(0);
+    mapRect=QRectF(50,50,0,0);
 }
 
 unsigned Galaxy::shipCount() const
@@ -97,6 +99,7 @@ void Galaxy::addShip(const Ship &&ship)
 void Galaxy::addStar(const Star &&star)
 {
     assert(starMap.find(star.id()) == starMap.end());//"Galaxy: Tried to add a star which is already existing. This should not happen!"
+    mapRect|=QRectF(star.position(),star.position()+QPointF(1,1));
     starMap.insert(std::make_pair(star.id(),star));
 }
 
@@ -421,6 +424,55 @@ float Galaxy::blackHoleStar2Distance(unsigned row) const
 unsigned Galaxy::blackHoleTurnsToClose(unsigned row) const
 {
     return blackHoles[row].turnsToClose();
+}
+
+QImage Galaxy::map(float scale) const
+{
+    const static QMap<QString,QColor> ownerToColor={{"Keller",Qt::blue},
+                                                    {"Pirates",Qt::white},
+                                                    {"Terron",Qt::green},
+                                                    {"Blazer",Qt::red},
+                                                    {"Normals",Qt::magenta}};
+    QImage image((mapRect.width()+10)*scale,(mapRect.height()+10)*scale,QImage::Format_ARGB32);
+    image.fill(Qt::black);
+    QPainter p(&image);
+    //QMap<unsigned,QPointF> starIdToPos;
+    QMap<unsigned,QString> starIdToBases;
+    p.setPen(QPen(QColor(Qt::white)));
+    p.setBrush(QBrush(QColor(Qt::white),Qt::SolidPattern));
+    p.setRenderHint(QPainter::Antialiasing, true);
+    p.setFont(QFont("Helvetica",scale*1.2));
+    //prepare bases
+    for(unsigned baseId:shipMarkets)
+    {
+        const Ship& ship=shipMap.at(baseId);
+        QString base=ship.name().left(2);
+        unsigned starId=ship.starId();
+        QString& basesStr=starIdToBases[starId];
+        if(basesStr.length()) {
+            basesStr+=',';
+        }
+        basesStr+=base;
+    }
+    //Draw stars
+    for(const auto& pair:starMap)
+    {
+        const Star& star=pair.second;
+        QPointF pos=star.position()-mapRect.topLeft()+QPointF(5,5);
+        pos*=scale;
+        //starIdtoPos[star.id()]=pos;
+        QString owner=star.owner();
+        if(owner=="Klings") {
+            owner=star.domSeries();
+        }
+        p.setBrush(QBrush(QColor(ownerToColor[owner]),Qt::SolidPattern));
+        p.drawEllipse(pos,scale,scale);
+        QRectF textRect=QRectF(pos+QPointF(-scale*10,scale),pos+QPointF(scale*10,scale*4));
+        p.drawText(textRect,star.name(),QTextOption(Qt::AlignHCenter|Qt::AlignTop));
+        p.drawText(pos+QPointF(scale*1.1,scale/2),starIdToBases.value(star.id()));
+    }
+
+    return image;
 }
 
 unsigned Galaxy::marketStarId(unsigned row) const

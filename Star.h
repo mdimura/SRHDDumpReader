@@ -22,16 +22,18 @@ public:
     {
         return _owner;
     }
+    QString domSeries() const
+    {
+        return _domSeries;
+    }
     QPointF position() const
     {
         return QPointF(_x,_y);
     }
-
 private:
     unsigned _id;
     QString _name, _owner, _domSeries;
     double _x, _y;
-    std::unordered_set<unsigned> _shipIdList;
 };
 void readStars(QTextStream &stream, Galaxy &galaxy);
 #endif // STAR_H
