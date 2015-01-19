@@ -68,34 +68,28 @@ public:
 
     const Planet& planet(unsigned row) const
     {
-        return planetMap.at(planetVec[row]);
+	return planetMap.at(planetVec[row]);
     }
     float planetDistance(unsigned row) const
     {
-        unsigned planetStarId=planet(row).starId();
-        unsigned playerStarId=shipMap.at(0).starId();
-        QPointF playerPos=starMap.at(playerStarId).position();
-        QPointF planetPos=starMap.at(planetStarId).position();
-        QPointF delta=playerPos-planetPos;
-        return sqrt(pow(delta.x(), 2) + pow(delta.y(), 2));
+	unsigned planetStarId=planet(row).starId();
+	unsigned playerStarId=shipMap.at(0).starId();
+	QPointF playerPos=starMap.at(playerStarId).position();
+	QPointF planetPos=starMap.at(planetStarId).position();
+	QPointF delta=playerPos-planetPos;
+	return sqrt(pow(delta.x(), 2) + pow(delta.y(), 2));
     }
 
     const GoodsArr& maxBuyPrice() const
     {
-        return _maxBuyPrice;
+	return _maxBuyPrice;
     }
     const GoodsArr& minSellPrice() const
     {
-        return _minSellPrice;
+	return _minSellPrice;
     }
     QImage map(float scale=10) const;
 private:
-    QStringList bases(const Star& star) const
-    {
-        QStringList list;
-        return list;
-
-    }
     unsigned marketStarId(unsigned row) const;
     unsigned equipmentStarId(unsigned row) const;
 private:

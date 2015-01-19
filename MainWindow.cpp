@@ -19,8 +19,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-    ui(new Ui::MainWindow),tradeModel(&galaxy,this),tradeProxyModel(this),
-    eqModel(&galaxy,this),bhModel(&galaxy,this),planetsModel(&galaxy,this)
+	ui(new Ui::MainWindow),tradeModel(&galaxy,this),tradeProxyModel(this),
+	eqModel(&galaxy,this),bhModel(&galaxy,this),planetsModel(&galaxy,this)
 {
 	ui->setupUi(this);
 	addAction(ui->actionSaveReport);
@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	tradeProxyModel.setSourceModel(&tradeModel);
 	eqProxyModel.setSourceModel(&eqModel);
-    planetsProxyModel.setSourceModel(&planetsModel);
+	planetsProxyModel.setSourceModel(&planetsModel);
 
 	HierarchicalHeaderView* hv=new HierarchicalHeaderView(Qt::Horizontal, ui->tradeTableView);
 	hv->setHighlightSections(true);
@@ -52,8 +52,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->tradeTableView->setColumnWidth(0,tableFontWidth*14);
 	ui->tradeTableView->setColumnWidth(1,tableFontWidth*10);
 
-    ui->planetsTableView->setModel(&planetsProxyModel);
-    ui->planetsTableView->resizeColumnsToContents();
+	ui->planetsTableView->setModel(&planetsProxyModel);
+	ui->planetsTableView->resizeColumnsToContents();
 
 	ui->equipmentTableView->setModel(&eqProxyModel);
 	WidgetHeaderView* whv=new WidgetHeaderView(Qt::Horizontal,ui->equipmentTableView);
@@ -100,8 +100,15 @@ MainWindow::~MainWindow()
 void MainWindow::readSettings()
 {
 	QSettings settings("p-s team", "SRHDDumpReader");
+
 	shortSleep=settings.value("shortSleep",25).toInt();
 	maxGenerationTime=settings.value("maxGenerationTime",120000).toInt();
+	mapScale=settings.value("mapScale",5.f).toFloat();
+
+	minHIGplanets=settings.value("minHIGplanets",0).toInt();
+	treasureSummary=settings.value("treasureSummary",false).toBool();
+	//std::cout<<"hig:"<<minHIGplanets<<" ts:"<<treasureSummary<<std::endl;
+
 	QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
 	QSize size = settings.value("size", QSize(400, 400)).toSize();
 	resize(size);
@@ -114,6 +121,7 @@ void MainWindow::writeSettings() const
 	QSettings settings("p-s team", "SRHDDumpReader");
 	settings.setValue("shortSleep", shortSleep);
 	settings.setValue("maxGenerationTime", maxGenerationTime);
+	settings.setValue("mapScale", (double)mapScale);
 	settings.setValue("pos", pos());
 	settings.setValue("size", size());
 	settings.setValue("windowState", saveState());
@@ -166,9 +174,9 @@ bool MainWindow::parseDump()
 	tradeModel.reload();
 	eqModel.reload();
 	bhModel.reload();
-    planetsModel.reload();
+	planetsModel.reload();
 	ui->tradeTableView->resizeColumnsToContents();
-    ui->planetsTableView->resizeColumnsToContents();
+	ui->planetsTableView->resizeColumnsToContents();
 	//ui->tradeTableView->resizeRowsToContents();
 	//ui->equipmentTableView->resizeColumnsToContents();
 	// //ui->equipmentTableView->resizeRowsToContents();
@@ -283,8 +291,32 @@ int MainWindow::saveReport() const
 			ofile<<'\n';
 		}
 	}
+	if(mapScale>0.f) {
+		if(QFileInfo(_filename+".map.png").exists()) {
+			QFile::remove(_filename+"_map.png");
+		}
+		galaxy.map(mapScale).save(_filename+"_map.png");
+	}
 	statusBar()->showMessage(tr("Report saved: ")+QString::fromStdString(filename));
 	return hugeIndustrialGall;
+}
+
+void MainWindow::responsiveSleep(int msec) const
+{
+	int t;
+	QMutex mutex;
+	QWaitCondition waitCondition;
+	for(t=0; t<msec-shortSleep; t+=shortSleep)
+	{
+		mutex.lock();
+		waitCondition.wait(&mutex, shortSleep);
+		mutex.unlock();
+		QCoreApplication::processEvents();
+	}
+	mutex.lock();
+	waitCondition.wait(&mutex, msec-t);
+	mutex.unlock();
+	QCoreApplication::processEvents();
 }
 #ifdef _WIN32
 bool rangersWindowActive()
@@ -563,7 +595,7 @@ void MainWindow::generateGalaxies()
 	if(!logfile.good()) {
 		statusBar()->showMessage(tr("Could not open the log file ")+QString::fromStdString(filename));
 	}
-	bool removeBadSaves=QFileInfo("removeBadSaves").exists();
+
 	auto originalMainMenu=currentScreen(0,0.9,0.05,0.1);
 	if(originalMainMenu.height()==0) {
 		statusBar()->showMessage(tr("could not get reference screenshot for the main menu. Generation stopped."));
@@ -573,7 +605,7 @@ void MainWindow::generateGalaxies()
 
 	int generationTime=20000;
 	QImage originalGenerationFinished;
-	for(int i=0; i<2000;i++)
+	for(int i=0; ;i++)
 	{
 		//check, if the state is right
 		auto currentMainMenu=currentScreen(0,0.9,0.05,0.1);
@@ -634,16 +666,18 @@ void MainWindow::generateGalaxies()
 		logfile<<logoutstr<<endl;
 		std::cout<<logoutstr<<endl;
 		QString prefix=rangersDir+"/save/autodump";
-		if(hugeIndustrGaal<5 && removeBadSaves) {//useless save
+		if(hugeIndustrGaal<minHIGplanets) {//useless save
 			QFile::remove(prefix+".txt");
 			QFile::remove(prefix+".sav");
 			QFile::remove(prefix+".txt.report");
+			QFile::remove(prefix+"_map.png");
 		}
 		else {
 			QString timestamp=QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
 			QFile::rename(prefix+".txt",prefix+timestamp+".txt");
 			QFile::rename(prefix+".sav",prefix+timestamp+".sav_");
-			QFile::rename(prefix+".txt.report",prefix+timestamp+".txt.report");
+			QFile::rename(prefix+".txt.report",prefix+timestamp+".report");
+			QFile::rename(prefix+".txt.map.png",prefix+timestamp+"_map.png");
 		}
 
 		responsiveSleep(shortSleep*20);

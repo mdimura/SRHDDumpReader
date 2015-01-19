@@ -63,23 +63,7 @@ public:
 #endif
 private:
 	void generateGalaxies();
-	void responsiveSleep(int msec) const
-	{
-		int t;
-		QMutex mutex;
-		QWaitCondition waitCondition;
-		for(t=0; t<msec-shortSleep; t+=shortSleep)
-		{
-			mutex.lock();
-			waitCondition.wait(&mutex, shortSleep);
-			mutex.unlock();
-			QCoreApplication::processEvents();
-		}
-		mutex.lock();
-		waitCondition.wait(&mutex, msec-t);
-		mutex.unlock();
-		QCoreApplication::processEvents();
-	}
+	void responsiveSleep(int msec) const;
 
 private:
 	Ui::MainWindow *ui;
@@ -90,8 +74,8 @@ private:
 	TradeTableModel tradeModel;
 	QSortFilterProxyModel tradeProxyModel;
 
-    PlanetsTableModel planetsModel;
-    QSortFilterProxyModel planetsProxyModel;
+	PlanetsTableModel planetsModel;
+	QSortFilterProxyModel planetsProxyModel;
 
 	EquipmentTableModel eqModel;
 	MultiFilterProxyModel eqProxyModel;
@@ -105,6 +89,9 @@ private:
 	const QString rangersDir=QStandardPaths::locate(QStandardPaths::DocumentsLocation,"SpaceRangersHD",QStandardPaths::LocateDirectory);
 	int maxGenerationTime=120000;
 	int shortSleep=25;
+	int minHIGplanets=0;//Huge industrial gaal planets limit
+	float mapScale=5.f;
+	bool treasureSummary=false;
 };
 
 #endif // MAINWINDOW_H
