@@ -103,7 +103,7 @@ void MainWindow::readSettings()
 
 	shortSleep=settings.value("shortSleep",25).toInt();
 	maxGenerationTime=settings.value("maxGenerationTime",120000).toInt();
-	mapScale=settings.value("mapScale",5.f).toFloat();
+	mapScale=settings.value("mapScale",7.f).toFloat();
 
 	minHIGplanets=settings.value("minHIGplanets",0).toInt();
 	treasureSummary=settings.value("treasureSummary",false).toBool();

@@ -108,8 +108,4 @@ private:
     QRectF mapRect;
 };
 
-
-
-
-
 #endif // GALAXY_H

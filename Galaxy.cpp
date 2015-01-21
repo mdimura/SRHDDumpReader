@@ -432,10 +432,10 @@ QImage Galaxy::map(float scale) const
 							{"Pirates",Qt::white},
 							{"Terron",Qt::darkGreen},
 							{"Blazer",Qt::red},
-							{"Normals",Qt::magenta},
-							{"Maloc",Qt::red},
+							{"Normals",QColor("salmon")},
+							{"Maloc",QColor("red")},
 							{"Peleng",Qt::darkGreen},
-							{"People",Qt::blue},
+							{"People",QColor("royalblue")},
 							{"Fei",Qt::magenta},
 							{"Gaal",Qt::yellow}};
 	QImage image((mapRect.width()+10)*scale,(mapRect.height()+10)*scale,QImage::Format_ARGB32);
@@ -444,7 +444,7 @@ QImage Galaxy::map(float scale) const
 	p.setPen(QPen(QColor(Qt::white)));
 	p.setBrush(QBrush(QColor(Qt::white),Qt::SolidPattern));
 	p.setRenderHint(QPainter::Antialiasing, true);
-	QFont font("System",int(scale*1.2));
+	QFont font("Verdana",int(scale*1.2));
 	p.setFont(font);
 	//prepare base names
 	QMap<unsigned,QString> starIdToBases;
@@ -461,14 +461,17 @@ QImage Galaxy::map(float scale) const
 	}
 	//prepare planets
 	QMap<unsigned,QString> starIdToPlanets;
-	const QString planetStr("<font color=%3><b>%1</b><sup>%2</sup><color>");
+	const QString planetStr("<font color=%3><b>%1</b>%2<color>");
 	for(const auto& pair:planetMap)
 	{
 		const Planet& planet=pair.second;
+		if(planet.owner()=="None") {
+			continue;
+		}
 		unsigned starId=planet.starId();
 		QString& planetsStr=starIdToPlanets[starId];
 		planetsStr+=' ';
-		QString economy=planet.economy().left(1).toUpper();
+		QString economy=planet.economy().left(1);
 		int size=(planet.size()/10)%10;
 		QString color=ownerToColor.value(planet.race()).name();
 		planetsStr+=planetStr.arg(size).arg(economy).arg(color);
