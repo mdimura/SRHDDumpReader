@@ -1,5 +1,6 @@
 #include "EquipmentTableModel.h"
 #include "Galaxy.h"
+#include "FilterHorizontalHeaderView.h"
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QVBoxLayout>
@@ -63,7 +64,7 @@ QVariant EquipmentTableModel::data(const QModelIndex &index, int role) const
         break;
 
         case 9://Distance to star from Player
-            return std::round(_galaxy->equipmentDistFromPlayer(index.row())*10.0)/10.0;
+            return std::round(_galaxy->equipmentDistFromPlayer(index.row()));
         break;
 
         case 10://Star Owner
@@ -104,6 +105,23 @@ QVariant EquipmentTableModel::headerData(int section, Qt::Orientation orientatio
         }
         else if (orientation == Qt::Horizontal) {
             return header.at(section);
+        }
+    }
+    else if(role==Qt::UserRole)
+    {
+        if(orientation == Qt::Horizontal) {
+            switch (section)
+            {
+            case 2:
+            case 4:
+            case 5:
+            case 9:
+                return FilterHorizontalHeaderView::wtInt;
+            case 11:
+                return FilterHorizontalHeaderView::wtDouble;
+            default:
+                return FilterHorizontalHeaderView::wtString;
+            }
         }
     }
     return QVariant();

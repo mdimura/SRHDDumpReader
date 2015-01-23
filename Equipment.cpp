@@ -12,10 +12,6 @@ const QMap<QString,QString> Equipment::specialTypesDescriptions=Equipment::loadD
 const QMap<QString,QString> Equipment::specialHullsDescriptions=Equipment::loadDescriptions("bonus_descriptions_hulls.json");
 const QMap<QString,QString> Equipment::micromodulesDescriptions=Equipment::loadDescriptions("bonus_descriptions_micromodules.json");
 const QMap<QString,QString> Equipment::artifactsDescriptions=Equipment::loadDescriptions("bonus_descriptions_artifacts.json");
-/*const QMap<unsigned,QString> Equipment::specialCodes={{226,"Diphrode"},{227,"Liphocarus"},{228,"Adropter"},{229,"Stylermain"},
-                                                      {230,"Javitor"},{231,"Inveiter"},{232,"Diphrode"},{233,"Liphocarus"},
-                                                      {234,"Javitor"}, {235,"Armoloc"},
-                                                      {266,"Liphocarus"},{267,"Javitor"},{268,"Stylermain"}};*/
 
 Equipment::Equipment(QTextStream &stream, Galaxy &galaxy, LocationType locationType, unsigned locationId, unsigned id):
     _id(id),_size(0),_cost(0),_durability(0.0),_techLevel(0),_locationType(locationType),_locationId(locationId)

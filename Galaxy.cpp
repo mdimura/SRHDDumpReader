@@ -471,7 +471,7 @@ QImage Galaxy::map(float scale) const
 		unsigned starId=planet.starId();
 		QString& planetsStr=starIdToPlanets[starId];
 		planetsStr+=' ';
-		QString economy=planet.economy().left(1);
+		QString economy=planet.economy().left(1).toLower();
 		int size=(planet.size()/10)%10;
 		QString color=ownerToColor.value(planet.race()).name();
 		planetsStr+=planetStr.arg(size).arg(economy).arg(color);

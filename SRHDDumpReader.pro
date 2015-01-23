@@ -33,10 +33,10 @@ SOURCES += main.cpp\
     TradeTableModel.cpp \
     HierarchicalHeaderView.cpp \
     EquipmentTableModel.cpp \
-    WidgetHeaderView.cpp \
-    MultiFilterProxyModel.cpp \
     BlackHolesTableModel.cpp \
-    PlanetsTableModel.cpp
+    PlanetsTableModel.cpp \
+    FilterHorizontalHeaderView.cpp \
+    SortMultiFilterProxyModel.cpp
 
 HEADERS  += MainWindow.h \
     Equipment.h \
@@ -49,10 +49,10 @@ HEADERS  += MainWindow.h \
     TradeTableModel.h \
     HierarchicalHeaderView.h \
     EquipmentTableModel.h \
-    WidgetHeaderView.h \
-    MultiFilterProxyModel.h \
     BlackHolesTableModel.h \
-    PlanetsTableModel.h
+    PlanetsTableModel.h \
+    FilterHorizontalHeaderView.h \
+    SortMultiFilterProxyModel.h
 
 FORMS    += MainWindow.ui
 

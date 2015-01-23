@@ -149,6 +149,9 @@ QTableView::item
        <property name="showDropIndicator" stdset="0">
         <bool>false</bool>
        </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
@@ -209,6 +212,9 @@ QTableView::item
        <property name="showDropIndicator" stdset="0">
         <bool>false</bool>
        </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
@@ -263,6 +269,9 @@ QTableView::item
        <property name="showDropIndicator" stdset="0">
         <bool>false</bool>
        </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
@@ -276,13 +285,13 @@ QTableView::item
         <bool>false</bool>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>18</number>
+        <number>500</number>
        </attribute>
        <attribute name="horizontalHeaderMinimumSectionSize">
-        <number>10</number>
+        <number>500</number>
        </attribute>
        <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-        <bool>false</bool>
+        <bool>true</bool>
        </attribute>
        <attribute name="verticalHeaderDefaultSectionSize">
         <number>18</number>
@@ -422,5 +431,6 @@ QTableView::item
   <slot>parseDump()</slot>
   <slot>showAbout()</slot>
   <slot>saveReport()</slot>
+  <slot>saveCurrentFilter()</slot>
  </slots>
 </ui>

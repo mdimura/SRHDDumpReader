@@ -4,5 +4,6 @@
         <file>icons/document-open.svgz</file>
         <file>icons/help-about.svgz</file>
         <file>icons/galaxy_magnifying_glass.png</file>
+        <file>icons/document-save-as.svgz</file>
     </qresource>
 </RCC>

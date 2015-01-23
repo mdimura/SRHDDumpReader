@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+
 #include <QSoundEffect>
 #include <QFile>
 #include <QFileInfo>
@@ -10,6 +11,7 @@
 #include <QPixmap>
 #include <QScreen>
 #include <QDesktopWidget>
+#include <QJsonDocument>
 #include <iostream>
 #include <fstream>
 #include <chrono>
@@ -53,11 +55,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->tradeTableView->setColumnWidth(1,tableFontWidth*10);
 
 	ui->planetsTableView->setModel(&planetsProxyModel);
+    planetsHeaderView=
+			new FilterHorizontalHeaderView(&planetsProxyModel,ui->planetsTableView);
+	ui->planetsTableView->setHorizontalHeader(planetsHeaderView);
 	ui->planetsTableView->resizeColumnsToContents();
 
 	ui->equipmentTableView->setModel(&eqProxyModel);
-	WidgetHeaderView* whv=new WidgetHeaderView(Qt::Horizontal,ui->equipmentTableView);
-	ui->equipmentTableView->setHorizontalHeader(whv);
+    eqHeaderView=
+            new FilterHorizontalHeaderView(&eqProxyModel,ui->equipmentTableView);
+    ui->equipmentTableView->setHorizontalHeader(eqHeaderView);
 	ui->equipmentTableView->resizeColumnsToContents();
 	ui->equipmentTableView->setColumnWidth(0,tableFontWidth*24);
 	ui->equipmentTableView->setColumnWidth(1,tableFontWidth*12);
@@ -298,8 +304,47 @@ int MainWindow::saveReport() const
 		galaxy.map(mapScale).save(_filename+"_map.png");
 	}
 	statusBar()->showMessage(tr("Report saved: ")+QString::fromStdString(filename));
-	return hugeIndustrialGall;
+    return hugeIndustrialGall;
 }
+/*
+void MainWindow::saveCurrentFilter()
+{
+
+    QJsonDocument document;
+    QWidget* wid = QApplication::focusWidget();
+    QDockWidget* dock = 0;
+    while (static_cast<QWidget*>(dock) != this && wid != 0)
+    {
+        dock = qobject_cast<QDockWidget*>(wid);
+        if (dock) {
+            if(dock==ui->planetsDockWidget) {
+                document.setObject(planetsHeaderView->filters());
+            }
+            else if(dock==ui->eqDockWidget) {
+                document.setObject(eqHeaderView->filters());
+            }
+            break; // its a QDockWidget
+        }
+        wid = qobject_cast<QWidget*>(wid->parent());
+    }
+    if(document.isEmpty()) {
+        return;
+    }
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save Filter"),"",tr("SRHDDR filter (*.dr.json);;Any file (*)"));
+    if (fileName.isEmpty()) {
+        return;
+    }
+    QFile file(fileName);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+
+    file.write(document.toJson());
+    file.close();
+}
+
+QString fileName = QFileDialog::getOpenFileName(this,
+                            tr("Open Settings File"), "",
+                            tr("FPS settings (*.fps.json);;All Files (*)"));
+*/
 
 void MainWindow::responsiveSleep(int msec) const
 {
@@ -670,14 +715,14 @@ void MainWindow::generateGalaxies()
 			QFile::remove(prefix+".txt");
 			QFile::remove(prefix+".sav");
 			QFile::remove(prefix+".txt.report");
-			QFile::remove(prefix+"_map.png");
+			QFile::remove(prefix+".txt_map.png");
 		}
 		else {
 			QString timestamp=QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
 			QFile::rename(prefix+".txt",prefix+timestamp+".txt");
 			QFile::rename(prefix+".sav",prefix+timestamp+".sav_");
 			QFile::rename(prefix+".txt.report",prefix+timestamp+".report");
-			QFile::rename(prefix+".txt.map.png",prefix+timestamp+"_map.png");
+			QFile::rename(prefix+".txt_map.png",prefix+timestamp+"_map.png");
 		}
 
 		responsiveSleep(shortSleep*20);

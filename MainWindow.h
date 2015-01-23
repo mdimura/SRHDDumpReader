@@ -27,10 +27,10 @@
 #include "TradeTableModel.h"
 #include "EquipmentTableModel.h"
 #include "HierarchicalHeaderView.h"
-#include "MultiFilterProxyModel.h"
-#include "WidgetHeaderView.h"
 #include "BlackHolesTableModel.h"
 #include "PlanetsTableModel.h"
+#include "SortMultiFilterProxyModel.h"
+#include "FilterHorizontalHeaderView.h"
 
 
 namespace Ui {
@@ -39,59 +39,61 @@ class MainWindow;
 
 class MainWindow : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit MainWindow(QWidget *parent = 0);
-	~MainWindow();
-	void readSettings();
-	void writeSettings() const;
-	void closeEvent(QCloseEvent *event);
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+    void readSettings();
+    void writeSettings() const;
+    void closeEvent(QCloseEvent *event);
 public slots:
-	bool parseDump();
-	bool openDump();
-	void showAbout();
-	int saveReport() const;
+    bool parseDump();
+    bool openDump();
+    void showAbout();
+    int saveReport() const;
 
 #ifdef _WIN32
 public slots:
-	virtual bool nativeEvent(const QByteArray &eventType, void *message, long*);
-	void saveDumpWin();
+    virtual bool nativeEvent(const QByteArray &eventType, void *message, long*);
+    void saveDumpWin();
 public:
-	bool simulateInput(const std::string& str) const;
-	QImage currentScreen(float kx, float ky, float kw, float kh) const;
+    bool simulateInput(const std::string& str) const;
+    QImage currentScreen(float kx, float ky, float kw, float kh) const;
 #endif
 private:
-	void generateGalaxies();
-	void responsiveSleep(int msec) const;
+    void generateGalaxies();
+    void responsiveSleep(int msec) const;
 
 private:
-	Ui::MainWindow *ui;
-	QString _filename;
-	Galaxy galaxy;
-	QDateTime _fileModified;
+    Ui::MainWindow *ui;
+    QString _filename;
+    Galaxy galaxy;
+    QDateTime _fileModified;
 
-	TradeTableModel tradeModel;
-	QSortFilterProxyModel tradeProxyModel;
+    TradeTableModel tradeModel;
+    QSortFilterProxyModel tradeProxyModel;
 
-	PlanetsTableModel planetsModel;
-	QSortFilterProxyModel planetsProxyModel;
+    EquipmentTableModel eqModel;
+    FilterHorizontalHeaderView* eqHeaderView;
+    SortMultiFilterProxyModel eqProxyModel;
 
-	EquipmentTableModel eqModel;
-	MultiFilterProxyModel eqProxyModel;
+    BlackHolesTableModel bhModel;
 
-	BlackHolesTableModel bhModel;
+    PlanetsTableModel planetsModel;
+    SortMultiFilterProxyModel planetsProxyModel;
+    FilterHorizontalHeaderView *planetsHeaderView;
 
-	QTimer reloadTimer;
+    QTimer reloadTimer;
 
-	QSoundEffect sound;
+    QSoundEffect sound;
 
-	const QString rangersDir=QStandardPaths::locate(QStandardPaths::DocumentsLocation,"SpaceRangersHD",QStandardPaths::LocateDirectory);
-	int maxGenerationTime=120000;
-	int shortSleep=25;
-	int minHIGplanets=0;//Huge industrial gaal planets limit
-	float mapScale=7.f;
-	bool treasureSummary=false;
+    const QString rangersDir=QStandardPaths::locate(QStandardPaths::DocumentsLocation,"SpaceRangersHD",QStandardPaths::LocateDirectory);
+    int maxGenerationTime=120000;
+    int shortSleep=25;
+    int minHIGplanets=0;//Huge industrial gaal planets limit
+    float mapScale=7.f;
+    bool treasureSummary=false;
 };
 
 #endif // MAINWINDOW_H

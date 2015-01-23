@@ -1,4 +1,5 @@
 #include "PlanetsTableModel.h"
+#include "FilterHorizontalHeaderView.h"
 
 PlanetsTableModel::PlanetsTableModel(const Galaxy *galaxy, QObject *parent):
     QAbstractTableModel(parent),_galaxy(galaxy)
@@ -20,13 +21,14 @@ QVariant PlanetsTableModel::headerData(int section, Qt::Orientation orientation,
     static const QVector<QString> header={tr("Name"),tr("Dist."),tr("Owner"),tr("Race"),
                                           tr("TL"),tr("Size"),tr("Economy"),
                                           tr("Gowernment"),tr("CI"),tr("CIP"),
-                                          tr("Relation"),tr("TL1"),tr("TL2"),
+                                          tr("Relation"),tr("TL0"),tr("TL1"),
+                                          tr("TL2"),
                                           tr("TL3"), tr("TL4"),tr("TL5"),
                                           tr("TL6"), tr("TL7"),tr("TL8"),
                                           tr("TL9"), tr("TL10"),tr("TL11"),
                                           tr("TL12"), tr("TL13"),tr("TL14"),
                                           tr("TL15"), tr("TL16"),tr("TL17"),
-                                          tr("TL18"), tr("TL19"),tr("TL20")};
+                                          tr("TL18"), tr("TL19")};
     if (role == Qt::DisplayRole)
     {
         if (orientation == Qt::Vertical)
@@ -36,6 +38,19 @@ QVariant PlanetsTableModel::headerData(int section, Qt::Orientation orientation,
         else if (orientation == Qt::Horizontal) {
             return header.at(section);
         }
+    }
+    if(orientation==Qt::Horizontal && role==Qt::UserRole)
+    {
+        if(section<4) {
+            return FilterHorizontalHeaderView::wtString;
+        }
+        else if(section==9) {
+            return FilterHorizontalHeaderView::wtDouble;
+        }
+        else if (section<6 || section>7) {
+            return FilterHorizontalHeaderView::wtInt;
+        }
+        return FilterHorizontalHeaderView::wtString;
     }
     return QVariant();
 }
