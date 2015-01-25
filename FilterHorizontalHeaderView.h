@@ -13,9 +13,13 @@
 #include <QMouseEvent>
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QAction>
+#include <QMenu>
 #include <QJsonArray>
 #include <QJsonObject>
-
+#include <QJsonDocument>
+#include <QFileInfo>
+#include <QMessageBox>
 #include "SortMultiFilterProxyModel.h"
 
 class FilterHorizontalHeaderView : public QHeaderView
@@ -25,94 +29,45 @@ public:
     enum WidgetType {wtString, wtInt, wtDouble, wtNone};
     explicit FilterHorizontalHeaderView(SortMultiFilterProxyModel* model, QTableView *parent = 0);
     QSize sizeHint() const;
-    /*QJsonObject filters() const
+    static QVariantMap loadPreset(const QString& fileName);
+    void addPreset(const QString& fileName)
     {
-        QJsonObject obj;
-        QMap<QString,QVariant> matchFilters;
-        using MapIntLineEditCI=QMap<int, QLineEdit*>::const_iterator;
-        for (MapIntLineEditCI i = matchEdits.begin(); i != matchEdits.end(); ++i)
-        {
-            matchFilters.insert(QString::number(i.key()),i.value()->text());
-        }
-        obj.insert("matchFilters",json(matchFilters));
-        return obj;
-    }*/
+        std::cout<<fileName.toStdString()<<std::endl;
+        addPreset(loadPreset(fileName),QFileInfo(fileName).baseName());
+    }
+
+    void addPreset(const QVariantMap& p, const QString& name)
+    {
+        _presets.push_back(p);
+        QAction *act=new QAction(name,this);
+        int i=_presets.count()-1;
+        connect(act,&QAction::triggered,[=](){
+            activatePreset(i);
+        });
+        contextMenu.addAction(act);
+    }
+    void setPreset(const QVariantMap& p);
 
 protected:
-    bool event( QEvent *event );
+    virtual bool event( QEvent *event );
     virtual QSize sectionSizeFromContents(int logicalIndex) const;
+    virtual void contextMenuEvent(QContextMenuEvent *event)
+    {
+        contextMenu.exec(event->globalPos());
+    }
 private slots:
     void setSortIndicator(int col, const Qt::SortOrder &order);
     void updateWidgetPositions() const;
     void updateHeaderData(int first, int last);
+    void savePreset();
+    void activatePreset(int i);
 
 private:
+    QVariantMap preset() const;
     void updateGeometry(int logical) const;
     void updateHeaderData(int col);
     void makeWidget(int col);
     void insertColumns(int first, int last);
-    /*QMap<QString,QVariant> map(const QJsonArray &array) const
-    {
-        QMap<QString,QVariant> map;
-        for(const auto& entry:array)
-        {
-            auto obj=entry.toObject();
-            const QJsonValue &val=obj["value"];
-            QVariant var;
-            switch (val.type())
-            {
-            case QJsonValue::Bool:
-                var=val.toBool();
-                break;
-            case QJsonValue::Double:
-                var=val.toDouble();
-                break;
-            case QJsonValue::String:
-                var=val.toString();
-                break;
-            default:
-                std::cerr<<"could not convert QJsonValue to QVariant"<<std::endl;
-                break;
-            }
-
-            map[obj["key"].toString()]=var;
-        }
-        return map;
-    }
-    QJsonArray json(const QMap<QString,QVariant>& map) const
-    {
-        QJsonArray arr;
-        QMap<QString, QVariant>::const_iterator i;
-        for (i = map.begin(); i != map.end(); ++i)
-        {
-            QJsonObject obj;
-            obj["key"]=i.key();
-            QJsonValue val;
-            const QVariant& var=i.value();
-            switch (var.type())
-            {
-            case QVariant::Bool:
-                val=var.toBool();
-                break;
-            case QVariant::Int:
-                val=var.toInt();
-                break;
-            case QVariant::Double:
-                val=var.toDouble();
-                break;
-            case QVariant::String:
-                val=var.toString();
-                break;
-            default:
-                std::cerr<<"could not convert to QVariant from JSON"<<std::endl;
-                break;
-            }
-
-            obj["value"]=val;
-            arr.append(obj);
-        }
-        return arr;
-    }*/
 
 protected:
     void paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const;
@@ -120,10 +75,15 @@ protected:
 private:
     int lastSortSection=0;
     int _height=10;
+    QAction saveAct{tr("save preset"),this};
+    QMenu contextMenu{this};
+    QVector<QVariantMap> _presets;
     SortMultiFilterProxyModel* _model=nullptr;
+
     QMap<int,QWidget*> headerWidgets;
     QMap<int,QLabel*> headerNames;
     QMap<int,QLabel*> headerSortIndicators;
+
     QMap<int,QLineEdit*> matchEdits;
     QMap<int,QLineEdit*> notMatchEdits;
     QMap<int,QSpinBox*> minIntEdits;

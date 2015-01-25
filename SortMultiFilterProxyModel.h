@@ -16,21 +16,33 @@ public:
 public slots:
     void setMin(int col, double min)
     {
+        if(min==_min[col]) {
+            return;
+        }
         _min[col]=min;
         invalidate();
     }
     void unsetMin(int col)
     {
+        if(_min.count(col)==0) {
+            return;
+        }
         _min.erase(col);
         invalidate();
     }
     void setMax(int col, double max)
     {
+        if(_max[col]==max) {
+            return;
+        }
         _max[col]=max;
         invalidate();
     }
     void unsetMax(int col)
     {
+        if(_max.count(col)==0) {
+            return;
+        }
         _max.erase(col);
         invalidate();
     }
@@ -40,19 +52,27 @@ public slots:
             unsetMatch(col);
             return;
         }
+        if(_match[col]==match) {
+            return;
+        }
         _match[col]=match;
         invalidate();
     }
     void unsetMatch(int col)
     {
+        if(_match.count(col)==0) {
+            return;
+        }
         _match.erase(col);
         invalidate();
     }
     void setNotMatch(int col, const QString& notMatch )
     {
-
         if (notMatch.isEmpty()) {
             unsetNotMatch(col);
+            return;
+        }
+        if(_notMatch[col]==notMatch) {
             return;
         }
         _notMatch[col]=notMatch;
@@ -61,6 +81,9 @@ public slots:
     }
     void unsetNotMatch(int col)
     {
+        if(_notMatch.count(col)==0) {
+            return;
+        }
         _notMatch.erase(col);
         invalidate();
     }

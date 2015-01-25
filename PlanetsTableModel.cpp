@@ -41,7 +41,10 @@ QVariant PlanetsTableModel::headerData(int section, Qt::Orientation orientation,
     }
     if(orientation==Qt::Horizontal && role==Qt::UserRole)
     {
-        if(section<4) {
+        if (section==1) {
+            return FilterHorizontalHeaderView::wtInt;
+        }
+        else if(section<4) {
             return FilterHorizontalHeaderView::wtString;
         }
         else if(section==9) {

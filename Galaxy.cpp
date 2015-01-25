@@ -437,7 +437,7 @@ QImage Galaxy::map(float scale) const
 							{"Peleng",Qt::darkGreen},
 							{"People",QColor("royalblue")},
 							{"Fei",Qt::magenta},
-							{"Gaal",Qt::yellow}};
+                            {"Gaal",QColor("yellow")}};
 	QImage image((mapRect.width()+10)*scale,(mapRect.height()+10)*scale,QImage::Format_ARGB32);
 	image.fill(Qt::black);
 	QPainter p(&image);

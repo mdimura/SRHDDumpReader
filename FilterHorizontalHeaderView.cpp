@@ -1,6 +1,8 @@
 #include "FilterHorizontalHeaderView.h"
 #include <QScrollBar>
 #include <cassert>
+#include <QJsonDocument>
+#include <QFileDialog>
 
 FilterHorizontalHeaderView::FilterHorizontalHeaderView(SortMultiFilterProxyModel *model, QTableView *parent):
     QHeaderView(Qt::Horizontal,parent)
@@ -15,6 +17,10 @@ FilterHorizontalHeaderView::FilterHorizontalHeaderView(SortMultiFilterProxyModel
 
     updateWidgetPositions();
 
+    contextMenu.addAction(&saveAct);
+    contextMenu.addSeparator();
+    connect(&saveAct,&QAction::triggered,this,&FilterHorizontalHeaderView::savePreset);
+
     connect(parent->horizontalScrollBar(),SIGNAL(valueChanged(int)),
             this,SLOT(updateWidgetPositions()) );
     connect(this,SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),
@@ -23,10 +29,11 @@ FilterHorizontalHeaderView::FilterHorizontalHeaderView(SortMultiFilterProxyModel
             this,SLOT(updateWidgetPositions()));
 
     connect(model,&QAbstractItemModel::columnsInserted,
-            [=](const QModelIndex &parent,
+            [=](const QModelIndex&,
             int logicalFirst, int logicalLast) {
         insertColumns(logicalFirst,logicalLast);
     });
+
 
     //TODO: add header data update
     //TODO: add sections removal
@@ -37,6 +44,63 @@ QSize FilterHorizontalHeaderView::sizeHint() const
     QSize size=QHeaderView::sizeHint();
     size.setHeight(_height);
     return size;
+}
+
+QVariantMap FilterHorizontalHeaderView::loadPreset(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+        QMessageBox::information(0, tr("Unable to open file"),
+                                 file.errorString()+"\n"+fileName);
+        return QVariantMap();
+    }
+    QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
+    if(doc.isNull()) {
+        QMessageBox::information(0, tr("Unable to parse JSON file"),
+                                 tr("Could not open the file. "
+                                    "There is a syntax error in the provided JSON file."));
+        return QVariantMap();
+    }
+    return doc.toVariant().toMap();
+}
+
+void FilterHorizontalHeaderView::setPreset(const QVariantMap &p)
+{
+    QVariantMap matchFilters=p["match"].toMap();
+    QVariantMap notMatchFilters=p["notMatch"].toMap();
+    QVariantMap minInts=p["minInt"].toMap();
+    QVariantMap maxInts=p["maxInt"].toMap();
+    QVariantMap minDoubles=p["minDouble"].toMap();
+    QVariantMap maxDoubles=p["maxDouble"].toMap();
+
+    using VarMapCI=QVariantMap::const_iterator;
+    for (VarMapCI i = matchFilters.begin(); i != matchFilters.end(); ++i)
+    {
+        matchEdits[i.key().toInt()]->setText(i.value().toString());
+    }
+    for (VarMapCI i = notMatchFilters.begin(); i != notMatchFilters.end(); ++i)
+    {
+        notMatchEdits[i.key().toInt()]->setText(i.value().toString());
+    }
+    for (VarMapCI i = minInts.begin(); i != minInts.end(); ++i)
+    {
+        minIntEdits[i.key().toInt()]->setValue(i.value().toInt());
+    }
+    for (VarMapCI i = maxInts.begin(); i != maxInts.end(); ++i)
+    {
+        maxIntEdits[i.key().toInt()]->setValue(i.value().toInt());
+    }
+    for (VarMapCI i = minDoubles.begin(); i != minDoubles.end(); ++i)
+    {
+        minDoubleEdits[i.key().toInt()]->setValue(i.value().toDouble());
+    }
+    for (VarMapCI i = maxDoubles.begin(); i != maxDoubles.end(); ++i)
+    {
+        maxDoubleEdits[i.key().toInt()]->setValue(i.value().toDouble());
+    }
+    setSortIndicator(p["sortColumn"].toInt(),(Qt::SortOrder)p["sortOrder"].toInt());
+    _model->invalidate();
+    _model->sort(p["sortColumn"].toInt(),(Qt::SortOrder)p["sortOrder"].toInt());
 }
 
 bool FilterHorizontalHeaderView::event(QEvent *event)
@@ -79,13 +143,14 @@ QSize FilterHorizontalHeaderView::sectionSizeFromContents(int logicalIndex) cons
     if (opt.icon.isNull())
         opt.icon = qvariant_cast<QPixmap>(variant);
     QSize size = style()->sizeFromContents(QStyle::CT_HeaderSection, &opt, QSize(), this);
-    if (isSortIndicatorShown() && sortIndicatorSection() == logicalIndex) {
+    /*if (isSortIndicatorShown() && sortIndicatorSection() == logicalIndex) {
         int margin = style()->pixelMetric(QStyle::PM_HeaderMargin, &opt, this);
         if (Qt::Horizontal == Qt::Horizontal)
             size.rwidth() += size.height() + margin;
         else
             size.rheight() += size.width() + margin;
-    }
+    }*/
+    size.rwidth()=std::max(size.rwidth(),40);
     return size;
 }
 
@@ -125,6 +190,82 @@ void FilterHorizontalHeaderView::updateHeaderData(int first, int last)
     }
 }
 
+void FilterHorizontalHeaderView::savePreset()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save Filter"),"",tr("SRHDDR filter (*.dr.json);;Any file (*)"));
+    if (fileName.isEmpty()) {
+        return;
+    }
+    QVariantMap p=preset();
+    addPreset(p,QFileInfo(fileName).baseName());
+    QFile file(fileName);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    file.write(QJsonDocument::fromVariant(p).toJson());
+}
+
+void FilterHorizontalHeaderView::activatePreset(int i)
+{
+    if(i>=_presets.size()) {
+        return;
+    }
+    setPreset(_presets[i]);
+}
+
+QVariantMap FilterHorizontalHeaderView::preset() const
+{
+    QVariantMap allFilters;
+
+    using MapIntLineEditCI=QMap<int, QLineEdit*>::const_iterator;
+    QVariantMap matchFilters;
+    for (MapIntLineEditCI i = matchEdits.begin(); i != matchEdits.end(); ++i)
+    {
+        matchFilters.insert(QString::number(i.key()),i.value()->text());
+    }
+    allFilters.insert("match",std::move(matchFilters));
+
+    QVariantMap notMatchFilters;
+    for (MapIntLineEditCI i = notMatchEdits.begin(); i != notMatchEdits.end(); ++i)
+    {
+        notMatchFilters.insert(QString::number(i.key()),i.value()->text());
+    }
+    allFilters.insert("notMatch",std::move(notMatchFilters));
+
+    using MapIntSpinBoxCI=QMap<int, QSpinBox*>::const_iterator;
+    QVariantMap minInts;
+    for (MapIntSpinBoxCI i = minIntEdits.begin(); i != minIntEdits.end(); ++i)
+    {
+        minInts.insert(QString::number(i.key()),i.value()->text());
+    }
+    allFilters.insert("minInt",std::move(minInts));
+
+    QVariantMap maxInts;
+    for (MapIntSpinBoxCI i = maxIntEdits.begin(); i != maxIntEdits.end(); ++i)
+    {
+        maxInts.insert(QString::number(i.key()),i.value()->text());
+    }
+    allFilters.insert("maxInt",std::move(maxInts));
+
+    using MapIntDoubleSpinBoxCI=QMap<int, QDoubleSpinBox*>::const_iterator;
+    QVariantMap minDoubles;
+    for (MapIntDoubleSpinBoxCI i = minDoubleEdits.begin(); i != minDoubleEdits.end(); ++i)
+    {
+        minDoubles.insert(QString::number(i.key()),i.value()->text());
+    }
+    allFilters.insert("minDouble",std::move(minDoubles));
+
+    QVariantMap maxDoubles;
+    for (MapIntDoubleSpinBoxCI i = maxDoubleEdits.begin(); i != maxDoubleEdits.end(); ++i)
+    {
+        maxDoubles.insert(QString::number(i.key()),i.value()->text());
+    }
+    allFilters.insert("maxDouble",std::move(maxDoubles));
+
+    allFilters.insert("sortColumn",_model->sortColumn());
+    allFilters.insert("sortOrder",_model->sortOrder());
+
+    return allFilters;
+}
+
 void FilterHorizontalHeaderView::updateGeometry(int logical) const
 {
     assert(headerWidgets.contains(logical));
@@ -151,6 +292,10 @@ void FilterHorizontalHeaderView::makeWidget(int col)
     WidgetType wt;
     wt=(WidgetType)_model->headerData(col,Qt::Horizontal,Qt::UserRole).toInt();
     QWidget* widget=new QWidget(this);
+    widget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(widget, &QWidget::customContextMenuRequested,[=](const QPoint& point){
+        contextMenu.exec(widget->mapToGlobal(point));
+    });
     headerWidgets[col]=widget;
     QVBoxLayout *vl=new QVBoxLayout(widget);
     QHBoxLayout *hl=new QHBoxLayout();
@@ -171,7 +316,7 @@ void FilterHorizontalHeaderView::makeWidget(int col)
     hl->addWidget(nameLbl,1,Qt::AlignHCenter);
     hl->addWidget(sortLbl,0,Qt::AlignRight);
     vl->addLayout(hl,0);
-    QWidget *inputTop, *inputBottom;
+    QWidget *inputTop=nullptr, *inputBottom=nullptr;
     switch(wt)
     {
     case wtString:
@@ -209,18 +354,20 @@ void FilterHorizontalHeaderView::makeWidget(int col)
         maxIntEdits[col]=editBottom;
         editTop->setToolTip("minimum value");
         editBottom->setToolTip("maximum value");
+        editTop->setMaximum(std::numeric_limits<int>::max());
+        editBottom->setMaximum(std::numeric_limits<int>::max());
         editTop->setFrame(frame);
         editBottom->setFrame(frame);
         inputTop=editTop;
         inputBottom=editBottom;
-        connect(editTop,&QSpinBox::editingFinished,[=](){
+        connect(editTop,&QSpinBox::editingFinished,[=]() {
             _model->setMin(col,editTop->value());
         });
         connect(editTop,static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                 [=](int v){
             _model->setMinDelayed(col,v);
         });
-        connect(editBottom,&QSpinBox::editingFinished,[=](){
+        connect(editBottom,&QSpinBox::editingFinished,[=]() {
             int max=editBottom->value();
             if(max==0) {
                 _model->unsetMax(col);
@@ -246,6 +393,8 @@ void FilterHorizontalHeaderView::makeWidget(int col)
         maxDoubleEdits[col]=editBottom;
         editTop->setToolTip("minimum value");
         editBottom->setToolTip("maximum value");
+        editTop->setMaximum(std::numeric_limits<double>::infinity());
+        editBottom->setMaximum(std::numeric_limits<double>::infinity());
         editTop->setFrame(frame);
         editBottom->setFrame(frame);
         inputTop=editTop;
@@ -289,8 +438,10 @@ void FilterHorizontalHeaderView::makeWidget(int col)
 
     updateHeaderData(col);
     _height=std::max(_height,headerWidgets[col]->minimumSizeHint().height());
-    setMinimumSectionSize(headerWidgets[col]->minimumSizeHint().width());
-    setDefaultSectionSize(headerWidgets[col]->minimumSizeHint().width());
+    //setMinimumSectionSize(headerWidgets[col]->minimumSizeHint().width());
+    //setDefaultSectionSize(headerWidgets[col]->minimumSizeHint().width());
+
+    //std::cout<<"col:"<<col<<" width:"<<headerWidgets[col]->minimumSizeHint().width()<<std::endl;
 }
 
 void FilterHorizontalHeaderView::paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const

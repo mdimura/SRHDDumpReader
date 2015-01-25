@@ -51,7 +51,7 @@ public slots:
     bool parseDump();
     bool openDump();
     void showAbout();
-    int saveReport() const;
+    QStringList saveReport() const;
 
 #ifdef _WIN32
 public slots:
@@ -64,6 +64,7 @@ public:
 private:
     void generateGalaxies();
     void responsiveSleep(int msec) const;
+    void loadPresets();
 
 private:
     Ui::MainWindow *ui;
@@ -93,7 +94,9 @@ private:
     int shortSleep=25;
     int minHIGplanets=0;//Huge industrial gaal planets limit
     float mapScale=7.f;
-    bool treasureSummary=false;
+    QStringList planetsReportPresets;
+    QStringList eqReportPresets;
+    QMap<QString,int> minRows;
 };
 
 #endif // MAINWINDOW_H

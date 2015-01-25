@@ -270,7 +270,7 @@ QTableView::item
         <bool>false</bool>
        </property>
        <property name="dragEnabled">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="alternatingRowColors">
         <bool>true</bool>
@@ -285,10 +285,10 @@ QTableView::item
         <bool>false</bool>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>500</number>
+        <number>18</number>
        </attribute>
        <attribute name="horizontalHeaderMinimumSectionSize">
-        <number>500</number>
+        <number>10</number>
        </attribute>
        <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
         <bool>true</bool>
