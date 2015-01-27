@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>685</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -41,6 +41,7 @@
    <addaction name="actionOpenDump"/>
    <addaction name="actionReload"/>
    <addaction name="actionAbout"/>
+   <addaction name="actionSaveReport"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="eqDockWidget">
@@ -61,9 +62,10 @@
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">font: 9pt &quot;Sans Serif&quot;;
-  padding: 0px;
-  margin: 0px;
+        <string notr="true">QTableView::item, QTableView, QHeaderView::section, QHeaderView, FilterHorizontalHeaderView &gt; QWidget &gt; QLabel, FilterHorizontalHeaderView &gt; QWidget &gt; QSpinBox, FilterHorizontalHeaderView &gt; QWidget &gt; QDoubleSpinBox, FilterHorizontalHeaderView &gt; QWidget &gt; QLineEdit
+{
+  font: 9pt &quot;Sans Serif&quot;;
+}
 QTableView::item
 {
   border: 0px;
@@ -253,9 +255,10 @@ QTableView::item
      <item>
       <widget class="QTableView" name="planetsTableView">
        <property name="styleSheet">
-        <string notr="true">font: 9pt &quot;Sans Serif&quot;;
-  padding: 0px;
-  margin: 0px;
+        <string notr="true">QTableView::item, QTableView, QHeaderView::section, QHeaderView, FilterHorizontalHeaderView &gt; QWidget &gt; QLabel, FilterHorizontalHeaderView &gt; QWidget &gt; QSpinBox, FilterHorizontalHeaderView &gt; QWidget &gt; QDoubleSpinBox, FilterHorizontalHeaderView &gt; QWidget &gt; QLineEdit
+{
+  font: 9pt &quot;Sans Serif&quot;;
+}
 QTableView::item
 {
   border: 0px;
@@ -340,7 +343,7 @@ QTableView::item
   <action name="actionSaveReport">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/document-open.svgz</normaloff>:/icons/document-open.svgz</iconset>
+     <normaloff>:/icons/report.svg</normaloff>:/icons/report.svg</iconset>
    </property>
    <property name="text">
     <string>save report</string>

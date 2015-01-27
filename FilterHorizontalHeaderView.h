@@ -32,19 +32,18 @@ public:
     static QVariantMap loadPreset(const QString& fileName);
     void addPreset(const QString& fileName)
     {
-        std::cout<<fileName.toStdString()<<std::endl;
-        addPreset(loadPreset(fileName),QFileInfo(fileName).baseName());
+	addPreset(loadPreset(fileName),QFileInfo(fileName).baseName());
     }
 
     void addPreset(const QVariantMap& p, const QString& name)
     {
-        _presets.push_back(p);
-        QAction *act=new QAction(name,this);
-        int i=_presets.count()-1;
-        connect(act,&QAction::triggered,[=](){
-            activatePreset(i);
-        });
-        contextMenu.addAction(act);
+	_presets.push_back(p);
+	QAction *act=new QAction(name,this);
+	int i=_presets.count()-1;
+	connect(act,&QAction::triggered,[=](){
+	    activatePreset(i);
+	});
+	contextMenu.addAction(act);
     }
     void setPreset(const QVariantMap& p);
 
@@ -53,7 +52,7 @@ protected:
     virtual QSize sectionSizeFromContents(int logicalIndex) const;
     virtual void contextMenuEvent(QContextMenuEvent *event)
     {
-        contextMenu.exec(event->globalPos());
+	contextMenu.exec(event->globalPos());
     }
 private slots:
     void setSortIndicator(int col, const Qt::SortOrder &order);
