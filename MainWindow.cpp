@@ -646,7 +646,7 @@ bool isUseless(const QMap<QString, int>& val, const QMap<QString, int>& min)
 	using MapStrIntCI=QMap<QString,int>::const_iterator;
 	for (MapStrIntCI i = min.begin(); i != min.end(); ++i)
 	{
-		if(val.value(i.key,0)<i.value()) {
+        if(val.value(i.key(),0)<i.value()) {
 			return true;
 		}
 	}
@@ -734,7 +734,7 @@ void MainWindow::generateGalaxies()
 		using MapStrIntCI=QMap<QString,int>::const_iterator;
 		for (MapStrIntCI i = reportSummary.begin(); i != reportSummary.end(); ++i)
 		{
-			logoutstr+=i.key()+": "+QString::number(i.value());
+            logoutstr+=i.key().toStdString()+": "+to_string(i.value());
 		}
 		logfile<<logoutstr<<endl;
 		std::cout<<logoutstr<<endl;
