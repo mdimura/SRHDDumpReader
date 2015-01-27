@@ -60,6 +60,33 @@ private slots:
     void updateHeaderData(int first, int last);
     void savePreset();
     void activatePreset(int i);
+    void clearAllFilters()
+    {
+        for(auto& w:matchEdits)
+        {
+            w->clear();
+        }
+        for(auto& w:notMatchEdits)
+        {
+            w->clear();
+        }
+        for(auto& w:minIntEdits)
+        {
+            w->setValue(w->minimum());
+        }
+        for(auto& w:maxIntEdits)
+        {
+            w->setValue(w->minimum());
+        }
+        for(auto& w:minDoubleEdits)
+        {
+            w->setValue(w->minimum());
+        }
+        for(auto& w:maxDoubleEdits)
+        {
+            w->setValue(w->minimum());
+        }
+    }
 
 private:
     QVariantMap preset() const;
@@ -75,6 +102,7 @@ private:
     int lastSortSection=0;
     int _height=10;
     QAction saveAct{tr("save preset"),this};
+    QAction clearAct{tr("clear all"),this};
     QMenu contextMenu{this};
     QVector<QVariantMap> _presets;
     SortMultiFilterProxyModel* _model=nullptr;

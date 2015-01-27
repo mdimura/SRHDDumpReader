@@ -18,8 +18,10 @@ FilterHorizontalHeaderView::FilterHorizontalHeaderView(SortMultiFilterProxyModel
     updateWidgetPositions();
 
     contextMenu.addAction(&saveAct);
+    contextMenu.addAction(&clearAct);
     contextMenu.addSeparator();
     connect(&saveAct,&QAction::triggered,this,&FilterHorizontalHeaderView::savePreset);
+    connect(&clearAct,&QAction::triggered,this,&FilterHorizontalHeaderView::clearAllFilters);
 
     connect(parent->horizontalScrollBar(),SIGNAL(valueChanged(int)),
             this,SLOT(updateWidgetPositions()) );
@@ -73,31 +75,42 @@ void FilterHorizontalHeaderView::setPreset(const QVariantMap &p)
     QVariantMap minDoubles=p["minDouble"].toMap();
     QVariantMap maxDoubles=p["maxDouble"].toMap();
 
-    using VarMapCI=QVariantMap::const_iterator;
-    for (VarMapCI i = matchFilters.begin(); i != matchFilters.end(); ++i)
+    using MapIntLineEditI=QMap<int, QLineEdit*>::iterator;
+    for (MapIntLineEditI i = matchEdits.begin(); i != matchEdits.end(); ++i)
     {
-        matchEdits[i.key().toInt()]->setText(i.value().toString());
+        const QVariant& var=matchFilters.value(QString::number(i.key()),"");
+        i.value()->setText(var.toString());
     }
-    for (VarMapCI i = notMatchFilters.begin(); i != notMatchFilters.end(); ++i)
+    for (MapIntLineEditI i = notMatchEdits.begin(); i != notMatchEdits.end(); ++i)
     {
-        notMatchEdits[i.key().toInt()]->setText(i.value().toString());
+        const QVariant& var=notMatchFilters.value(QString::number(i.key()),"");
+        i.value()->setText(var.toString());
     }
-    for (VarMapCI i = minInts.begin(); i != minInts.end(); ++i)
+
+    using MapIntSpinBoxI=QMap<int, QSpinBox*>::iterator;
+    for (MapIntSpinBoxI i = minIntEdits.begin(); i != minIntEdits.end(); ++i)
     {
-        minIntEdits[i.key().toInt()]->setValue(i.value().toInt());
+        const QVariant& var=minInts.value(QString::number(i.key()),0);
+        i.value()->setValue(var.toInt());
     }
-    for (VarMapCI i = maxInts.begin(); i != maxInts.end(); ++i)
+    for (MapIntSpinBoxI i = maxIntEdits.begin(); i != maxIntEdits.end(); ++i)
     {
-        maxIntEdits[i.key().toInt()]->setValue(i.value().toInt());
+        const QVariant& var=maxInts.value(QString::number(i.key()),0);
+        i.value()->setValue(var.toInt());
     }
-    for (VarMapCI i = minDoubles.begin(); i != minDoubles.end(); ++i)
+
+    using MapIntDoubleSpinBoxI=QMap<int, QDoubleSpinBox*>::iterator;
+    for (MapIntDoubleSpinBoxI i = minDoubleEdits.begin(); i != minDoubleEdits.end(); ++i)
     {
-        minDoubleEdits[i.key().toInt()]->setValue(i.value().toDouble());
+        const QVariant& var=minDoubles.value(QString::number(i.key()),0.0);
+        i.value()->setValue(var.toDouble());
     }
-    for (VarMapCI i = maxDoubles.begin(); i != maxDoubles.end(); ++i)
+    for (MapIntDoubleSpinBoxI i = maxDoubleEdits.begin(); i != maxDoubleEdits.end(); ++i)
     {
-        maxDoubleEdits[i.key().toInt()]->setValue(i.value().toDouble());
+        const QVariant& var=maxDoubles.value(QString::number(i.key()),0.0);
+        i.value()->setValue(var.toDouble());
     }
+
     setSortIndicator(p["sortColumn"].toInt(),(Qt::SortOrder)p["sortOrder"].toInt());
     _model->invalidate();
     _model->sort(p["sortColumn"].toInt(),(Qt::SortOrder)p["sortOrder"].toInt());
