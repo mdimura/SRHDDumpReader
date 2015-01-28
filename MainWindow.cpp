@@ -130,11 +130,13 @@ void MainWindow::readSettings()
 	if (file.open(QIODevice::ReadOnly|QIODevice::Text)) {
 		QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
 		if(!doc.isNull()) {
+            std::cout<<"loading minRowsPreset.json"<<std::endl;
 			QVariantMap minRowsJson=doc.toVariant().toMap();
 			using VarMapCI=QVariantMap::const_iterator;
 			for (VarMapCI i = minRowsJson.begin(); i != minRowsJson.end(); ++i)
 			{
 				minRowsPreset[i.key()]=i.value().toInt();
+                std::cout<<i.key().toStdString()<<": "<<i.value().toInt()<<std::endl;
 			}
 		}
 	}
@@ -714,6 +716,7 @@ bool isUseless(const QMap<QString, int>& val, const QMap<QString, int>& min)
 	for (MapStrIntCI i = min.begin(); i != min.end(); ++i)
 	{
 		if(val.value(i.key(),0)<i.value()) {
+            std::cout<<i.key().toStdString()<<" < "<<i.value()<<std::endl;
 			return true;
 		}
 	}
