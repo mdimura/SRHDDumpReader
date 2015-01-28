@@ -63,6 +63,9 @@ QVariant PlanetsTableModel::data(const QModelIndex &index, int role) const
     {
         int col=index.column();
         int row=index.row();
+        if(_galaxy->planet(row).owner()=="None" && col>2) {
+            return "-";
+        }
         switch (col)
         {
         case 0:
