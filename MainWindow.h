@@ -51,7 +51,14 @@ public slots:
     bool parseDump();
     bool openDump();
     void showAbout();
-    QMap<QString, int> saveReport() const;
+    void saveReport();
+    void setMapScale(double scale)
+    {
+	    mapScale=scale;
+	    updateMap();
+    }
+    void loadNextDump();
+    void loadPreviousDump();
 
 #ifdef _WIN32
 public slots:
@@ -65,6 +72,8 @@ private:
     void generateGalaxies();
     void responsiveSleep(int msec) const;
     void loadPresets();
+    void updateMap();
+    void updateDumpArrows();
 
 private:
     Ui::MainWindow *ui;
@@ -86,6 +95,7 @@ private:
     FilterHorizontalHeaderView *planetsHeaderView;
 
     QTimer reloadTimer;
+    QDoubleSpinBox _mapScaleSpinBox{this};
 
     QSoundEffect sound;
 
@@ -101,6 +111,10 @@ private:
     QStringList planetsReportPresets;
     QStringList eqReportPresets;
     QMap<QString,int> minRowsPreset;
+    QMap<QString,int> reportSummary;
+    QStringList dumpFileList;
+    int currentDumpIndex=-1;
+    QImage galaxyMap;
 };
 
 #endif // MAINWINDOW_H

@@ -25,6 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	eqModel(&galaxy,this),bhModel(&galaxy,this),planetsModel(&galaxy,this)
 {
 	ui->setupUi(this);
+	ui->mapImageLabel->setBackgroundRole(QPalette::Base);
+	ui->scrollArea->setBackgroundRole(QPalette::Dark);
+	ui->mainToolBar->addWidget(&_mapScaleSpinBox);
+	connect(&_mapScaleSpinBox,SIGNAL(valueChanged(double)),this,SLOT(setMapScale(double)));
 	addAction(ui->actionSaveReport);
 
 	sound.setSource(QUrl::fromLocalFile("Click1.wav"));
@@ -111,6 +115,7 @@ void MainWindow::readSettings()
 	shortSleep=settings.value("shortSleep",25).toInt();
 	maxGenerationTime=settings.value("maxGenerationTime",120000).toInt();
 	mapScale=settings.value("mapScale",7.f).toFloat();
+	_mapScaleSpinBox.setValue(mapScale);
 
 	QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
 	QSize size = settings.value("size", QSize(400, 400)).toSize();
@@ -206,6 +211,7 @@ bool MainWindow::parseDump()
 	high_resolution_clock::time_point tEnd = high_resolution_clock::now();
 	duration = duration_cast<milliseconds>( tEnd - tParseEnd ).count();
 	cout<<"Model update took "<<duration/1000.0<<"seconds"<<endl;
+	saveReport();
 	return true;
 }
 
@@ -217,6 +223,18 @@ bool MainWindow::openDump()
 	if (fileName.isEmpty())
 		return false;
 	_filename=fileName;
+	QDir currentDir=QFileInfo(fileName).dir();
+	currentDir.setNameFilters(QStringList("*.txt"));
+	currentDir.setFilter(QDir::Files);
+	const QFileInfoList& infoList=currentDir.entryInfoList();
+	dumpFileList.clear();
+	for(const auto& info:infoList)
+	{
+		dumpFileList<<info.absoluteFilePath();
+	}
+	currentDumpIndex=dumpFileList.indexOf(fileName);
+	std::cout<<currentDumpIndex<<'\n'<<dumpFileList.join('\n').toStdString()<<std::endl;
+	updateDumpArrows();
 	return parseDump();
 }
 
@@ -250,10 +268,17 @@ QString tabSeparatedValues(const QAbstractItemModel& model)
 	return buf;
 }
 
-QMap<QString,int> MainWindow::saveReport() const
+void MainWindow::saveReport()
 {
 	using namespace std;
-	QMap<QString,int> summaries;
+	reportSummary.clear();
+	if(mapScale>0.f) {
+		updateMap();
+		if(QFileInfo(_filename+".map.png").exists()) {
+			QFile::remove(_filename+"_map.png");
+		}
+		galaxyMap.save(_filename+"_map.png");
+	}
 	QString filename=_filename+".report";
 	QFile ofile(filename);
 	if(ofile.exists()) {
@@ -264,7 +289,7 @@ QMap<QString,int> MainWindow::saveReport() const
 
 	if(!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		statusBar()->showMessage(tr("Could not create the report file ")+filename);
-		return summaries;
+		return;
 	}
 
 	//Bases
@@ -290,7 +315,7 @@ QMap<QString,int> MainWindow::saveReport() const
 	{
 		planetsHeaderView->setPreset(FilterHorizontalHeaderView::loadPreset(fileName));
 		lastSummaryEntry=QFileInfo(fileName).baseName();
-		summaries[lastSummaryEntry]=planetsProxyModel.rowCount();
+		reportSummary[lastSummaryEntry]=planetsProxyModel.rowCount();
 		lastSummaryEntry+=": "+QString::number(planetsProxyModel.rowCount());
 		planetsBuf+=lastSummaryEntry+'\n';
 		planetsBuf+=tabSeparatedValues(planetsProxyModel);
@@ -303,7 +328,7 @@ QMap<QString,int> MainWindow::saveReport() const
 	{
 		eqHeaderView->setPreset(FilterHorizontalHeaderView::loadPreset(fileName));
 		lastSummaryEntry=QFileInfo(fileName).baseName();
-		summaries[lastSummaryEntry]=eqProxyModel.rowCount();
+		reportSummary[lastSummaryEntry]=eqProxyModel.rowCount();
 		lastSummaryEntry+=": "+QString::number(eqProxyModel.rowCount());
 		eqBuf+=lastSummaryEntry+'\n';
 		eqBuf+=tabSeparatedValues(eqProxyModel);
@@ -312,14 +337,29 @@ QMap<QString,int> MainWindow::saveReport() const
 	QTextStream out(&ofile); // we will serialize the data into the file
 	out << planetsBuf+eqBuf+basesBuf+'\n'; // serialize a string
 
-	if(mapScale>0.f) {
-		if(QFileInfo(_filename+".map.png").exists()) {
-			QFile::remove(_filename+"_map.png");
-		}
-		galaxy.map(mapScale).save(_filename+"_map.png");
+	statusBar()->showMessage(tr("Report saved: ")+filename);\
+}
+
+void MainWindow::loadNextDump()
+{
+	if(currentDumpIndex<0 || currentDumpIndex>=dumpFileList.size()-1)
+	{
+		return;
 	}
-	statusBar()->showMessage(tr("Report saved: ")+filename);
-	return summaries;
+	_filename=dumpFileList[++currentDumpIndex];
+	updateDumpArrows();
+	parseDump();
+}
+
+void MainWindow::loadPreviousDump()
+{
+	if(currentDumpIndex<=0)
+	{
+		return;
+	}
+	_filename=dumpFileList[--currentDumpIndex];
+	updateDumpArrows();
+	parseDump();
 }
 
 void MainWindow::responsiveSleep(int msec) const
@@ -372,6 +412,33 @@ void MainWindow::loadPresets()
 	{
 		std::cout<<str.toLocal8Bit().toStdString()<<std::endl;
 		str=presetDirEqReport+str;
+	}
+}
+
+void MainWindow::updateMap()
+{
+	galaxyMap=galaxy.map(mapScale);
+	ui->mapImageLabel->setPixmap(QPixmap::fromImage(galaxyMap));
+	ui->mapImageLabel->resize(galaxyMap.size());
+}
+
+void MainWindow::updateDumpArrows()
+{
+	if(currentDumpIndex<0 || currentDumpIndex>=dumpFileList.size()-1)
+	{
+		ui->actionNextDump->setDisabled(true);
+	}
+	else
+	{
+		ui->actionNextDump->setEnabled(true);
+	}
+	if(currentDumpIndex<=0)
+	{
+		ui->actionPreviousDump->setDisabled(true);
+	}
+	else
+	{
+		ui->actionPreviousDump->setEnabled(true);
 	}
 }
 #ifdef _WIN32
@@ -646,7 +713,7 @@ bool isUseless(const QMap<QString, int>& val, const QMap<QString, int>& min)
 	using MapStrIntCI=QMap<QString,int>::const_iterator;
 	for (MapStrIntCI i = min.begin(); i != min.end(); ++i)
 	{
-        if(val.value(i.key(),0)<i.value()) {
+		if(val.value(i.key(),0)<i.value()) {
 			return true;
 		}
 	}
@@ -728,13 +795,13 @@ void MainWindow::generateGalaxies()
 		responsiveSleep(shortSleep*100);
 		saveDumpWin();
 
-		QMap<QString,int> reportSummary=saveReport();
+		saveReport();
 		std::string logoutstr=QDateTime::currentDateTime().toString(Qt::ISODate).toStdString()+
-				      ": Iteration "+std::to_string(i)+" finished.\n";
+				      ": Iteration "+std::to_string(i)+" finished. ";
 		using MapStrIntCI=QMap<QString,int>::const_iterator;
 		for (MapStrIntCI i = reportSummary.begin(); i != reportSummary.end(); ++i)
 		{
-            logoutstr+=i.key().toStdString()+": "+to_string(i.value());
+			logoutstr+=i.key().toStdString()+": "+to_string(i.value())+"; ";
 		}
 		logfile<<logoutstr<<endl;
 		std::cout<<logoutstr<<endl;

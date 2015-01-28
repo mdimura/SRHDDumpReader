@@ -6,5 +6,7 @@
         <file>icons/galaxy_magnifying_glass.png</file>
         <file>icons/document-save-as.svgz</file>
         <file>icons/report.svg</file>
+        <file>icons/go-next.svgz</file>
+        <file>icons/go-previous.svgz</file>
     </qresource>
 </RCC>

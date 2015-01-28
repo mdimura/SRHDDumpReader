@@ -41,7 +41,9 @@
    <addaction name="actionOpenDump"/>
    <addaction name="actionReload"/>
    <addaction name="actionAbout"/>
-   <addaction name="actionSaveReport"/>
+   <addaction name="separator"/>
+   <addaction name="actionPreviousDump"/>
+   <addaction name="actionNextDump"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="eqDockWidget">
@@ -307,6 +309,86 @@ QTableView::item
     </layout>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="imageDockWidget">
+   <property name="windowTitle">
+    <string>Galaxy map</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4">
+    <layout class="QVBoxLayout" name="verticalLayout_6">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>270</width>
+          <height>73</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="mapImageLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>map</string>
+           </property>
+           <property name="scaledContents">
+            <bool>false</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <action name="actionOpenDump">
    <property name="icon">
     <iconset resource="icons.qrc">
@@ -356,6 +438,42 @@ QTableView::item
    </property>
    <property name="shortcutContext">
     <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
+  <action name="actionNextDump">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/go-next.svgz</normaloff>:/icons/go-next.svgz</iconset>
+   </property>
+   <property name="text">
+    <string>next dump</string>
+   </property>
+   <property name="toolTip">
+    <string>load next dump in the current folder</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Right</string>
+   </property>
+  </action>
+  <action name="actionPreviousDump">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/go-previous.svgz</normaloff>:/icons/go-previous.svgz</iconset>
+   </property>
+   <property name="text">
+    <string>previous dump</string>
+   </property>
+   <property name="toolTip">
+    <string>load previous dump in the current folder</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Left</string>
    </property>
   </action>
  </widget>
@@ -428,6 +546,38 @@ QTableView::item
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionNextDump</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>loadNextDump()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPreviousDump</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>loadPreviousDump()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openDump()</slot>
@@ -435,5 +585,7 @@ QTableView::item
   <slot>showAbout()</slot>
   <slot>saveReport()</slot>
   <slot>saveCurrentFilter()</slot>
+  <slot>loadPreviousDump()</slot>
+  <slot>loadNextDump()</slot>
  </slots>
 </ui>

@@ -437,7 +437,7 @@ QImage Galaxy::map(float scale) const
 							{"Peleng",Qt::darkGreen},
 							{"People",QColor("royalblue")},
 							{"Fei",Qt::magenta},
-                            {"Gaal",QColor("yellow")}};
+			    {"Gaal",QColor("yellow")}};
 	QImage image((mapRect.width()+10)*scale,(mapRect.height()+10)*scale,QImage::Format_ARGB32);
 	image.fill(Qt::black);
 	QPainter p(&image);
@@ -499,7 +499,6 @@ QImage Galaxy::map(float scale) const
 		QPointF panetsPos=pos+QPointF(-planetsText.size().width()*0.5,-scale*3.0);
 		p.drawStaticText(panetsPos,planetsText);
 	}
-
 	return image;
 }
 
