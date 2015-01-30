@@ -130,13 +130,13 @@ void MainWindow::readSettings()
 	if (file.open(QIODevice::ReadOnly|QIODevice::Text)) {
 		QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
 		if(!doc.isNull()) {
-            std::cout<<"loading minRowsPreset.json"<<std::endl;
+	    std::cout<<"loading minRowsPreset.json"<<std::endl;
 			QVariantMap minRowsJson=doc.toVariant().toMap();
 			using VarMapCI=QVariantMap::const_iterator;
 			for (VarMapCI i = minRowsJson.begin(); i != minRowsJson.end(); ++i)
 			{
 				minRowsPreset[i.key()]=i.value().toInt();
-                std::cout<<i.key().toStdString()<<": "<<i.value().toInt()<<std::endl;
+		std::cout<<i.key().toStdString()<<": "<<i.value().toInt()<<std::endl;
 			}
 		}
 	}
@@ -186,7 +186,7 @@ bool MainWindow::parseDump()
 	setWindowTitle(QStringLiteral("SRHDDumpReader - ")+QFileInfo(_filename).baseName());
 
 	galaxy.clear();
-	QTextStream stream(&file);
+	QTextStream stream(file.readAll());
 	galaxy.parseDump(stream);
 	high_resolution_clock::time_point tParseEnd = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>( tParseEnd - tStart ).count();
@@ -210,10 +210,15 @@ bool MainWindow::parseDump()
 	//ui->equipmentTableView->resizeRowToContents(0);
 	//int sectionSize=ui->equipmentTableView->verticalHeader()->sectionSize(0);
 	//ui->equipmentTableView->verticalHeader()->setDefaultSectionSize(sectionSize);
-	high_resolution_clock::time_point tEnd = high_resolution_clock::now();
-	duration = duration_cast<milliseconds>( tEnd - tParseEnd ).count();
+	high_resolution_clock::time_point tModelUpdate = high_resolution_clock::now();
+	duration = duration_cast<milliseconds>( tModelUpdate - tParseEnd ).count();
 	cout<<"Model update took "<<duration/1000.0<<"seconds"<<endl;
 	saveReport();
+	high_resolution_clock::time_point tEndReport = high_resolution_clock::now();
+	duration = duration_cast<milliseconds>( tEndReport - tModelUpdate ).count();
+	cout<<"making the report took "<<duration/1000.0<<"seconds"<<endl;
+	duration = duration_cast<milliseconds>( tEndReport - tStart ).count();
+	cout<<"Total "<<duration/1000.0<<"seconds"<<endl;
 	return true;
 }
 
@@ -273,6 +278,8 @@ QString tabSeparatedValues(const QAbstractItemModel& model)
 void MainWindow::saveReport()
 {
 	using namespace std;
+	QVariantMap oldEqPreset=eqHeaderView->preset();
+	QVariantMap oldPlPreset=planetsHeaderView->preset();
 	reportSummary.clear();
 	if(mapScale>0.f) {
 		updateMap();
@@ -336,10 +343,16 @@ void MainWindow::saveReport()
 		eqBuf+=tabSeparatedValues(eqProxyModel);
 		eqBuf+='\n';
 	}
+	//restore presets
+	eqHeaderView->setPreset(oldEqPreset);
+	planetsHeaderView->setPreset(oldPlPreset);
+
+
 	QTextStream out(&ofile); // we will serialize the data into the file
 	out << planetsBuf+eqBuf+basesBuf+'\n'; // serialize a string
 
-	statusBar()->showMessage(tr("Report saved: ")+filename);\
+	statusBar()->showMessage(tr("Report saved: ")+filename);
+
 }
 
 void MainWindow::loadNextDump()
@@ -716,7 +729,7 @@ bool isUseless(const QMap<QString, int>& val, const QMap<QString, int>& min)
 	for (MapStrIntCI i = min.begin(); i != min.end(); ++i)
 	{
 		if(val.value(i.key(),0)<i.value()) {
-            std::cout<<i.key().toStdString()<<" < "<<i.value()<<std::endl;
+	    std::cout<<i.key().toStdString()<<" < "<<i.value()<<std::endl;
 			return true;
 		}
 	}

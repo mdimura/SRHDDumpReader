@@ -8,13 +8,14 @@ Galaxy::Galaxy()
 void Galaxy::parseDump(QTextStream &stream)
 {
 	clear();
-	QStringList globalOptions;
-	globalOptions<<"Player ^{"<<"StarList ^{"<<"HoleList ^{";
+	const static QMap<QString,int> globalOptions={
+		{"Player ^{",0},{"StarList ^{",1},{"HoleList ^{",2}
+	};
 
 	QString line = stream.readLine();
 	while (!line.isNull())
 	{
-		switch(globalOptions.indexOf(line))
+		switch(globalOptions.value(line,-1))
 		{
 		case 0://Player
 		{
@@ -100,7 +101,7 @@ void Galaxy::addStar(const Star &&star)
 {
 	assert(starMap.find(star.id()) == starMap.end());//"Galaxy: Tried to add a star which is already existing. This should not happen!"
 	mapRect|=QRectF(star.position(),star.position()+QPointF(1,1));
-	starMap.insert(std::make_pair(star.id(),star));
+	starMap.insert(std::move(std::make_pair(star.id(),std::move(star))));
 }
 
 void Galaxy::addBlackHole(const BlackHole &&bh)
@@ -437,8 +438,8 @@ QImage Galaxy::map(float scale) const
 							{"Peleng",Qt::darkGreen},
 							{"People",QColor("royalblue")},
 							{"Fei",Qt::magenta},
-			    {"Gaal",QColor("yellow")}};
-	QImage image((mapRect.width()+10)*scale,(mapRect.height()+10)*scale,QImage::Format_ARGB32);
+							{"Gaal",QColor("yellow")}};
+	QImage image((mapRect.width()+8)*scale,(mapRect.height()+6)*scale,QImage::Format_ARGB32);
 	image.fill(Qt::black);
 	QPainter p(&image);
 	p.setPen(QPen(QColor(Qt::white)));
@@ -472,7 +473,7 @@ QImage Galaxy::map(float scale) const
 		QString& planetsStr=starIdToPlanets[starId];
 		planetsStr+=' ';
 		QString economy=planet.economy().left(1).toLower();
-		int size=(planet.size()/10)%10;
+		int size=planet.size();
 		QString color=ownerToColor.value(planet.race()).name();
 		planetsStr+=planetStr.arg(size).arg(economy).arg(color);
 	}
@@ -481,7 +482,7 @@ QImage Galaxy::map(float scale) const
 	for(const auto& pair:starMap)
 	{
 		const Star& star=pair.second;
-		QPointF pos=star.position()-mapRect.topLeft()+QPointF(5,5);
+		QPointF pos=star.position()-mapRect.topLeft()+QPointF(4,3);
 		pos*=scale;
 		//starIdtoPos[star.id()]=pos;
 		QString owner=star.owner();
@@ -492,7 +493,15 @@ QImage Galaxy::map(float scale) const
 		p.drawEllipse(pos,scale,scale);
 		QRectF nameRect=QRectF(pos+QPointF(-scale*10,scale),pos+QPointF(scale*10,scale*4));
 		p.drawText(nameRect,star.name(),QTextOption(Qt::AlignHCenter|Qt::AlignTop));
-		p.drawText(pos+QPointF(scale*1.1,scale/2),starIdToBases.value(star.id()));
+		const QString& basesStr=starIdToBases.value(star.id());
+		if(!basesStr.isEmpty()) {
+			QRectF basesRect=QRectF(pos+QPointF(-8.0*scale,-scale),pos+QPointF(-1.1*scale,scale));
+			p.drawText(basesRect,basesStr.left(2),QTextOption(Qt::AlignRight|Qt::AlignVCenter));
+			if(basesStr.length()>3) {
+				basesRect.translate(9.2*scale,0);
+				p.drawText(basesRect,basesStr.mid(3),QTextOption(Qt::AlignLeft|Qt::AlignVCenter));
+			}
+		}
 		QStaticText planetsText(starIdToPlanets.value(star.id()));
 		planetsText.setTextFormat(Qt::RichText);
 		planetsText.prepare(QTransform(),font);

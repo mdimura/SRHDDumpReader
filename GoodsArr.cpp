@@ -1,16 +1,15 @@
 #include "GoodsArr.h"
+#include <QVector>
 GoodsArr::GoodsArr()
 {
-    memset (arr,0,sizeof(arr));
+	memset (arr,0,sizeof(arr));
 }
 
-GoodsArr::GoodsArr(QString &str)
+GoodsArr::GoodsArr(const QString &str)
 {
-    QTextStream a(&str);
-    char c;
-    a>>arr[0];
-    for(int i=1; i<8; i++)
-    {
-        a>>c>>arr[i];
-    }
+	int i=0;
+	for(const QStringRef& sref : str.splitRef(','))
+	{
+		arr[i++]=sref.toInt();
+	}
 }

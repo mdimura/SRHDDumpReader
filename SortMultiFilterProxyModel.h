@@ -16,133 +16,148 @@ public:
 public slots:
     void setMin(int col, double min)
     {
-        if(min==_min[col]) {
-            return;
-        }
-        _min[col]=min;
-        invalidate();
+	if(min==_min[col]) {
+	    return;
+	}
+	_min[col]=min;
+	correctMinMax(col);
+	invalidate();
     }
     void unsetMin(int col)
     {
-        if(_min.count(col)==0) {
-            return;
-        }
-        _min.erase(col);
-        invalidate();
+	if(_min.count(col)==0) {
+	    return;
+	}
+	_min.erase(col);
+	invalidate();
     }
     void setMax(int col, double max)
     {
-        if(_max[col]==max) {
-            return;
-        }
-        _max[col]=max;
-        invalidate();
+	if(_max[col]==max) {
+	    return;
+	}
+	_max[col]=max;
+	correctMinMax(col);
+	invalidate();
     }
     void unsetMax(int col)
     {
-        if(_max.count(col)==0) {
-            return;
-        }
-        _max.erase(col);
-        invalidate();
+	if(_max.count(col)==0) {
+	    return;
+	}
+	_max.erase(col);
+	invalidate();
     }
     void setMatch(int col, const QString& match )
     {
-        if (match.isEmpty()) {
-            unsetMatch(col);
-            return;
-        }
-        if(_match[col]==match) {
-            return;
-        }
-        _match[col]=match;
-        invalidate();
+	if (match.isEmpty()) {
+	    unsetMatch(col);
+	    return;
+	}
+	if(_match[col]==match) {
+	    return;
+	}
+	_match[col]=match;
+	invalidate();
     }
     void unsetMatch(int col)
     {
-        if(_match.count(col)==0) {
-            return;
-        }
-        _match.erase(col);
-        invalidate();
+	if(_match.count(col)==0) {
+	    return;
+	}
+	_match.erase(col);
+	invalidate();
     }
     void setNotMatch(int col, const QString& notMatch )
     {
-        if (notMatch.isEmpty()) {
-            unsetNotMatch(col);
-            return;
-        }
-        if(_notMatch[col]==notMatch) {
-            return;
-        }
-        _notMatch[col]=notMatch;
-        invalidate();
-        //std::cout<<"setNotMatch end"<<std::endl;
+	if (notMatch.isEmpty()) {
+	    unsetNotMatch(col);
+	    return;
+	}
+	if(_notMatch[col]==notMatch) {
+	    return;
+	}
+	_notMatch[col]=notMatch;
+	invalidate();
+	//std::cout<<"setNotMatch end"<<std::endl;
     }
     void unsetNotMatch(int col)
     {
-        if(_notMatch.count(col)==0) {
-            return;
-        }
-        _notMatch.erase(col);
-        invalidate();
+	if(_notMatch.count(col)==0) {
+	    return;
+	}
+	_notMatch.erase(col);
+	invalidate();
     }
 
     void setMinDelayed(int col, double min)
     {
-        _min[col]=min;
-        timer.start();
+	_min[col]=min;
+	correctMinMax(col);
+	timer.start();
     }
     void unsetMinDelayed(int col)
     {
-        _min.erase(col);
-        timer.start();
+	_min.erase(col);
+	timer.start();
     }
     void setMaxDelayed(int col, double max)
     {
-        _max[col]=max;
-        timer.start();
+	_max[col]=max;
+	correctMinMax(col);
+	timer.start();
     }
     void unsetMaxDelayed(int col)
     {
-        _max.erase(col);
-        timer.start();
+	_max.erase(col);
+	timer.start();
     }
     void setMatchDelayed(int col, const QString& match )
     {
-        if (match.isEmpty()) {
-            unsetMatch(col);
-            return;
-        }
-        _match[col]=match;
-        timer.start();
+	if (match.isEmpty()) {
+	    unsetMatch(col);
+	    return;
+	}
+	_match[col]=match;
+	timer.start();
     }
     void unsetMatchDelayed(int col)
     {
-        _match.erase(col);
-        timer.start();
+	_match.erase(col);
+	timer.start();
     }
     void setNotMatchDelayed(int col, const QString& notMatch )
     {
 
-        if (notMatch.isEmpty()) {
-            unsetNotMatch(col);
-            return;
-        }
-        _notMatch[col]=notMatch;
-        timer.start();
-        //std::cout<<"setNotMatch end"<<std::endl;
+	if (notMatch.isEmpty()) {
+	    unsetNotMatch(col);
+	    return;
+	}
+	_notMatch[col]=notMatch;
+	timer.start();
+	//std::cout<<"setNotMatch end"<<std::endl;
     }
     void unsetNotMatchDelayed(int col)
     {
-        _notMatch.erase(col);
-        timer.start();
+	_notMatch.erase(col);
+	timer.start();
     }
 
 protected:
     bool filterAcceptsRow(int sourceRow,
-                          const QModelIndex &sourceParent) const;
+			  const QModelIndex &sourceParent) const;
 private:
+    void correctMinMax(int col)
+    {
+	    if (_min[col]>_max[col])
+	    {
+		    if(_max.count(col)==0) {
+			return;
+		    }
+		    _max.erase(col);
+	    }
+    }
+
     std::unordered_map<int, QString> _match;
     std::unordered_map<int, QString> _notMatch;
     std::unordered_map<int, double> _min;

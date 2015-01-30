@@ -46,6 +46,7 @@ public:
 	contextMenu.addAction(act);
     }
     void setPreset(const QVariantMap& p);
+    QVariantMap preset() const;
 
 protected:
     virtual bool event( QEvent *event );
@@ -62,34 +63,33 @@ private slots:
     void activatePreset(int i);
     void clearAllFilters()
     {
-        for(auto& w:matchEdits)
-        {
-            w->clear();
-        }
-        for(auto& w:notMatchEdits)
-        {
-            w->clear();
-        }
-        for(auto& w:minIntEdits)
-        {
-            w->setValue(w->minimum());
-        }
-        for(auto& w:maxIntEdits)
-        {
-            w->setValue(w->minimum());
-        }
-        for(auto& w:minDoubleEdits)
-        {
-            w->setValue(w->minimum());
-        }
-        for(auto& w:maxDoubleEdits)
-        {
-            w->setValue(w->minimum());
-        }
+	for(auto& w:matchEdits)
+	{
+	    w->clear();
+	}
+	for(auto& w:notMatchEdits)
+	{
+	    w->clear();
+	}
+	for(auto& w:minIntEdits)
+	{
+	    w->setValue(w->minimum());
+	}
+	for(auto& w:maxIntEdits)
+	{
+	    w->setValue(w->minimum());
+	}
+	for(auto& w:minDoubleEdits)
+	{
+	    w->setValue(w->minimum());
+	}
+	for(auto& w:maxDoubleEdits)
+	{
+	    w->setValue(w->minimum());
+	}
     }
 
 private:
-    QVariantMap preset() const;
     void updateGeometry(int logical) const;
     void updateHeaderData(int col);
     void makeWidget(int col);

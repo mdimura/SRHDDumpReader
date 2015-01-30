@@ -10,81 +10,81 @@ public:
     Planet(QTextStream &stream, Galaxy& galaxy, unsigned id=0, unsigned starId=0);
     unsigned id() const
     {
-        return _id;
+	return _id;
     }
     bool hasMarket() const
     {
-        return _owner!="None" && _owner!="Kling";
+	return _owner!="None" && _owner!="Kling";
     }
     QString name() const
     {
-        return _name;
+	return _name;
     }
     const GoodsArr& goodsCount() const
     {
-        return _goodsShopQuantity;
+	return _goodsShopQuantity;
     }
     const GoodsArr& goodsSale() const
     {
-        return _goodsSale;
+	return _goodsSale;
     }
     const GoodsArr& goodsBuy() const
     {
-        return _goodsBuy;
+	return _goodsBuy;
     }
     unsigned starId() const
     {
-        return _starId;
+	return _starId;
     }
     unsigned size() const
     {
-        return _size;
+	return _size/10-5;
     }
     unsigned techLevel() const
     {
-        return _techLevel;
+	return _techLevel;
     }
     unsigned techLevel(int i) const
     {
-        return _techLevels[i];
+	return _techLevels[i];
     }
     QString economy() const
     {
-        return _economy;
+	return _economy;
     }
     QString owner() const
     {
-        return _owner;
+	return _owner;
     }
     void readTechLevels(QString &str)
     {
-        QTextStream a(&str);
-        char c;
-        a>>_techLevels[0];
-        for(int i=1; i<20; i++)
-        {
-            a>>c>>_techLevels[i];
-        }
+	QTextStream a(&str);
+	char c;
+	a>>_techLevels[0];
+	for(int i=1; i<20; i++)
+	{
+	    a>>c>>_techLevels[i];
+	}
     }
     float currentInvetionPoints() const
     {
-        return _currentInventionPoints;
+	return _currentInventionPoints;
     }
     unsigned currentInvetion() const
     {
-        return _currentInvention;
+	return _currentInvention;
     }
     QString race() const
     {
-        return _race;
+	return _race;
     }
     QString government() const
     {
-        return _government;
+	return _government;
     }
     unsigned relation() const
     {
-        return _relation;
+	return _relation;
     }
 private:
     QString _name, _owner, _race, _economy, _government;

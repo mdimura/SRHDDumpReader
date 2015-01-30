@@ -79,6 +79,11 @@ public:
 	QPointF delta=playerPos-planetPos;
 	return sqrt(pow(delta.x(), 2) + pow(delta.y(), 2));
     }
+    QString planetStarName(unsigned row) const
+    {
+	    unsigned planetStarId=planet(row).starId();
+	    return starMap.at(planetStarId).name();
+    }
 
     const GoodsArr& maxBuyPrice() const
     {

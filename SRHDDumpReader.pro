@@ -4,8 +4,9 @@
 #
 #-------------------------------------------------
 
-VERSION = 20150128b
+VERSION = 20150130b
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+CONFIG(release, debug|release): DEFINES+=NDEBUG
 
 RC_FILE = SRHDDumpReader.rc
 
