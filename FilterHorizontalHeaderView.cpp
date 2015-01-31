@@ -3,6 +3,7 @@
 #include <cassert>
 #include <QJsonDocument>
 #include <QFileDialog>
+#include <QInputDialog>
 
 FilterHorizontalHeaderView::FilterHorizontalHeaderView(SortMultiFilterProxyModel *model, QTableView *parent):
     QHeaderView(Qt::Horizontal,parent)
@@ -46,24 +47,6 @@ QSize FilterHorizontalHeaderView::sizeHint() const
     QSize size=QHeaderView::sizeHint();
     size.setHeight(_height);
     return size;
-}
-
-QVariantMap FilterHorizontalHeaderView::loadPreset(const QString &fileName)
-{
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
-        QMessageBox::information(0, tr("Unable to open file"),
-                                 file.errorString()+"\n"+fileName);
-        return QVariantMap();
-    }
-    QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
-    if(doc.isNull()) {
-        QMessageBox::information(0, tr("Unable to parse JSON file"),
-                                 tr("Could not open the file. "
-                                    "There is a syntax error in the provided JSON file."));
-        return QVariantMap();
-    }
-    return doc.toVariant().toMap();
 }
 
 void FilterHorizontalHeaderView::setPreset(const QVariantMap &p)
@@ -205,15 +188,15 @@ void FilterHorizontalHeaderView::updateHeaderData(int first, int last)
 
 void FilterHorizontalHeaderView::savePreset()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,tr("Save Filter"),"",tr("SRHDDR filter (*.dr.json);;Any file (*)"));
-    if (fileName.isEmpty()) {
-        return;
-    }
     QVariantMap p=preset();
-    addPreset(p,QFileInfo(fileName).baseName());
-    QFile file(fileName);
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    file.write(QJsonDocument::fromVariant(p).toJson());
+    bool ok;
+    QString presetName = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                             tr("Preset name:"), QLineEdit::Normal,
+                                             QString(), &ok);
+    if (ok) {
+        addPreset(p,presetName);
+    }
+    emit presetSaved(p,presetName);
 }
 
 void FilterHorizontalHeaderView::activatePreset(int i)

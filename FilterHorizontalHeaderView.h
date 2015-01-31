@@ -29,31 +29,26 @@ public:
     enum WidgetType {wtString, wtInt, wtDouble, wtNone};
     explicit FilterHorizontalHeaderView(SortMultiFilterProxyModel* model, QTableView *parent = 0);
     QSize sizeHint() const;
-    static QVariantMap loadPreset(const QString& fileName);
-    void addPreset(const QString& fileName)
-    {
-	addPreset(loadPreset(fileName),QFileInfo(fileName).baseName());
-    }
-
     void addPreset(const QVariantMap& p, const QString& name)
     {
-	_presets.push_back(p);
-	QAction *act=new QAction(name,this);
-	int i=_presets.count()-1;
-	connect(act,&QAction::triggered,[=](){
-	    activatePreset(i);
-	});
-	contextMenu.addAction(act);
+        _presets.push_back(p);
+        QAction *act=new QAction(name,this);
+        int i=_presets.count()-1;
+        connect(act,&QAction::triggered,[=](){
+            activatePreset(i);
+        });
+        contextMenu.addAction(act);
     }
     void setPreset(const QVariantMap& p);
     QVariantMap preset() const;
-
+signals:
+    void presetSaved(QVariantMap, QString);
 protected:
     virtual bool event( QEvent *event );
     virtual QSize sectionSizeFromContents(int logicalIndex) const;
     virtual void contextMenuEvent(QContextMenuEvent *event)
     {
-	contextMenu.exec(event->globalPos());
+        contextMenu.exec(event->globalPos());
     }
 private slots:
     void setSortIndicator(int col, const Qt::SortOrder &order);
@@ -63,30 +58,30 @@ private slots:
     void activatePreset(int i);
     void clearAllFilters()
     {
-	for(auto& w:matchEdits)
-	{
-	    w->clear();
-	}
-	for(auto& w:notMatchEdits)
-	{
-	    w->clear();
-	}
-	for(auto& w:minIntEdits)
-	{
-	    w->setValue(w->minimum());
-	}
-	for(auto& w:maxIntEdits)
-	{
-	    w->setValue(w->minimum());
-	}
-	for(auto& w:minDoubleEdits)
-	{
-	    w->setValue(w->minimum());
-	}
-	for(auto& w:maxDoubleEdits)
-	{
-	    w->setValue(w->minimum());
-	}
+        for(auto& w:matchEdits)
+        {
+            w->clear();
+        }
+        for(auto& w:notMatchEdits)
+        {
+            w->clear();
+        }
+        for(auto& w:minIntEdits)
+        {
+            w->setValue(w->minimum());
+        }
+        for(auto& w:maxIntEdits)
+        {
+            w->setValue(w->minimum());
+        }
+        for(auto& w:minDoubleEdits)
+        {
+            w->setValue(w->minimum());
+        }
+        for(auto& w:maxDoubleEdits)
+        {
+            w->setValue(w->minimum());
+        }
     }
 
 private:
@@ -102,7 +97,7 @@ private:
     int lastSortSection=0;
     int _height=10;
     QAction saveAct{tr("save preset"),this};
-    QAction clearAct{tr("clear all"),this};
+    QAction clearAct{tr("clear filters"),this};
     QMenu contextMenu{this};
     QVector<QVariantMap> _presets;
     SortMultiFilterProxyModel* _model=nullptr;

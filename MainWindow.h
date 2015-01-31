@@ -54,8 +54,8 @@ public slots:
     void saveReport();
     void setMapScale(double scale)
     {
-	    mapScale=scale;
-	    updateMap();
+        mapScale=scale;
+        updateMap();
     }
     void loadNextDump();
     void loadPreviousDump();
@@ -69,11 +69,14 @@ public:
     QImage currentScreen(float kx, float ky, float kw, float kh) const;
 #endif
 private:
+    void savePreset(const QVariantMap& preset, const QString& fileName) const;
     void generateGalaxies();
     void responsiveSleep(int msec) const;
     void loadPresets();
     void updateMap();
     void updateDumpArrows();
+
+    QVariantMap loadPreset(const QString &fileName) const;
 
 private:
     Ui::MainWindow *ui;
