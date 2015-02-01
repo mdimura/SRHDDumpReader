@@ -66,7 +66,7 @@ public slots:
     void saveDumpWin();
 public:
     bool simulateInput(const std::string& str) const;
-    QImage currentScreen(float kx, float ky, float kw, float kh) const;
+    QImage currentScreen(float kx, float ky, float kw, float kh);
 #endif
 private:
     void savePreset(const QVariantMap& preset, const QString& fileName) const;
@@ -112,6 +112,7 @@ private:
     const QString presetDirPlanetsReport="presets/planetsReport/";
     const QString presetDirEqReport="presets/equipmentReport/";
     int maxGenerationTime=120000;
+    int screenSaveLag=1000;
     int shortSleep=25;
     int minHIGplanets=0;//Huge industrial gaal planets limit
     float mapScale=7.f;
