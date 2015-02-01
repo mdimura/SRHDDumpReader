@@ -12,9 +12,11 @@
 #include <QScreen>
 #include <QDesktopWidget>
 #include <QJsonDocument>
+#include <QToolButton>
 #include <iostream>
 #include <fstream>
 #include <chrono>
+
 #ifdef _WIN32
 #include "psapi.h"
 #endif
@@ -25,11 +27,37 @@ MainWindow::MainWindow(QWidget *parent) :
     eqModel(&galaxy,this),bhModel(&galaxy,this),planetsModel(&galaxy,this)
 {
     ui->setupUi(this);
+
+    connect(&reloadTimer, SIGNAL(timeout()), this, SLOT(parseDump()));
+    reloadTimer.setInterval(2000);
+    connect(ui->actionAutoReload, &QAction::toggled, [=](bool on) {
+        if(on) {
+            this->reloadTimer.start();
+        }
+        else {
+            this->reloadTimer.stop();
+        }
+    } );
+
     ui->mapImageLabel->setBackgroundRole(QPalette::Base);
     ui->scrollArea->setBackgroundRole(QPalette::Dark);
-    ui->mainToolBar->addWidget(&_mapScaleSpinBox);
-    connect(&_mapScaleSpinBox,SIGNAL(valueChanged(double)),this,SLOT(setMapScale(double)));
+
+    reloadMenu.addAction(ui->actionAutoReload);
+    QToolButton *reloadButton=static_cast<QToolButton*>(ui->mainToolBar->widgetForAction(ui->actionReload));
+    reloadButton->setMenu(&reloadMenu);
+    reloadButton->setPopupMode(QToolButton::MenuButtonPopup);
+
     addAction(ui->actionSaveReport);
+    saveReportMenu.addAction(ui->actionAutoSaveReport);
+    QToolButton *reportButton=static_cast<QToolButton*>(ui->mainToolBar->widgetForAction(ui->actionSaveReport));
+    reportButton->setMenu(&saveReportMenu);
+    reportButton->setPopupMode(QToolButton::MenuButtonPopup);
+
+    _mapScaleSpinBox.setPrefix("x");
+    _mapScaleSpinBox.setToolTip(tr("Map scale"));
+    _mapScaleSpinBox.setWhatsThis(tr("Map scale"));
+    ui->mainToolBar->insertWidget(ui->mainToolBar->actions()[3],&_mapScaleSpinBox);
+    connect(&_mapScaleSpinBox,SIGNAL(valueChanged(double)),this,SLOT(setMapScale(double)));
 
     sound.setSource(QUrl::fromLocalFile("Click1.wav"));
     sound.setVolume(1.0);
@@ -100,17 +128,6 @@ MainWindow::MainWindow(QWidget *parent) :
         savePreset(preset,fileName);
     });
 
-    connect(&reloadTimer, SIGNAL(timeout()), this, SLOT(parseDump()));
-    reloadTimer.setInterval(2000);
-    connect(ui->actionReload, &QAction::toggled, [=](bool on) {
-        if(on){
-            this->reloadTimer.start();
-        }
-        else{
-            this->reloadTimer.stop();
-        }
-    }  );
-
     _filename=rangersDir+"/save/autodump.txt";
     loadPresets();
 }
@@ -128,6 +145,12 @@ void MainWindow::readSettings()
     maxGenerationTime=settings.value("maxGenerationTime",120000).toInt();
     mapScale=settings.value("mapScale",7.f).toFloat();
     _mapScaleSpinBox.setValue(mapScale);
+
+    bool autoSaveReport=settings.value("autoSaveReport",false).toBool();
+    ui->actionAutoSaveReport->setChecked(autoSaveReport);
+    bool autoReload=settings.value("autoReload",false).toBool();
+    ui->actionAutoReload->setChecked(autoReload);
+    //ui->actionAutoReload->toggle();
 
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
@@ -160,6 +183,10 @@ void MainWindow::writeSettings() const
     settings.setValue("shortSleep", shortSleep);
     settings.setValue("maxGenerationTime", maxGenerationTime);
     settings.setValue("mapScale", (double)mapScale);
+
+    settings.setValue("autoReload",ui->actionAutoReload->isChecked());
+    settings.setValue("autoSaveReport",ui->actionAutoSaveReport->isChecked());
+
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("windowState", saveState());
@@ -199,15 +226,18 @@ bool MainWindow::parseDump()
 
     galaxy.clear();
     QTextStream stream(file.readAll());
+    high_resolution_clock::time_point tReadEnd = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>( tReadEnd - tStart ).count();
+    cout<<"Reading the file took "<<duration/1000.0<<"seconds"<<endl;
     galaxy.parseDump(stream);
-    high_resolution_clock::time_point tParseEnd = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>( tParseEnd - tStart ).count();
-    cout<<"Parsing took "<<duration/1000.0<<"seconds"<<endl;
     statusBar()->showMessage(tr("Parsed %1 stars, %2 planets, %3 black holes, %4 ships and %5 items").
                              arg(galaxy.starCount()).arg(galaxy.planetCount()).
                              arg(galaxy.blackHoleCount()).
                              arg(galaxy.shipCount()).arg(galaxy.equipmentCount()),
                              5000);
+    high_resolution_clock::time_point tParseEnd = high_resolution_clock::now();
+    duration = duration_cast<milliseconds>( tParseEnd - tReadEnd ).count();
+    cout<<"Parsing took "<<duration/1000.0<<"seconds"<<endl;
 
     tradeModel.reload();
     eqModel.reload();
@@ -218,18 +248,25 @@ bool MainWindow::parseDump()
     //ui->tradeTableView->resizeRowsToContents();
     //ui->equipmentTableView->resizeColumnsToContents();
     // //ui->equipmentTableView->resizeRowsToContents();
-
     //ui->equipmentTableView->resizeRowToContents(0);
     //int sectionSize=ui->equipmentTableView->verticalHeader()->sectionSize(0);
     //ui->equipmentTableView->verticalHeader()->setDefaultSectionSize(sectionSize);
-    high_resolution_clock::time_point tModelUpdate = high_resolution_clock::now();
-    duration = duration_cast<milliseconds>( tModelUpdate - tParseEnd ).count();
+    high_resolution_clock::time_point tModelUpdateEnd = high_resolution_clock::now();
+    duration = duration_cast<milliseconds>( tModelUpdateEnd - tParseEnd ).count();
     cout<<"Model update took "<<duration/1000.0<<"seconds"<<endl;
-    saveReport();
-    high_resolution_clock::time_point tEndReport = high_resolution_clock::now();
-    duration = duration_cast<milliseconds>( tEndReport - tModelUpdate ).count();
-    cout<<"making the report took "<<duration/1000.0<<"seconds"<<endl;
-    duration = duration_cast<milliseconds>( tEndReport - tStart ).count();
+
+    updateMap();
+    high_resolution_clock::time_point tMapEnd = high_resolution_clock::now();
+    duration = duration_cast<milliseconds>( tMapEnd - tModelUpdateEnd ).count();
+    cout<<"updating the map took "<<duration/1000.0<<"seconds"<<endl;
+
+    if(ui->actionAutoSaveReport->isChecked()) {
+        saveReport();
+        duration = duration_cast<milliseconds>( high_resolution_clock::now() - tMapEnd ).count();
+        cout<<"saving the report took "<<duration/1000.0<<"seconds"<<endl;
+    }
+
+    duration = duration_cast<milliseconds>( high_resolution_clock::now() - tStart ).count();
     cout<<"Total "<<duration/1000.0<<"seconds"<<endl;
     return true;
 }
@@ -290,16 +327,11 @@ QString tabSeparatedValues(const QAbstractItemModel& model)
 void MainWindow::saveReport()
 {
     using namespace std;
+    saveMap();
     QVariantMap oldEqPreset=eqHeaderView->preset();
     QVariantMap oldPlPreset=planetsHeaderView->preset();
     reportSummary.clear();
-    if(mapScale>0.f) {
-        updateMap();
-        if(QFileInfo(_filename+".map.png").exists()) {
-            QFile::remove(_filename+"_map.png");
-        }
-        galaxyMap.save(_filename+"_map.png");
-    }
+
     QString filename=_filename+".report";
     QFile ofile(filename);
     if(ofile.exists()) {
@@ -432,7 +464,7 @@ void MainWindow::loadPresets()
     }
     for(const QString& fileName:eqDir.entryList(QDir::Files))
     {
-        auto preset=loadPreset(plDir.path()+'/'+fileName);
+        auto preset=loadPreset(eqDir.path()+'/'+fileName);
         eqHeaderView->addPreset(preset,QFileInfo(fileName).baseName());
         std::cout<<fileName.toLocal8Bit().toStdString()<<std::endl;
     }
@@ -482,12 +514,22 @@ void MainWindow::updateDumpArrows()
     }
 }
 
+void MainWindow::saveMap()
+{
+    if(mapScale>0.f) {
+        if(QFileInfo(_filename+".map.png").exists()) {
+            QFile::remove(_filename+"_map.png");
+        }
+        galaxyMap.save(_filename+"_map.png");
+    }
+}
+
 QVariantMap MainWindow::loadPreset(const QString &fileName) const
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
         statusBar()->showMessage(tr("Unable to open file ")+
-                                 file.errorString()+"\n"+fileName);
+                                 file.errorString()+" "+file.fileName());
         return QVariantMap();
     }
     QJsonDocument doc=QJsonDocument::fromJson(file.readAll());

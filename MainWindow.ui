@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>685</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -40,10 +40,12 @@
    </attribute>
    <addaction name="actionOpenDump"/>
    <addaction name="actionReload"/>
-   <addaction name="actionAbout"/>
+   <addaction name="actionSaveReport"/>
    <addaction name="separator"/>
    <addaction name="actionPreviousDump"/>
    <addaction name="actionNextDump"/>
+   <addaction name="separator"/>
+   <addaction name="actionAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="eqDockWidget">
@@ -343,8 +345,8 @@ QTableView::item
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>270</width>
-          <height>73</height>
+          <width>272</width>
+          <height>76</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -474,6 +476,28 @@ QTableView::item
    </property>
    <property name="shortcut">
     <string>Ctrl+Left</string>
+   </property>
+  </action>
+  <action name="actionAutoReload">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>reload automatically</string>
+   </property>
+   <property name="toolTip">
+    <string>Automatically reload current dump</string>
+   </property>
+  </action>
+  <action name="actionAutoSaveReport">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>always save</string>
+   </property>
+   <property name="toolTip">
+    <string>Always save report upon parsing the dump</string>
    </property>
   </action>
  </widget>

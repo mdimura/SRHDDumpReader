@@ -75,6 +75,7 @@ private:
     void loadPresets();
     void updateMap();
     void updateDumpArrows();
+    void saveMap();
 
     QVariantMap loadPreset(const QString &fileName) const;
 
@@ -99,6 +100,9 @@ private:
 
     QTimer reloadTimer;
     QDoubleSpinBox _mapScaleSpinBox{this};
+
+    QMenu reloadMenu;
+    QMenu saveReportMenu;
 
     QSoundEffect sound;
 
