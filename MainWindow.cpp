@@ -31,12 +31,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&reloadTimer, SIGNAL(timeout()), this, SLOT(parseDump()));
     reloadTimer.setInterval(2000);
     connect(ui->actionAutoReload, &QAction::toggled, [=](bool on) {
-        if(on) {
-            this->reloadTimer.start();
-        }
-        else {
-            this->reloadTimer.stop();
-        }
+	if(on) {
+	    this->reloadTimer.start();
+	}
+	else {
+	    this->reloadTimer.stop();
+	}
     } );
 
     ui->mapImageLabel->setBackgroundRole(QPalette::Base);
@@ -88,13 +88,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->planetsTableView->setModel(&planetsProxyModel);
     planetsHeaderView=
-            new FilterHorizontalHeaderView(&planetsProxyModel,ui->planetsTableView);
+	    new FilterHorizontalHeaderView(&planetsProxyModel,ui->planetsTableView);
     ui->planetsTableView->setHorizontalHeader(planetsHeaderView);
     ui->planetsTableView->resizeColumnsToContents();
 
     ui->equipmentTableView->setModel(&eqProxyModel);
     eqHeaderView=
-            new FilterHorizontalHeaderView(&eqProxyModel,ui->equipmentTableView);
+	    new FilterHorizontalHeaderView(&eqProxyModel,ui->equipmentTableView);
     ui->equipmentTableView->setHorizontalHeader(eqHeaderView);
     ui->equipmentTableView->resizeColumnsToContents();
     ui->equipmentTableView->setColumnWidth(0,tableFontWidth*24);
@@ -117,15 +117,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->bhTableView->resizeColumnsToContents();
 
     connect(planetsHeaderView,&FilterHorizontalHeaderView::presetSaved,
-            [&](const QVariantMap& preset, const QString& name) {
-        QString fileName=presetDirPlanets+name+".dr.json";
-        savePreset(preset,fileName);
+	    [&](const QVariantMap& preset, const QString& name) {
+	QString fileName=presetDirPlanets+name+".dr.json";
+	savePreset(preset,fileName);
     });
 
     connect(eqHeaderView,&FilterHorizontalHeaderView::presetSaved,
-            [&](const QVariantMap& preset, const QString& name) {
-        QString fileName=presetDirEq+name+".dr.json";
-        savePreset(preset,fileName);
+	    [&](const QVariantMap& preset, const QString& name) {
+	QString fileName=presetDirEq+name+".dr.json";
+	savePreset(preset,fileName);
     });
 
     _filename=rangersDir+"/save/autodump.txt";
@@ -163,17 +163,17 @@ void MainWindow::readSettings()
 
     QFile file("minRowsPreset.json");
     if (file.open(QIODevice::ReadOnly|QIODevice::Text)) {
-        QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
-        if(!doc.isNull()) {
-            std::cout<<"loading minRowsPreset.json"<<std::endl;
-            QVariantMap minRowsJson=doc.toVariant().toMap();
-            using VarMapCI=QVariantMap::const_iterator;
-            for (VarMapCI i = minRowsJson.begin(); i != minRowsJson.end(); ++i)
-            {
-                minRowsPreset[i.key()]=i.value().toInt();
-                std::cout<<i.key().toStdString()<<": "<<i.value().toInt()<<std::endl;
-            }
-        }
+	QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
+	if(!doc.isNull()) {
+	    std::cout<<"loading minRowsPreset.json"<<std::endl;
+	    QVariantMap minRowsJson=doc.toVariant().toMap();
+	    using VarMapCI=QVariantMap::const_iterator;
+	    for (VarMapCI i = minRowsJson.begin(); i != minRowsJson.end(); ++i)
+	    {
+		minRowsPreset[i.key()]=i.value().toInt();
+		std::cout<<i.key().toStdString()<<": "<<i.value().toInt()<<std::endl;
+	    }
+	}
     }
 }
 
@@ -212,14 +212,14 @@ bool MainWindow::parseDump()
     QFile file(_filename);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        statusBar()->showMessage(tr("File could not be open: ")+_filename);
-        return false;
+	statusBar()->showMessage(tr("File could not be open: ")+_filename);
+	return false;
     }
     if(QFileInfo(_filename).lastModified()==_fileModified)
     {
-        //dump was parsed earlier
-        statusBar()->showMessage(tr("dump was parsed earlier, skipping")+_filename);
-        return false;
+	//dump was parsed earlier
+	statusBar()->showMessage(tr("dump was parsed earlier, skipping")+_filename);
+	return false;
     }
     _fileModified=QFileInfo(_filename).lastModified();
     setWindowTitle(QStringLiteral("SRHDDumpReader - ")+QFileInfo(_filename).baseName());
@@ -231,10 +231,10 @@ bool MainWindow::parseDump()
     cout<<"Reading the file took "<<duration/1000.0<<"s. ";
     galaxy.parseDump(stream);
     statusBar()->showMessage(tr("Parsed %1 stars, %2 planets, %3 black holes, %4 ships and %5 items").
-                             arg(galaxy.starCount()).arg(galaxy.planetCount()).
-                             arg(galaxy.blackHoleCount()).
-                             arg(galaxy.shipCount()).arg(galaxy.equipmentCount()),
-                             5000);
+			     arg(galaxy.starCount()).arg(galaxy.planetCount()).
+			     arg(galaxy.blackHoleCount()).
+			     arg(galaxy.shipCount()).arg(galaxy.equipmentCount()),
+			     5000);
     high_resolution_clock::time_point tParseEnd = high_resolution_clock::now();
     duration = duration_cast<milliseconds>( tParseEnd - tReadEnd ).count();
     cout<<"Parsing - "<<duration/1000.0<<"s. ";
@@ -261,9 +261,9 @@ bool MainWindow::parseDump()
     cout<<"map update - "<<duration/1000.0<<"s. ";
 
     if(ui->actionAutoSaveReport->isChecked()) {
-        saveReport();
-        duration = duration_cast<milliseconds>( high_resolution_clock::now() - tMapEnd ).count();
-        cout<<"saving the report - "<<duration/1000.0<<"s. ";
+	saveReport();
+	duration = duration_cast<milliseconds>( high_resolution_clock::now() - tMapEnd ).count();
+	cout<<"saving the report - "<<duration/1000.0<<"s. ";
     }
 
     duration = duration_cast<milliseconds>( high_resolution_clock::now() - tStart ).count();
@@ -274,10 +274,10 @@ bool MainWindow::parseDump()
 bool MainWindow::openDump()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
-                                                    tr("Open Dump File"), rangersDir+"/save/",
-                                                    tr("SRHD Dump (*.txt);;All Files (*)"));
+						    tr("Open Dump File"), rangersDir+"/save/",
+						    tr("SRHD Dump (*.txt);;All Files (*)"));
     if (fileName.isEmpty())
-        return false;
+	return false;
     _filename=fileName;
     QDir currentDir=QFileInfo(fileName).dir();
     currentDir.setNameFilters(QStringList("*.txt"));
@@ -286,7 +286,7 @@ bool MainWindow::openDump()
     dumpFileList.clear();
     for(const auto& info:infoList)
     {
-        dumpFileList<<info.absoluteFilePath();
+	dumpFileList<<info.absoluteFilePath();
     }
     currentDumpIndex=dumpFileList.indexOf(fileName);
     std::cout<<currentDumpIndex<<'\n'<<dumpFileList.join('\n').toStdString()<<std::endl;
@@ -297,29 +297,29 @@ bool MainWindow::openDump()
 void MainWindow::showAbout()
 {
     QMessageBox::about(this,"SRHDDumpReader",QString("SRHDDumpReader v. %1\nAuthor: Mykola Dimura\n"
-                                                     "Description: small program to parse and analyse"
-                                                     " the galaxy dumps from \"Space Rangers HD: A War"
-                                                     " Apart\" video game\n"
-                                                     "Tip: press F7 in-game for QuickDump.")
-                       .arg(QApplication::applicationVersion()));
+						     "Description: small program to parse and analyse"
+						     " the galaxy dumps from \"Space Rangers HD: A War"
+						     " Apart\" video game\n"
+						     "Tip: press F7 in-game for QuickDump.")
+		       .arg(QApplication::applicationVersion()));
 }
 QString tabSeparatedValues(const QAbstractItemModel& model)
 {
     QString buf;
     for(int c=0; c<model.columnCount();c++)
     {
-        buf+=model.headerData(c,Qt::Horizontal).toString();
-        buf+='\t';
+	buf+=model.headerData(c,Qt::Horizontal).toString();
+	buf+='\t';
     }
     buf+='\n';
     for(int r=0; r<model.rowCount(); r++)
     {
-        for(int c=0; c<model.columnCount();c++)
-        {
-            buf+=model.data(model.index(r,c)).toString();
-            buf+='\t';
-        }
-        buf+='\n';
+	for(int c=0; c<model.columnCount();c++)
+	{
+	    buf+=model.data(model.index(r,c)).toString();
+	    buf+='\t';
+	}
+	buf+='\n';
     }
     return buf;
 }
@@ -335,14 +335,14 @@ void MainWindow::saveReport()
     QString filename=_filename+".report";
     QFile ofile(filename);
     if(ofile.exists()) {
-        //QString timestamp=QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
-        //QFile::rename(filename,_filename+timestamp+".report");
-        QFile::remove(filename);
+	//QString timestamp=QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
+	//QFile::rename(filename,_filename+timestamp+".report");
+	QFile::remove(filename);
     }
 
     if(!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        statusBar()->showMessage(tr("Could not create the report file ")+filename);
-        return;
+	statusBar()->showMessage(tr("Could not create the report file ")+filename);
+	return;
     }
 
     //Bases
@@ -350,15 +350,15 @@ void MainWindow::saveReport()
     QString basesBuf="Bases:\nname\tstar\tdistance\n";
     for(int row=0; row<tradeProxyModel.rowCount(); row++)
     {
-        double dist=tradeProxyModel.data(tradeProxyModel.index(row,2)).toInt();
-        int size=tradeProxyModel.data(tradeProxyModel.index(row,27)).toInt();
-        QString name=tradeProxyModel.data(tradeProxyModel.index(row,0)).toString();
-        QString star=tradeProxyModel.data(tradeProxyModel.index(row,1)).toString();
-        if(size==0) {//Base, not planet
-            basesBuf+=name+'\t'+star+'\t'+QString::number(dist);
-            basesBuf+='\n';
-            continue;
-        }
+	double dist=tradeProxyModel.data(tradeProxyModel.index(row,2)).toInt();
+	int size=tradeProxyModel.data(tradeProxyModel.index(row,27)).toInt();
+	QString name=tradeProxyModel.data(tradeProxyModel.index(row,0)).toString();
+	QString star=tradeProxyModel.data(tradeProxyModel.index(row,1)).toString();
+	if(size==0) {//Base, not planet
+	    basesBuf+=name+'\t'+star+'\t'+QString::number(dist);
+	    basesBuf+='\n';
+	    continue;
+	}
     }
 
     QString lastSummaryEntry;
@@ -366,26 +366,26 @@ void MainWindow::saveReport()
     QString planetsBuf;
     for(const QString& fileName: planetsReportPresets)
     {
-        planetsHeaderView->setPreset(loadPreset(fileName));
-        lastSummaryEntry=QFileInfo(fileName).baseName();
-        reportSummary[lastSummaryEntry]=planetsProxyModel.rowCount();
-        lastSummaryEntry+=": "+QString::number(planetsProxyModel.rowCount());
-        planetsBuf+=lastSummaryEntry+'\n';
-        planetsBuf+=tabSeparatedValues(planetsProxyModel);
-        planetsBuf+='\n';
+	planetsHeaderView->setPreset(loadPreset(fileName));
+	lastSummaryEntry=QFileInfo(fileName).baseName();
+	reportSummary[lastSummaryEntry]=planetsProxyModel.rowCount();
+	lastSummaryEntry+=": "+QString::number(planetsProxyModel.rowCount());
+	planetsBuf+=lastSummaryEntry+'\n';
+	planetsBuf+=tabSeparatedValues(planetsProxyModel);
+	planetsBuf+='\n';
     }
 
     //eq Presets
     QString eqBuf;
     for(const QString& fileName: eqReportPresets)
     {
-        eqHeaderView->setPreset(loadPreset(fileName));
-        lastSummaryEntry=QFileInfo(fileName).baseName();
-        reportSummary[lastSummaryEntry]=eqProxyModel.rowCount();
-        lastSummaryEntry+=": "+QString::number(eqProxyModel.rowCount());
-        eqBuf+=lastSummaryEntry+'\n';
-        eqBuf+=tabSeparatedValues(eqProxyModel);
-        eqBuf+='\n';
+	eqHeaderView->setPreset(loadPreset(fileName));
+	lastSummaryEntry=QFileInfo(fileName).baseName();
+	reportSummary[lastSummaryEntry]=eqProxyModel.rowCount();
+	lastSummaryEntry+=": "+QString::number(eqProxyModel.rowCount());
+	eqBuf+=lastSummaryEntry+'\n';
+	eqBuf+=tabSeparatedValues(eqProxyModel);
+	eqBuf+='\n';
     }
     //restore presets
     eqHeaderView->setPreset(oldEqPreset);
@@ -396,14 +396,14 @@ void MainWindow::saveReport()
     out << planetsBuf+eqBuf+basesBuf+'\n'; // serialize a string
 
     statusBar()->showMessage(tr("Report saved: ")+filename);
-
+    std::cout<<"Report saved: "+filename.toStdString()<<std::endl;
 }
 
 void MainWindow::loadNextDump()
 {
     if(currentDumpIndex<0 || currentDumpIndex>=dumpFileList.size()-1)
     {
-        return;
+	return;
     }
     _filename=dumpFileList[++currentDumpIndex];
     updateDumpArrows();
@@ -414,7 +414,7 @@ void MainWindow::loadPreviousDump()
 {
     if(currentDumpIndex<=0)
     {
-        return;
+	return;
     }
     _filename=dumpFileList[--currentDumpIndex];
     updateDumpArrows();
@@ -425,8 +425,8 @@ void MainWindow::savePreset(const QVariantMap &preset, const QString &fileName) 
 {
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        statusBar()->showMessage(tr("Could not save: ")+fileName);
-        return;
+	statusBar()->showMessage(tr("Could not save: ")+fileName);
+	return;
     }
     file.write(QJsonDocument::fromVariant(preset).toJson());
     statusBar()->showMessage(tr("Preset saved: ")+fileName);
@@ -439,10 +439,10 @@ void MainWindow::responsiveSleep(int msec) const
     QWaitCondition waitCondition;
     for(t=0; t<msec-shortSleep; t+=shortSleep)
     {
-        mutex.lock();
-        waitCondition.wait(&mutex, shortSleep);
-        mutex.unlock();
-        QCoreApplication::processEvents();
+	mutex.lock();
+	waitCondition.wait(&mutex, shortSleep);
+	mutex.unlock();
+	QCoreApplication::processEvents();
     }
     mutex.lock();
     waitCondition.wait(&mutex, msec-t);
@@ -458,15 +458,15 @@ void MainWindow::loadPresets()
     QDir eqDir(presetDirEq);
     for(const QString& fileName:plDir.entryList(QDir::Files))
     {
-        auto preset=loadPreset(plDir.path()+'/'+fileName);
-        planetsHeaderView->addPreset(preset,QFileInfo(fileName).baseName());
-        std::cout<<fileName.toLocal8Bit().toStdString()<<std::endl;
+	auto preset=loadPreset(plDir.path()+'/'+fileName);
+	planetsHeaderView->addPreset(preset,QFileInfo(fileName).baseName());
+	std::cout<<fileName.toLocal8Bit().toStdString()<<std::endl;
     }
     for(const QString& fileName:eqDir.entryList(QDir::Files))
     {
-        auto preset=loadPreset(eqDir.path()+'/'+fileName);
-        eqHeaderView->addPreset(preset,QFileInfo(fileName).baseName());
-        std::cout<<fileName.toLocal8Bit().toStdString()<<std::endl;
+	auto preset=loadPreset(eqDir.path()+'/'+fileName);
+	eqHeaderView->addPreset(preset,QFileInfo(fileName).baseName());
+	std::cout<<fileName.toLocal8Bit().toStdString()<<std::endl;
     }
 
     //Presets to include in reports:
@@ -475,15 +475,15 @@ void MainWindow::loadPresets()
     planetsReportPresets=plDir.entryList(QDir::Files);
     for(QString& str:planetsReportPresets)
     {
-        std::cout<<str.toLocal8Bit().toStdString()<<std::endl;
-        str=presetDirPlanetsReport+str;
+	std::cout<<str.toLocal8Bit().toStdString()<<std::endl;
+	str=presetDirPlanetsReport+str;
     }
     eqDir.setPath(presetDirEqReport);
     eqReportPresets=eqDir.entryList(QDir::Files);
     for(QString& str:eqReportPresets)
     {
-        std::cout<<str.toLocal8Bit().toStdString()<<std::endl;
-        str=presetDirEqReport+str;
+	std::cout<<str.toLocal8Bit().toStdString()<<std::endl;
+	str=presetDirEqReport+str;
     }
 }
 
@@ -498,29 +498,29 @@ void MainWindow::updateDumpArrows()
 {
     if(currentDumpIndex<0 || currentDumpIndex>=dumpFileList.size()-1)
     {
-        ui->actionNextDump->setDisabled(true);
+	ui->actionNextDump->setDisabled(true);
     }
     else
     {
-        ui->actionNextDump->setEnabled(true);
+	ui->actionNextDump->setEnabled(true);
     }
     if(currentDumpIndex<=0)
     {
-        ui->actionPreviousDump->setDisabled(true);
+	ui->actionPreviousDump->setDisabled(true);
     }
     else
     {
-        ui->actionPreviousDump->setEnabled(true);
+	ui->actionPreviousDump->setEnabled(true);
     }
 }
 
 void MainWindow::saveMap()
 {
     if(mapScale>0.f) {
-        if(QFileInfo(_filename+".map.png").exists()) {
-            QFile::remove(_filename+"_map.png");
-        }
-        galaxyMap.save(_filename+"_map.png");
+	if(QFileInfo(_filename+".map.png").exists()) {
+	    QFile::remove(_filename+"_map.png");
+	}
+	galaxyMap.save(_filename+"_map.png");
     }
 }
 
@@ -528,14 +528,14 @@ QVariantMap MainWindow::loadPreset(const QString &fileName) const
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
-        statusBar()->showMessage(tr("Unable to open file ")+
-                                 file.errorString()+" "+file.fileName());
-        return QVariantMap();
+	statusBar()->showMessage(tr("Unable to open file ")+
+				 file.errorString()+" "+file.fileName());
+	return QVariantMap();
     }
     QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
     if(doc.isNull()) {
-        statusBar()->showMessage(tr("Unable to parse JSON file"));
-        return QVariantMap();
+	statusBar()->showMessage(tr("Unable to parse JSON file"));
+	return QVariantMap();
     }
     return doc.toVariant().toMap();
 }
@@ -547,28 +547,28 @@ bool rangersWindowActive()
     GetWindowThreadProcessId(wnd,&windowProcessId);
     //std::cout<<"active window process: "<<windowProcessId;
     HANDLE PID = OpenProcess(
-                PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
-                FALSE,
-                windowProcessId /* This is the PID, you can find one from windows task manager */
-                );
+		PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+		FALSE,
+		windowProcessId /* This is the PID, you can find one from windows task manager */
+		);
     if (PID)
     {
-        TCHAR Buffer[MAX_PATH];
-        if (GetModuleFileNameEx(PID, 0, Buffer, MAX_PATH))
-        {
-            // At this point, buffer contains the full path to the executable
-            std::wstring wstr(Buffer);
-            std::string str(wstr.begin(),wstr.end());
-            if(QFileInfo(QString::fromStdString(str)).baseName()=="Rangers")
-            {
-                return true;
-            }
-        }
-        else
-        {
-            // You better call GetLastError() here
-        }
-        CloseHandle(PID);
+	TCHAR Buffer[MAX_PATH];
+	if (GetModuleFileNameEx(PID, 0, Buffer, MAX_PATH))
+	{
+	    // At this point, buffer contains the full path to the executable
+	    std::wstring wstr(Buffer);
+	    std::string str(wstr.begin(),wstr.end());
+	    if(QFileInfo(QString::fromStdString(str)).baseName()=="Rangers")
+	    {
+		return true;
+	    }
+	}
+	else
+	{
+	    // You better call GetLastError() here
+	}
+	CloseHandle(PID);
     }
     return false;
 }
@@ -577,19 +577,19 @@ bool MainWindow::nativeEvent(const QByteArray &eventType, void *message, long * 
     MSG *msg = reinterpret_cast<MSG *>(message);
     if (msg->message == WM_HOTKEY)
     {
-        switch(msg->wParam)
-        {
-        case 100:
-            saveDumpWin();
-            break;
-        case 101:
-            //TODO: debug
-            generateGalaxies();
-            sound.play();
-            break;
-        default:
-            break;
-        }
+	switch(msg->wParam)
+	{
+	case 100:
+	    saveDumpWin();
+	    break;
+	case 101:
+	    //TODO: debug
+	    generateGalaxies();
+	    sound.play();
+	    break;
+	default:
+	    break;
+	}
     }
     return false;
 }
@@ -605,51 +605,51 @@ bool MainWindow::simulateInput(const std::string& str) const
     std::vector<INPUT> ip;
     for(char c:str)
     {
-        if(std::islower(c))
-        {
-            if(c=='e'){
-                inp.ki.wScan = 0x1C;//Enter
-                inp.ki.wVk = 0;
-                inp.ki.dwFlags = 0 | KEYEVENTF_SCANCODE; // 0 for key press
-                ip.push_back(inp);
-                inp.ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE;
-                ip.push_back(inp);
-            }
-            else if (c=='s'){
-                inp.ki.wVk = 0x1B;//Esc;
-                inp.ki.dwFlags = 0; // 0 for key press
-                ip.push_back(inp);
-                inp.ki.dwFlags = KEYEVENTF_KEYUP;
-                ip.push_back(inp);
-            }
-            else if (c=='f'){
-                inp.ki.wVk = 0x78;//F9
-                inp.ki.dwFlags = 0; // 0 for key press
-                ip.push_back(inp);
-                inp.ki.dwFlags = KEYEVENTF_KEYUP;
-                ip.push_back(inp);
-            }
-            else if (c=='b'){
-                inp.ki.wVk = 0;
-                inp.ki.wScan = 0x0E;//backspace
-                inp.ki.dwFlags = 0 | KEYEVENTF_SCANCODE; // 0 for key press
-                ip.push_back(inp);
-                inp.ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE;
-                ip.push_back(inp);
-            }
-        }
-        else {
-            // Press normal key
-            inp.ki.wVk = c;
-            inp.ki.dwFlags = 0; // 0 for key press
-            ip.push_back(inp);
-            inp.ki.dwFlags = KEYEVENTF_KEYUP;
-            ip.push_back(inp);
-        }
+	if(std::islower(c))
+	{
+	    if(c=='e'){
+		inp.ki.wScan = 0x1C;//Enter
+		inp.ki.wVk = 0;
+		inp.ki.dwFlags = 0 | KEYEVENTF_SCANCODE; // 0 for key press
+		ip.push_back(inp);
+		inp.ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE;
+		ip.push_back(inp);
+	    }
+	    else if (c=='s'){
+		inp.ki.wVk = 0x1B;//Esc;
+		inp.ki.dwFlags = 0; // 0 for key press
+		ip.push_back(inp);
+		inp.ki.dwFlags = KEYEVENTF_KEYUP;
+		ip.push_back(inp);
+	    }
+	    else if (c=='f'){
+		inp.ki.wVk = 0x78;//F9
+		inp.ki.dwFlags = 0; // 0 for key press
+		ip.push_back(inp);
+		inp.ki.dwFlags = KEYEVENTF_KEYUP;
+		ip.push_back(inp);
+	    }
+	    else if (c=='b'){
+		inp.ki.wVk = 0;
+		inp.ki.wScan = 0x0E;//backspace
+		inp.ki.dwFlags = 0 | KEYEVENTF_SCANCODE; // 0 for key press
+		ip.push_back(inp);
+		inp.ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE;
+		ip.push_back(inp);
+	    }
+	}
+	else {
+	    // Press normal key
+	    inp.ki.wVk = c;
+	    inp.ki.dwFlags = 0; // 0 for key press
+	    ip.push_back(inp);
+	    inp.ki.dwFlags = KEYEVENTF_KEYUP;
+	    ip.push_back(inp);
+	}
     }
     if(!rangersWindowActive()) {
-        statusBar()->showMessage(tr("Rangers are not in focus, aborting input simulation."));
-        return false;
+	statusBar()->showMessage(tr("Rangers are not in focus, aborting input simulation."));
+	return false;
     }
     SendInput(ip.size(), ip.data(), sizeof(INPUT));
     responsiveSleep(shortSleep);
@@ -661,16 +661,16 @@ void MainWindow::saveDumpWin()
 {
     //TODO: debug
     if(!rangersWindowActive()) {
-        statusBar()->showMessage(tr("Rangers are not in focus, aborting QuickDump."));
-        return;
+	statusBar()->showMessage(tr("Rangers are not in focus, aborting QuickDump."));
+	return;
     }
     _filename=rangersDir+"/save/autodump";
 
     if(QFileInfo(_filename+".txt").exists()) {
-        QFile::remove(_filename+".txt");
+	QFile::remove(_filename+".txt");
     }
     if(QFileInfo(_filename+".sav").exists()) {
-        QFile::remove(_filename+".sav");
+	QFile::remove(_filename+".sav");
     }
     _filename+=".txt";
 
@@ -693,7 +693,7 @@ void MainWindow::saveDumpWin()
     QCoreApplication::processEvents();
 
     if(!simulateInput("MAKEDUMP")) {
-        return;
+	return;
     }
     QCoreApplication::processEvents();
 
@@ -712,19 +712,19 @@ void MainWindow::saveDumpWin()
 
     //Remove proposed save name
     if(!simulateInput("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")) {
-        return;
+	return;
     }
     QCoreApplication::processEvents();
 
     //Enter new save name ("autodump")
     if(!simulateInput("AUTODUMP")) {
-        return;
+	return;
     }
     QCoreApplication::processEvents();
 
     //Press Enter to save
     if(!simulateInput("e")) {
-        return;
+	return;
     }
 
     //wait till the saving has finished
@@ -733,15 +733,15 @@ void MainWindow::saveDumpWin()
     QFileInfo fileInfo(_filename);
     for(int t=0; t<30000; t+=dt)
     {
-        responsiveSleep(dt);
-        fileInfo.refresh();
-        int size=fileInfo.size();
-        if(size && size==oldSize) {
-            parseDump();
-            return;
-        }
-        oldSize=size;
-        QCoreApplication::processEvents();
+	responsiveSleep(dt);
+	fileInfo.refresh();
+	int size=fileInfo.size();
+	if(size && size==oldSize) {
+	    parseDump();
+	    return;
+	}
+	oldSize=size;
+	QCoreApplication::processEvents();
     }
     statusBar()->showMessage(tr("Could not save the dump, timeot reached. Not parsing."));
 }
@@ -751,7 +751,7 @@ QImage MainWindow::currentScreen(float kx, float ky, float kw, float kh)
     using namespace std;
     auto screenTaken=QDateTime::currentDateTime();
     if(!simulateInput("f")) {//make new screenshot
-        return QImage();
+	return QImage();
     }
     const QString rangersDir=QStandardPaths::locate(QStandardPaths::DocumentsLocation,"SpaceRangersHD",QStandardPaths::LocateDirectory);
     QDir dir(rangersDir+"/Screenshots");
@@ -764,43 +764,43 @@ QImage MainWindow::currentScreen(float kx, float ky, float kw, float kh)
     int t;
     for(t=screenSaveLag; t<8000; t+=screenSaveLag*0.1)
     {
-        responsiveSleep(screenSaveLag*0.1);
-        dir.refresh();
-        fileList=dir.entryList(QDir::Files,QDir::Time);
-        if(fileList.isEmpty()){
-            //cerr<<string("no files in a dir: ")+to_string(t)<<endl;
-            continue;
-        }
-        screenFilename=dir.absolutePath()+"/"+fileList.first();
-        fileModified=QFileInfo(screenFilename).lastModified();
-        if(screenTaken.msecsTo(fileModified)<0) {//old screenshot
-            /*cerr<<string("old file: ")+to_string(t)+
+	responsiveSleep(screenSaveLag*0.1);
+	dir.refresh();
+	fileList=dir.entryList(QDir::Files,QDir::Time);
+	if(fileList.isEmpty()){
+	    //cerr<<string("no files in a dir: ")+to_string(t)<<endl;
+	    continue;
+	}
+	screenFilename=dir.absolutePath()+"/"+fileList.first();
+	fileModified=QFileInfo(screenFilename).lastModified();
+	if(screenTaken.msecsTo(fileModified)<0) {//old screenshot
+	    /*cerr<<string("old file: ")+to_string(t)+
       " "+screenFilename.toStdString()+
       " delta:"+to_string(screenTaken.msecsTo(fileModified))+
        " taken: "+screenTaken.toString().toStdString()+
        " modified: "+fileModified.toString().toStdString()<<endl;
     screenFilename.clear();*/
-            continue;
-        }
-        else {
-            break;
-        }
+	    continue;
+	}
+	else {
+	    break;
+	}
     }
     if(screenFilename.isEmpty()) {
-        cerr<<string("Could not take a screenshot at time: ")+to_string(t)<<endl;
-        return QImage();
+	cerr<<string("Could not take a screenshot at time: ")+to_string(t)<<endl;
+	return QImage();
     }
     //wait, till the file is fully writen to disk
     QImage currentImage;
     while(!currentImage.load(screenFilename) && t<8000)
     {
-        //cerr<<"load failed:"<<t<<endl;
-        responsiveSleep(50);
-        t+=50;
+	//cerr<<"load failed:"<<t<<endl;
+	responsiveSleep(50);
+	t+=50;
     }
     screenSaveLag=t*0.95;
     currentImage=currentImage.copy(currentImage.width()*kx,currentImage.height()*ky,
-                                   currentImage.width()*kw,currentImage.height()*kh);
+				   currentImage.width()*kw,currentImage.height()*kh);
     QFile::remove(screenFilename);
     return currentImage;
 }
@@ -810,10 +810,10 @@ bool isUseless(const QMap<QString, int>& val, const QMap<QString, int>& min)
     using MapStrIntCI=QMap<QString,int>::const_iterator;
     for (MapStrIntCI i = min.begin(); i != min.end(); ++i)
     {
-        if(val.value(i.key(),0)<i.value()) {
-            std::cout<<i.key().toStdString()<<" < "<<i.value()<<std::endl;
-            return true;
-        }
+	if(val.value(i.key(),0)<i.value()) {
+	    std::cout<<i.key().toStdString()<<" < "<<i.value()<<std::endl;
+	    return true;
+	}
     }
     return false;
 }
@@ -825,13 +825,13 @@ void MainWindow::generateGalaxies()
     std::string filename=QFile::encodeName(rangersDir+"/SRHDDumpReader_generation.log").toStdString();
     ofstream logfile(filename,std::ofstream::out | std::ofstream::app);
     if(!logfile.good()) {
-        statusBar()->showMessage(tr("Could not open the log file ")+QString::fromStdString(filename));
+	statusBar()->showMessage(tr("Could not open the log file ")+QString::fromStdString(filename));
     }
 
     auto originalMainMenu=currentScreen(0,0.9,0.05,0.1);
     if(originalMainMenu.height()==0) {
-        statusBar()->showMessage(tr("could not get reference screenshot for the main menu. Generation stopped."));
-        return;
+	statusBar()->showMessage(tr("could not get reference screenshot for the main menu. Generation stopped."));
+	return;
     }
     originalMainMenu.save("originalMainMenu.png");
 
@@ -840,108 +840,108 @@ void MainWindow::generateGalaxies()
     QImage originalGenerationFinished;
     for(int i=0; ;i++)
     {
-        high_resolution_clock::time_point iterationStart = high_resolution_clock::now();
+	high_resolution_clock::time_point iterationStart = high_resolution_clock::now();
 
-        //check, if the state is right
-        auto currentMainMenu=currentScreen(0,0.9,0.05,0.1);
-        if(currentMainMenu!=originalMainMenu) {
-            statusBar()->showMessage(tr("Main menu is expected, but does not match. Generation stopped. "));
-            return;
-        }
+	//check, if the state is right
+	auto currentMainMenu=currentScreen(0,0.9,0.05,0.1);
+	if(currentMainMenu!=originalMainMenu) {
+	    statusBar()->showMessage(tr("Main menu is expected, but does not match. Generation stopped. "));
+	    return;
+	}
 
-        //New Game
-        if(!simulateInput("N")) {
-            return;
-        }
-        responsiveSleep(shortSleep*8);
-        //Enter (start generation)
-        if(!simulateInput("e")) {
-            return;
-        }
-        //Wait until the galaxy is ready
-        high_resolution_clock::time_point tGenerationStarted = high_resolution_clock::now();
-        QImage currentGenerationFinished;
-        if(i==0) {//first run
-            responsiveSleep(maxGenerationTime);
-            originalGenerationFinished=currentScreen(0.45,0.925,0.1,0.05);
-            originalGenerationFinished.save("originalGenerationFinished.png");
-        }
-        else {
-            responsiveSleep(generationTime);
-            const int dt=3000;
-            int t;
-            for(t=generationTime; t<maxGenerationTime; t+=dt)
-            {
-                currentGenerationFinished=currentScreen(0.45,0.925,0.1,0.05);
-                if(currentGenerationFinished==originalGenerationFinished) {
-                    break;
-                }
-                else {
-                    //currentGenerationFinished.save(QString::number(t)+"_currentGen.png");
-                    responsiveSleep(dt);
-                }
-            }
-            if(t>=maxGenerationTime) {
-                statusBar()->showMessage(tr("Galaxy_generation_finished is expected, but does not match. Generation stopped"));
-                return;
-            }
-            high_resolution_clock::time_point tGenerationFinished = high_resolution_clock::now();
-            generationTime=duration_cast<milliseconds>( tGenerationFinished - tGenerationStarted ).count();
-            realGenTimes[i%10]=generationTime;
-            std::cout<<"Last galaxy generation took: "<<generationTime/1000.0<<"s. ";
-            generationTime=*std::min_element(realGenTimes.begin(),realGenTimes.end());
-            std::cout<<"Minimum of the last ten: "<<generationTime/1000.0<<"s. ";
-            generationTime=(generationTime-screenSaveLag)*0.98;
-            std::cout<<"Trying next: "<<generationTime/1000.0<<"s."<<std::endl;
-        }
-        //Enter (close Intro screen)
-        if(!simulateInput("e")) {
-            return;
-        }
-        responsiveSleep(shortSleep*100);
-        saveDumpWin();
-        if(!ui->actionAutoSaveReport->isChecked()) {
-            saveReport();
-        }
+	//New Game
+	if(!simulateInput("N")) {
+	    return;
+	}
+	responsiveSleep(shortSleep*8);
+	//Enter (start generation)
+	if(!simulateInput("e")) {
+	    return;
+	}
+	//Wait until the galaxy is ready
+	high_resolution_clock::time_point tGenerationStarted = high_resolution_clock::now();
+	QImage currentGenerationFinished;
+	if(i==0) {//first run
+	    responsiveSleep(maxGenerationTime);
+	    originalGenerationFinished=currentScreen(0.45,0.925,0.1,0.05);
+	    originalGenerationFinished.save("originalGenerationFinished.png");
+	}
+	else {
+	    responsiveSleep(generationTime);
+	    const int dt=3000;
+	    int t;
+	    for(t=generationTime; t<maxGenerationTime; t+=dt)
+	    {
+		currentGenerationFinished=currentScreen(0.45,0.925,0.1,0.05);
+		if(currentGenerationFinished==originalGenerationFinished) {
+		    break;
+		}
+		else {
+		    //currentGenerationFinished.save(QString::number(t)+"_currentGen.png");
+		    responsiveSleep(dt);
+		}
+	    }
+	    if(t>=maxGenerationTime) {
+		statusBar()->showMessage(tr("Galaxy_generation_finished is expected, but does not match. Generation stopped"));
+		return;
+	    }
+	    high_resolution_clock::time_point tGenerationFinished = high_resolution_clock::now();
+	    generationTime=duration_cast<milliseconds>( tGenerationFinished - tGenerationStarted ).count();
+	    realGenTimes[i%10]=generationTime;
+	    std::cout<<"Last galaxy generation took: "<<generationTime/1000.0<<"s. ";
+	    generationTime=*std::min_element(realGenTimes.begin(),realGenTimes.end());
+	    std::cout<<"Minimum of the last ten: "<<generationTime/1000.0<<"s. ";
+	    generationTime=(generationTime-screenSaveLag)*0.98;
+	    std::cout<<"Trying next: "<<generationTime/1000.0<<"s."<<std::endl;
+	}
+	//Enter (close Intro screen)
+	if(!simulateInput("e")) {
+	    return;
+	}
+	responsiveSleep(shortSleep*100);
+	saveDumpWin();
+	if(!ui->actionAutoSaveReport->isChecked()) {
+	    saveReport();
+	}
 
-        QString timestamp=QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
+	QString timestamp=QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
 
-        QString prefix=rangersDir+"/save/autodump";
-        if(isUseless(reportSummary,minRowsPreset)) {//useless save
-            QFile::remove(prefix+".txt");
-            QFile::remove(prefix+".sav");
-            QFile::remove(prefix+".txt.report");
-            QFile::remove(prefix+".txt_map.png");
-        }
-        else {
-            QFile::rename(prefix+".txt",prefix+timestamp+".txt");
-            QFile::rename(prefix+".sav",prefix+timestamp+".sav_");
-            QFile::rename(prefix+".txt.report",prefix+timestamp+".report");
-            QFile::rename(prefix+".txt_map.png",prefix+timestamp+"_map.png");
-        }
+	QString prefix=rangersDir+"/save/autodump";
+	if(isUseless(reportSummary,minRowsPreset)) {//useless save
+	    QFile::remove(prefix+".txt");
+	    QFile::remove(prefix+".sav");
+	    QFile::remove(prefix+".txt.report");
+	    QFile::remove(prefix+".txt_map.png");
+	}
+	else {
+	    QFile::rename(prefix+".txt",prefix+timestamp+".txt");
+	    QFile::rename(prefix+".sav",prefix+timestamp+".sav_");
+	    QFile::rename(prefix+".txt.report",prefix+timestamp+".report");
+	    QFile::rename(prefix+".txt_map.png",prefix+timestamp+"_map.png");
+	}
 
-        responsiveSleep(shortSleep*20);
-        if(!simulateInput("s")) {//Esc
-            return;
-        }
-        responsiveSleep(shortSleep*40);
-        if(!simulateInput("E")) {//E==exit
-            return;
-        }
-        if(!simulateInput("e")) {//Enter (confirm)
-            return;
-        }
-        responsiveSleep(shortSleep*40);
-        int iterationTime=duration_cast<seconds>( high_resolution_clock::now() - iterationStart ).count();
-        std::string logoutstr=timestamp.toStdString()+
-                ": Iteration "+std::to_string(i)+" finished ("+to_string(iterationTime)+"s). ";
-        using MapStrIntCI=QMap<QString,int>::const_iterator;
-        for (MapStrIntCI i = reportSummary.begin(); i != reportSummary.end(); ++i)
-        {
-            logoutstr+=i.key().toStdString()+": "+to_string(i.value())+"; ";
-        }
-        logfile<<logoutstr<<endl;
-        std::cout<<logoutstr<<endl;
+	responsiveSleep(shortSleep*20);
+	if(!simulateInput("s")) {//Esc
+	    return;
+	}
+	responsiveSleep(shortSleep*40);
+	if(!simulateInput("E")) {//E==exit
+	    return;
+	}
+	if(!simulateInput("e")) {//Enter (confirm)
+	    return;
+	}
+	responsiveSleep(shortSleep*40);
+	int iterationTime=duration_cast<seconds>( high_resolution_clock::now() - iterationStart ).count();
+	std::string logoutstr=timestamp.toStdString()+
+		": Iteration "+std::to_string(i)+" finished ("+to_string(iterationTime)+"s). ";
+	using MapStrIntCI=QMap<QString,int>::const_iterator;
+	for (MapStrIntCI i = reportSummary.begin(); i != reportSummary.end(); ++i)
+	{
+	    logoutstr+=i.key().toStdString()+": "+to_string(i.value())+"; ";
+	}
+	logfile<<logoutstr<<endl;
+	std::cout<<logoutstr<<endl;
 
     }
 }
