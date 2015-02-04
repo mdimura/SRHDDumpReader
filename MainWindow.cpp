@@ -13,6 +13,8 @@
 #include <QDesktopWidget>
 #include <QJsonDocument>
 #include <QToolButton>
+#include <QTextCodec>
+
 #include <iostream>
 #include <fstream>
 #include <chrono>
@@ -65,6 +67,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setDockNestingEnabled(true);
     setCentralWidget(0);
     tabifyDockWidget(ui->tradeDockWidget,ui->eqDockWidget);
+    tabifyDockWidget(ui->eqDockWidget,ui->bhDockWidget);
+    tabifyDockWidget(ui->bhDockWidget,ui->tradeDockWidget);
+    tabifyDockWidget(ui->tradeDockWidget,ui->imageDockWidget);
     ui->tradeDockWidget->raise();
     readSettings();
 
@@ -225,7 +230,18 @@ bool MainWindow::parseDump()
     setWindowTitle(QStringLiteral("SRHDDumpReader - ")+QFileInfo(_filename).baseName());
 
     galaxy.clear();
-    QTextStream stream(file.readAll());
+    const QByteArray& allArr=(file.readAll());
+    QTextStream stream(allArr);
+    QTextCodec::ConverterState state;
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    const QString text = codec->toUnicode(allArr.left(500).constData(), 500, &state);
+    if (state.invalidChars > 0) {
+	stream.setCodec("Windows-1251");
+	std::cout<<"Using Windows-1251 encoding"<<std::endl;
+    }
+    else {
+	    std::cout<<"Using UTF-8 encoding"<<std::endl;
+    }
     high_resolution_clock::time_point tReadEnd = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>( tReadEnd - tStart ).count();
     cout<<"Reading the file took "<<duration/1000.0<<"s. ";
