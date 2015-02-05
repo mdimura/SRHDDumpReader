@@ -915,7 +915,7 @@ void MainWindow::generateGalaxies()
 				generationTime-=1000;
 			} else {
 				minChecks=std::max(2,minChecks);
-				generationTime+=2000*(minChecks-2);
+				generationTime+=1000*(minChecks-2);
 			}
 			std::cout<<"Trying next: "<<generationTime/1000.0<<"s."<<std::endl;
 		}
