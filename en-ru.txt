@@ -1,0 +1,14 @@
+Ultraalloy	Ультрасплавный
+Transcendental	Трансцендентальный
+Nanobrolite	Нанобролитовый
+Pygamore	Пигамарный
+Myoplasmic	Миоплазменный
+Upgraded	Апгрейтинговый
+Fast	Быстрый
+Conscientious	Честный
+Ironclad	Броненосец
+Kindhearted	Добрый
+Peaceful	Мирный
+Repair	Ремонтный
+Invincible	Неуязвимый
+Dandy	Молния

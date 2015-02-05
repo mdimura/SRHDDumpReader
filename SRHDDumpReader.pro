@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-VERSION = 20150202b
+VERSION = 20150205b
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 CONFIG(release, debug|release): DEFINES+=NDEBUG
 
@@ -61,4 +61,21 @@ RESOURCES += \
     icons.qrc
 
 DISTFILES += \
-    .gitignore
+    .gitignore \
+    bonus_descriptions_micromodules_en.json \
+    bonus_descriptions_micromodules_ru.json \
+    Click1.wav \
+    make_ru.sh \
+    translate_micromodules.sh \
+    galaxy_magnifying_glass.ico \
+    bonus_descriptions.json \
+    bonus_descriptions_artifacts.json \
+    bonus_descriptions_hulls.json \
+    bonus_descriptions_micromodules.json \
+    translate_descriptions.sh \
+    bonus_descriptions.json.en \
+    bonus_descriptions_hulls.json.en \
+    bonus_descriptions_micromodules.json.ru \
+    en-ru.txt \
+    micromodules_ru-en.txt \
+    minRowsPreset.json

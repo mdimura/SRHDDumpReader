@@ -210,8 +210,8 @@ void createDescriptionsHulls();
 void createDescriptions();
 QMap<QString, QString> Equipment::loadDescriptions(const QString &filename)
 {
-	createDescriptions();
-	createDescriptionsHulls();
+	//createDescriptions();
+	//createDescriptionsHulls();
 	QMap<QString,QString> descriptions;
 	QFile file(filename);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){

@@ -1,62 +1,146 @@
 [
     {
         "key": "Fast:1",
-        "value": "Speed +100"
+        "value": "speed +100"
     },
     {
         "key": "Fast:2",
-        "value": "Speed +150"
+        "value": "speed +150"
     },
     {
         "key": "Fast:3",
-        "value": "Speed +200"
+        "value": "speed +200"
+    },
+    {
+        "key": "Fast:4",
+        "value": "speed +150"
     },
     {
         "key": "Invincible:1",
-        "value": "Defence +3"
+        "value": "defence +3"
     },
     {
         "key": "Invincible:2",
-        "value": "Defence +6"
+        "value": "defence +6"
     },
     {
         "key": "Invincible:3",
-        "value": "Defence +9"
+        "value": "defence +9"
+    },
+    {
+        "key": "Invincible:4",
+        "value": "defence +6"
     },
     {
         "key": "Repair:1",
-        "value": "Droid +10"
+        "value": "droid +10"
     },
     {
         "key": "Repair:2",
-        "value": "Droid +25"
+        "value": "droid +25"
     },
     {
         "key": "Repair:3",
-        "value": "Droid +40"
+        "value": "droid +40"
+    },
+    {
+        "key": "Repair:4",
+        "value": "droid +25"
     },
     {
         "key": "Myoplasmic:1",
-        "value": "Energetic dmg +4, Splinter dmg +8, Speed -20"
+        "value": "energetic dmg +4, splinter dmg +8, speed -20"
     },
     {
         "key": "Myoplasmic:2",
-        "value": "Energetic dmg +7, Splinter dmg +12, Speed -40"
+        "value": "energetic dmg +7, splinter dmg +12, speed -40"
     },
     {
         "key": "Myoplasmic:3",
-        "value": "Energetic dmg +10, Splinter dmg +20, Speed -60"
+        "value": "energetic dmg +10, splinter dmg +20, speed -60"
+    },
+    {
+        "key": "Myoplasmic:4",
+        "value": "energetic dmg +7, splinter dmg +12, speed -40"
     },
     {
         "key": "Pygamore:1",
-        "value": "Rocket dmg+5, Defence -3, Radar -200"
+        "value": "rocket dmg +5, defence -3, radar -200"
     },
     {
         "key": "Pygamore:2",
-        "value": "Rocket dmg+10, Defence -5, Radar -300"
+        "value": "rocket dmg +10, defence -5, radar -300"
     },
     {
         "key": "Pygamore:3",
-        "value": "Rocket dmg+15, Defence -7, Radar -500"
+        "value": "rocket dmg +15, defence -7, radar -500"
+    },
+    {
+        "key": "Pygamore:4",
+        "value": "rocket dmg +10, defence -5, radar -300"
+    },
+    {
+        "key": "Ironclad:1",
+        "value": "energetic dmg +2, splinter dmg +1, defence +3, speed -50, manoeuvrability -2"
+    },
+    {
+        "key": "Ironclad:2",
+        "value": "energetic dmg +4, splinter dmg +3, defence +4, speed -75, manoeuvrability -2"
+    },
+    {
+        "key": "Ironclad:3",
+        "value": "energetic dmg +6, splinter dmg +5, defence +6, speed -100, manoeuvrability -2"
+    },
+    {
+        "key": "Ironclad:4",
+        "value": "energetic dmg +4, splinter dmg +3, defence +4, speed -75, manoeuvrability -2"
+    },
+    {
+        "key": "Conscientious:1",
+        "value": "jump +3, hook +10, mass -10%, trade -3"
+    },
+    {
+        "key": "Conscientious:2",
+        "value": "jump +5, hook +20, mass -20%, trade -3"
+    },
+    {
+        "key": "Conscientious:3",
+        "value": "jump +7, hook +30, mass -30%, trade -3"
+    },
+    {
+        "key": "Conscientious:4",
+        "value": "jump +5, hook +20, mass -20%, trade -3"
+    },
+    {
+        "key": "Kindhearted:1",
+        "value": "energetic dmg +5, splinter dmg +4, rocket dmg +2"
+    },
+    {
+        "key": "Kindhearted:2",
+        "value": "energetic dmg +6, splinter dmg +5, rocket dmg +3"
+    },
+    {
+        "key": "Kindhearted:3",
+        "value": "energetic dmg +7, splinter dmg +6, rocket dmg +4"
+    },
+    {
+        "key": "Kindhearted:4",
+        "value": "energetic dmg +6, splinter dmg +5, rocket dmg +3"
+    },
+    {
+        "key": "Peaceful:1",
+        "value": "armor +1, defence +3, atack -3, technics -3"
+    },
+    {
+        "key": "Peaceful:2",
+        "value": "armor +2, defence +6, atack -3, technics -3"
+    },
+    {
+        "key": "Peaceful:3",
+        "value": "armor +3, defence +9, atack -3, technics -3"
+    },
+    {
+        "key": "Peaceful:4",
+        "value": "armor +2, defence +6, atack -3, technics -3"
     }
 ]

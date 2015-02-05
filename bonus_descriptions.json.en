@@ -1,86 +1,86 @@
 [
     {
         "key": "Myoplasmic:1",
-        "value": "Energetic dmg +2, Splinter dmg +3, Speed -10"
+        "value": "energetic dmg +2, splinter dmg +3, speed -10"
     },
     {
         "key": "Myoplasmic:2",
-        "value": "Energetic dmg +3, Splinter dmg +4, Speed -20"
+        "value": "energetic dmg +3, splinter dmg +4, speed -20"
     },
     {
         "key": "Myoplasmic:3",
-        "value": "Energetic dmg +5, Splinter dmg +6, Speed -30"
+        "value": "energetic dmg +5, splinter dmg +6, speed -30"
     },
     {
         "key": "Pygamore:1",
-        "value": "Rocket dmg+2, Defence -1, Radar -50"
+        "value": "rocket dmg+2, defence -1, radar -50"
     },
     {
         "key": "Pygamore:2",
-        "value": "Rocket dmg+3, Defence -2, Radar -100"
+        "value": "rocket dmg+3, defence -2, radar -100"
     },
     {
         "key": "Pygamore:3",
-        "value": "Rocket dmg+4, Defence -3, Radar -250"
+        "value": "rocket dmg+4, defence -3, radar -250"
     },
     {
         "key": "Transcendental:1",
-        "value": "Defence +2, Mass +10%"
+        "value": "defence +2, mass +10%"
     },
     {
         "key": "Transcendental:2",
-        "value": "Defence +3, Mass +20%"
+        "value": "defence +3, mass +20%"
     },
     {
         "key": "Transcendental:3",
-        "value": "Defence +4, Mass +30%"
+        "value": "defence +4, mass +30%"
     },
     {
         "key": "Upgraded:1",
-        "value": "Hook range +10, Mobility +1, Charizm -2"
+        "value": "hook range +10, mobility +1, charizm -2"
     },
     {
         "key": "Upgraded:2",
-        "value": "Hook range +15, Mobility +1, Charizm -2"
+        "value": "hook range +15, mobility +1, charizm -2"
     },
     {
         "key": "Upgraded:3",
-        "value": "Hook range +20, Mobility +1, Charizm -2"
+        "value": "hook range +20, mobility +1, charizm -2"
     },
     {
         "key": "Biogenic:1",
-        "value": "Scaner +3, Radar +100, Technics -2"
+        "value": "scaner +3, radar +100, technics -2"
     },
     {
         "key": "Biogenic:2",
-        "value": "Scaner +6, Radar +200, Technics -2"
+        "value": "scaner +6, radar +200, technics -2"
     },
     {
         "key": "Biogenic:3",
-        "value": "Scaner +9, Radar +200, Technics -2"
+        "value": "scaner +9, radar +200, technics -2"
     },
     {
         "key": "Nanobrolite:1",
-        "value": "Energetic dmg +2, Splinter dmg +3, Weapon Range -10, Attack +1, Trade -2"
+        "value": "energetic dmg +2, splinter dmg +3, weapon range -10, attack +1, trade -2"
     },
     {
         "key": "Nanobrolite:2",
-        "value": "Energetic dmg +4, Splinter dmg +5, Weapon Range -20, Attack +1, Trade -2"
+        "value": "energetic dmg +4, splinter dmg +5, weapon range -20, attack +1, trade -2"
     },
     {
         "key": "Nanobrolite:3",
-        "value": "Energetic dmg +6, Splinter dmg +8, Weapon Range -30, Attack +1, Trade -2"
+        "value": "energetic dmg +6, splinter dmg +8, weapon range -30, attack +1, trade -2"
     },
     {
         "key": "Ultraalloy:1",
-        "value": "Droid +7, Engine speed -10, Attack -1, Technics +1"
+        "value": "droid +7, engine speed -10, attack -1, technics +1"
     },
     {
         "key": "Ultraalloy:2",
-        "value": "Droid +12, Engine speed -25, Attack -1, Technics +1"
+        "value": "droid +12, engine speed -25, attack -1, technics +1"
     },
     {
         "key": "Ultraalloy:3",
-        "value": "Droid +15, Engine speed -55, Attack -1, Technics +1"
+        "value": "droid +15, engine speed -55, attack -1, technics +1"
     }
 ]
