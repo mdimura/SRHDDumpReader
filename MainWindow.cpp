@@ -409,6 +409,7 @@ void MainWindow::saveReport()
 
 
 	QTextStream out(&ofile); // we will serialize the data into the file
+	out.setCodec("UTF-8");
 	out << planetsBuf+eqBuf+basesBuf+'\n'; // serialize a string
 
 	statusBar()->showMessage(tr("Report saved: ")+filename);
