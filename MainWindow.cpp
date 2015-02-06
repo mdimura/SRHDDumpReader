@@ -850,6 +850,7 @@ void MainWindow::generateGalaxies()
 		return;
 	}
 	originalMainMenu.save("originalMainMenu.png");
+	responsiveSleep(1000);
 
 	int generationTime=20000;
 	//std::vector<unsigned> realGenTimes(10,maxGenerationTime);
@@ -863,6 +864,7 @@ void MainWindow::generateGalaxies()
 		//check, if the state is right
 		auto currentMainMenu=currentScreen(0,0.9,0.05,0.1);
 		if(currentMainMenu!=originalMainMenu) {
+			currentMainMenu.save("failedMainMenu.png");
 			statusBar()->showMessage(tr("Main menu is expected, but does not match. Generation stopped. "));
 			return;
 		}
@@ -902,6 +904,7 @@ void MainWindow::generateGalaxies()
 				}
 			}
 			if(t>=maxGenerationTime) {
+				currentGenerationFinished.save("failedGenerationFinished.png");
 				statusBar()->showMessage(tr("Galaxy_generation_finished is expected, but does not match. Generation stopped"));
 				return;
 			}
