@@ -19,7 +19,9 @@ Equipment::Equipment(QTextStream &stream, Galaxy &galaxy, LocationType locationT
 	const static QMap<int,QString> intToLandType={{0,"water"},{1,"plain"},{2,"mountains"}};
 	const static QMap<QString,int> eqOptions={
 		{"IName",0},{"IType",1},{"Owner",2},{"Size",3},{"Cost",4},
-		{"Durability",5},{"TechLevel",6},{"ISpecialName",7},{"LandType",8}
+		{"Durability",5},{"TechLevel",6},{"ISpecialName",7},
+		{"LandType",8},{"Depth",9}
+
 	};
 
 	QString line = stream.readLine().trimmed();;
@@ -84,6 +86,9 @@ Equipment::Equipment(QTextStream &stream, Galaxy &galaxy, LocationType locationT
 			break;
 		case 8://LandType
 			extraFields.insert(std::move(varname),intToLandType.value(value.toInt()));
+			break;
+		case 9://Depth
+			extraFields.insert(std::move(varname),value);
 			break;
 		default:
 			//extraFields[varname]=value;
