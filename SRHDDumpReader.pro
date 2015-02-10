@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-VERSION = 20150205b
+VERSION = 20150210b
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 CONFIG(release, debug|release): DEFINES+=NDEBUG
 
