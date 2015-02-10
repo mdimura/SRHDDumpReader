@@ -54,8 +54,8 @@ public slots:
     void saveReport();
     void setMapScale(double scale)
     {
-        mapScale=scale;
-        updateMap();
+	mapScale=scale;
+	updateMap();
     }
     void loadNextDump();
     void loadPreviousDump();
@@ -112,7 +112,7 @@ private:
     const QString presetDirPlanetsReport="presets/planetsReport/";
     const QString presetDirEqReport="presets/equipmentReport/";
     int maxGenerationTime=120000;
-    int screenSaveLag=1000;
+    int screenSaveLag=200;
     int shortSleep=25;
     int minHIGplanets=0;//Huge industrial gaal planets limit
     float mapScale=7.f;
