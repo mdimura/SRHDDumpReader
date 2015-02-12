@@ -20,7 +20,7 @@ QVariant PlanetsTableModel::headerData(int section, Qt::Orientation orientation,
 {
     static const QVector<QString> header={tr("Name"),tr("Star"),tr("Dist."),tr("Owner"),tr("Race"),
 					  tr("TL"),tr("Size"),tr("Economy"),
-					  tr("Gowernment"),tr("CI"),tr("CIP"),
+					  tr("Government"),tr("CI"),tr("CIP"),
 					  tr("Relation"),tr("TL0"),tr("TL1"),
 					  tr("TL2"),
 					  tr("TL3"), tr("TL4"),tr("TL5"),

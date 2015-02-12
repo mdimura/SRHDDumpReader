@@ -244,7 +244,7 @@ bool MainWindow::parseDump()
 	}
 	high_resolution_clock::time_point tReadEnd = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>( tReadEnd - tStart ).count();
-	cout<<"Reading the file took "<<duration/1000.0<<"s. ";
+	string timeTaken="Reading the file took "+to_string(duration/1000.0)+" s. ";
 	galaxy.parseDump(stream);
 	statusBar()->showMessage(tr("Parsed %1 stars, %2 planets, %3 black holes, %4 ships and %5 items").
 				 arg(galaxy.starCount()).arg(galaxy.planetCount()).
@@ -253,7 +253,7 @@ bool MainWindow::parseDump()
 				 5000);
 	high_resolution_clock::time_point tParseEnd = high_resolution_clock::now();
 	duration = duration_cast<milliseconds>( tParseEnd - tReadEnd ).count();
-	cout<<"Parsing - "<<duration/1000.0<<"s. ";
+	timeTaken+="Parsing - "+to_string(duration/1000.0)+" s. ";
 
 	tradeModel.reload();
 	eqModel.reload();
@@ -269,21 +269,22 @@ bool MainWindow::parseDump()
 	//ui->equipmentTableView->verticalHeader()->setDefaultSectionSize(sectionSize);
 	high_resolution_clock::time_point tModelUpdateEnd = high_resolution_clock::now();
 	duration = duration_cast<milliseconds>( tModelUpdateEnd - tParseEnd ).count();
-	cout<<"Model update - "<<duration/1000.0<<"s. ";
+	timeTaken+="Model update - "+to_string(duration/1000.0)+" s. ";
 
 	updateMap();
 	high_resolution_clock::time_point tMapEnd = high_resolution_clock::now();
 	duration = duration_cast<milliseconds>( tMapEnd - tModelUpdateEnd ).count();
-	cout<<"map update - "<<duration/1000.0<<"s. ";
+	timeTaken+="map update - "+to_string(duration/1000.0)+" s. ";
+
+	duration = duration_cast<milliseconds>( high_resolution_clock::now() - tStart ).count();
+	timeTaken+="Total: "+to_string(duration/1000.0)+" s.";
+	cout<<timeTaken<<endl;
 
 	if(ui->actionAutoSaveReport->isChecked()) {
 		saveReport();
 		duration = duration_cast<milliseconds>( high_resolution_clock::now() - tMapEnd ).count();
-		cout<<"saving the report - "<<duration/1000.0<<"s. ";
+		//timeTaken+="saving the report - "+to_string(duration/1000.0)+" s. ";
 	}
-
-	duration = duration_cast<milliseconds>( high_resolution_clock::now() - tStart ).count();
-	cout<<"Total: "<<duration/1000.0<<"s"<<endl;
 	return true;
 }
 
@@ -343,7 +344,12 @@ QString tabSeparatedValues(const QAbstractItemModel& model)
 void MainWindow::saveReport()
 {
 	using namespace std;
+
 	saveMap();
+
+	using namespace std::chrono;
+	high_resolution_clock::time_point tStart = high_resolution_clock::now();
+
 	QVariantMap oldEqPreset=eqHeaderView->preset();
 	QVariantMap oldPlPreset=planetsHeaderView->preset();
 	reportSummary.clear();
@@ -413,7 +419,9 @@ void MainWindow::saveReport()
 	out << planetsBuf+eqBuf+basesBuf+'\n'; // serialize a string
 
 	statusBar()->showMessage(tr("Report saved: ")+filename);
-	std::cout<<"Report saved: "+filename.toStdString()<<std::endl;
+	auto duration = duration_cast<milliseconds>( high_resolution_clock::now() - tStart ).count();
+	std::cout<<"Report saved: "+filename.toStdString()+" in "+
+		   to_string(duration/1000.0)+" s."<<std::endl;
 }
 
 void MainWindow::loadNextDump()
@@ -564,10 +572,10 @@ bool rangersWindowActive()
 	GetWindowThreadProcessId(wnd,&windowProcessId);
 	//std::cout<<"active window process: "<<windowProcessId;
 	HANDLE PID = OpenProcess(
-				PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
-				FALSE,
-				windowProcessId /* This is the PID, you can find one from windows task manager */
-				);
+			     PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+			     FALSE,
+			     windowProcessId /* This is the PID, you can find one from windows task manager */
+			     );
 	if (PID)
 	{
 		TCHAR Buffer[MAX_PATH];
@@ -676,7 +684,7 @@ bool MainWindow::simulateInput(const std::string& str) const
 
 void MainWindow::saveDumpWin()
 {
-	//TODO: debug
+	//TODO: make function bool, return status
 	if(!rangersWindowActive()) {
 		statusBar()->showMessage(tr("Rangers are not in focus, aborting QuickDump."));
 		return;
@@ -700,19 +708,15 @@ void MainWindow::saveDumpWin()
 
 	std::vector<INPUT> ip(2,inp);
 
-	//sound.play();
-	QCoreApplication::processEvents();
 	//First imitate Ctrl+Shift+MAKEDUMP
 	ip[0].ki.wVk = VK_CONTROL;
 	ip[1].ki.wVk = VK_SHIFT;
 	SendInput(ip.size(), ip.data(), sizeof(INPUT));
 	responsiveSleep(shortSleep);
-	QCoreApplication::processEvents();
 
 	if(!simulateInput("MAKEDUMP")) {
 		return;
 	}
-	QCoreApplication::processEvents();
 
 	ip.clear();
 	inp.ki.wVk = VK_SHIFT;
@@ -724,20 +728,16 @@ void MainWindow::saveDumpWin()
 	SendInput(ip.size(), ip.data(), sizeof(INPUT));
 
 	responsiveSleep(shortSleep*75);//Wait for save window to showup
-	//sound.play();
-	QCoreApplication::processEvents();
 
 	//Remove proposed save name
 	if(!simulateInput("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")) {
 		return;
 	}
-	QCoreApplication::processEvents();
 
 	//Enter new save name ("autodump")
 	if(!simulateInput("AUTODUMP")) {
 		return;
 	}
-	QCoreApplication::processEvents();
 
 	//Press Enter to save
 	if(!simulateInput("e")) {
@@ -758,7 +758,6 @@ void MainWindow::saveDumpWin()
 			return;
 		}
 		oldSize=size;
-		QCoreApplication::processEvents();
 	}
 	statusBar()->showMessage(tr("Could not save the dump, timeot reached. Not parsing."));
 }
@@ -777,7 +776,6 @@ QImage MainWindow::currentScreen(float kx, float ky, float kw, float kh)
 	QDateTime fileModified;
 
 	responsiveSleep(screenSaveLag);
-	cout<<"current screenshot saving time: "<<screenSaveLag<<endl;
 	int t;
 	for(t=screenSaveLag; t<8000; t+=screenSaveLag*0.1)
 	{
@@ -785,18 +783,11 @@ QImage MainWindow::currentScreen(float kx, float ky, float kw, float kh)
 		dir.refresh();
 		fileList=dir.entryList(QDir::Files,QDir::Time);
 		if(fileList.isEmpty()){
-			//cerr<<string("no files in a dir: ")+to_string(t)<<endl;
 			continue;
 		}
 		screenFilename=dir.absolutePath()+"/"+fileList.first();
 		fileModified=QFileInfo(screenFilename).lastModified();
 		if(screenTaken.msecsTo(fileModified)<0) {//old screenshot
-			/*cerr<<string("old file: ")+to_string(t)+
-      " "+screenFilename.toStdString()+
-      " delta:"+to_string(screenTaken.msecsTo(fileModified))+
-       " taken: "+screenTaken.toString().toStdString()+
-       " modified: "+fileModified.toString().toStdString()<<endl;
-    screenFilename.clear();*/
 			continue;
 		}
 		else {
@@ -889,7 +880,7 @@ void MainWindow::generateGalaxies()
 		}
 		else {
 			responsiveSleep(generationTime);
-			const int dt=2000;
+			const int dt=3000;
 			int t;
 			numGenChecks[i%historyLength]=0;
 			for(t=generationTime; t<maxGenerationTime; t+=dt)
@@ -914,6 +905,7 @@ void MainWindow::generateGalaxies()
 			//realGenTimes[i%10]=generationTime;
 			std::cout<<"Last galaxy generation took: "<<curGenerationTime/1000.0<<"s. ";
 			int minChecks=*std::min_element(numGenChecks.begin(),numGenChecks.end());
+			std::cout<<"Succeeded after "<< numGenChecks[i%historyLength] <<" checks. ";
 			std::cout<<"Minimum number of checks: "<<minChecks<<". ";
 			if(numGenChecks[i%historyLength]<2) {
 				generationTime-=1000;
@@ -963,7 +955,7 @@ void MainWindow::generateGalaxies()
 		responsiveSleep(shortSleep*40);
 		int iterationTime=duration_cast<seconds>( high_resolution_clock::now() - iterationStart ).count();
 		std::string logoutstr=timestamp.toStdString()+
-				": Iteration "+std::to_string(i)+" finished ("+to_string(iterationTime)+"s). ";
+				      ": Iteration "+std::to_string(i)+" finished in "+to_string(iterationTime)+" s. ";
 		using MapStrIntCI=QMap<QString,int>::const_iterator;
 		for (MapStrIntCI i = reportSummary.begin(); i != reportSummary.end(); ++i)
 		{

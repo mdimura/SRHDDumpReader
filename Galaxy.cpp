@@ -50,6 +50,7 @@ void Galaxy::clear()
 	planetMarkets.clear();
 	shipMarkets.clear();
 	eqVec.clear();
+	planetVec.clear();
 	_minSellPrice.set(std::numeric_limits<unsigned>::max());
 	_maxBuyPrice.set(0);
 	mapRect=QRectF(50,50,0,0);
