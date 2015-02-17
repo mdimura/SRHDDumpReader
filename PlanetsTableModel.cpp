@@ -89,7 +89,7 @@ QVariant PlanetsTableModel::data(const QModelIndex &index, int role) const
 	case 9:
 	    return _galaxy->planet(row).currentInvetion();
 	case 10:
-	    return std::round(_galaxy->planet(row).currentInvetionPoints()*10.0)*0.1;
+	    return std::round(_galaxy->planet(row).currentInvetionPoints()*1000.0)*0.001;
 	case 11:
 	    return _galaxy->planet(row).relation();
 	default:
