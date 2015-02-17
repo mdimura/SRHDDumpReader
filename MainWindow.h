@@ -68,6 +68,7 @@ public:
     bool simulateInput(const std::string& str) const;
     QImage currentScreen(float kx, float ky, float kw, float kh);
 #endif
+
 private:
     void savePreset(const QVariantMap& preset, const QString& fileName) const;
     void generateGalaxies();
@@ -76,6 +77,7 @@ private:
     void updateMap();
     void updateDumpArrows();
     void saveMap();
+    bool eventFilter(QObject* object, QEvent* event);
 
     QVariantMap loadPreset(const QString &fileName) const;
 

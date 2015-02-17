@@ -14,6 +14,8 @@
 #include <QJsonDocument>
 #include <QToolButton>
 #include <QTextCodec>
+#include <QItemSelectionModel>
+#include <QClipboard>
 
 #include <iostream>
 #include <fstream>
@@ -23,12 +25,72 @@
 #include "psapi.h"
 #endif
 
+QString tabSeparatedValues(const QAbstractItemModel& model)
+{
+	QString buf;
+	for(int c=0; c<model.columnCount();c++)
+	{
+		buf+=model.headerData(c,Qt::Horizontal).toString();
+		buf+='\t';
+	}
+	buf+='\n';
+	for(int r=0; r<model.rowCount(); r++)
+	{
+		for(int c=0; c<model.columnCount();c++)
+		{
+			buf+=model.data(model.index(r,c)).toString();
+			buf+='\t';
+		}
+		buf+='\n';
+	}
+	return buf;
+}
+
+QString tabSeparatedValues(const QItemSelectionModel *selectionModel)
+{
+    const QAbstractItemModel* model=selectionModel->model();
+    QModelIndexList indexes = selectionModel->selectedIndexes();
+    if(indexes.size() < 1){
+	return "";
+    }
+    std::sort(indexes.begin(), indexes.end());
+
+    QString selectedText;
+    QModelIndex previous=indexes.takeFirst();
+    for(const QModelIndex& index:indexes)
+    {
+	QString text = model->data(previous).toString();
+	// At this point `text` contains the text in one cell
+	selectedText.append(text);
+	// If you are at the start of the row the row number of the previous index
+	// isn't the same.  Text is followed by a row separator, which is a newline.
+	if (index.row() != previous.row())
+	{
+	    selectedText.append(QLatin1Char('\n'));
+	}
+	// Otherwise it's the same row, so append a column separator, which is a tab.
+	else
+	{
+	    selectedText.append(QLatin1Char('\t'));
+	}
+	previous = index;
+    }
+    selectedText.append(model->data(previous).toString());
+    selectedText.append(QLatin1Char('\n'));
+    return selectedText;
+}
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),tradeModel(&galaxy,this),tradeProxyModel(this),
 	eqModel(&galaxy,this),bhModel(&galaxy,this),planetsModel(&galaxy,this)
 {
 	ui->setupUi(this);
+
+	ui->planetsTableView->installEventFilter(this);
+	ui->bhTableView->installEventFilter(this);
+	ui->equipmentTableView->installEventFilter(this);
+	ui->tradeTableView->installEventFilter(this);
 
 	connect(&reloadTimer, SIGNAL(timeout()), this, SLOT(parseDump()));
 	reloadTimer.setInterval(2000);
@@ -135,6 +197,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	_filename=rangersDir+"/save/autodump.txt";
 	loadPresets();
+}
+void copySelectedText(const QItemSelectionModel* selModel)
+{
+    QString selected_text=tabSeparatedValues(selModel);
+    QApplication::clipboard()->setText(selected_text);
+}
+bool MainWindow::eventFilter(QObject *object, QEvent *event)
+{
+	if( (object == ui->planetsTableView || object==ui->equipmentTableView ||
+	     object==ui->tradeTableView || object==ui->bhTableView) &&
+	    event->type() == QEvent::KeyPress) {
+		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+		if (keyEvent->matches(QKeySequence::Copy)) {
+			QAbstractItemView* viewObject=static_cast<QAbstractItemView *>(object);
+			copySelectedText(viewObject->selectionModel());
+			return true;
+		}
+	}
+	return false;
 }
 
 MainWindow::~MainWindow()
@@ -320,26 +401,7 @@ void MainWindow::showAbout()
 							 "Tip: press F7 in-game for QuickDump.")
 			   .arg(QApplication::applicationVersion()));
 }
-QString tabSeparatedValues(const QAbstractItemModel& model)
-{
-	QString buf;
-	for(int c=0; c<model.columnCount();c++)
-	{
-		buf+=model.headerData(c,Qt::Horizontal).toString();
-		buf+='\t';
-	}
-	buf+='\n';
-	for(int r=0; r<model.rowCount(); r++)
-	{
-		for(int c=0; c<model.columnCount();c++)
-		{
-			buf+=model.data(model.index(r,c)).toString();
-			buf+='\t';
-		}
-		buf+='\n';
-	}
-	return buf;
-}
+
 
 void MainWindow::saveReport()
 {
