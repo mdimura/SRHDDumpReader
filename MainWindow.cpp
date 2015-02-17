@@ -70,7 +70,6 @@ QString bbSeparatedValues(const QItemSelectionModel *selectionModel)
         previous = index;
     }
     selectedText.append("[td]"+model->data(previous).toString()+"[/td]");
-    selectedText.append(QLatin1Char('\n'));
     selectedText+="[/tr][/table]";
     return selectedText;
 }
@@ -256,8 +255,8 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event)
             copySelectedText(viewObject->selectionModel(),true);
             return true;
         }
-        return false;
     }
+    return false;
 }
 MainWindow::~MainWindow()
 {
@@ -1064,7 +1063,7 @@ void MainWindow::generateGalaxies()
         QString timestamp=QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
 
         QString prefix=rangersDir+"/save/autodump";
-        if(isUseless(reportSummary,minRowsPreset)) {//useless save
+	if(isUseless(_reportSummary,minRowsPreset)) {//useless save
             QFile::remove(prefix+".txt");
             QFile::remove(prefix+".sav");
             QFile::remove(prefix+".txt.report");
