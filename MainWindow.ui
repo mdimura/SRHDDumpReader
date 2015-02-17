@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>685</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -44,6 +44,7 @@
    <addaction name="separator"/>
    <addaction name="actionPreviousDump"/>
    <addaction name="actionNextDump"/>
+   <addaction name="actionSaveAllReports"/>
    <addaction name="separator"/>
    <addaction name="actionAbout"/>
   </widget>
@@ -345,8 +346,8 @@ QTableView::item
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>272</width>
-          <height>76</height>
+          <width>270</width>
+          <height>73</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -500,6 +501,21 @@ QTableView::item
     <string>Always save report upon parsing the dump</string>
    </property>
   </action>
+  <action name="actionSaveAllReports">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/all_reports.svg</normaloff>:/icons/all_reports.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save all reports</string>
+   </property>
+   <property name="toolTip">
+    <string>Generate reports for all dumps in the current folder</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -602,6 +618,22 @@ QTableView::item
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSaveAllReports</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveAllReports()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>openDump()</slot>
@@ -611,5 +643,6 @@ QTableView::item
   <slot>saveCurrentFilter()</slot>
   <slot>loadPreviousDump()</slot>
   <slot>loadNextDump()</slot>
+  <slot>saveAllReports()</slot>
  </slots>
 </ui>

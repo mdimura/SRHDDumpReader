@@ -52,6 +52,7 @@ public slots:
     bool openDump();
     void showAbout();
     void saveReport();
+    void saveAllReports();
     void setMapScale(double scale)
     {
 	mapScale=scale;
@@ -78,8 +79,17 @@ private:
     void updateDumpArrows();
     void saveMap();
     bool eventFilter(QObject* object, QEvent* event);
-
     QVariantMap loadPreset(const QString &fileName) const;
+    QString reportSummary() const
+    {
+	    QString summary;
+	    using MapStrIntCI=QMap<QString,int>::const_iterator;
+	    for (MapStrIntCI i = _reportSummary.begin(); i != _reportSummary.end(); ++i)
+	    {
+		    summary+=i.key()+": "+QString::number(i.value())+"; ";
+	    }
+	    return summary;
+    }
 
 private:
     Ui::MainWindow *ui;
@@ -121,7 +131,7 @@ private:
     QStringList planetsReportPresets;
     QStringList eqReportPresets;
     QMap<QString,int> minRowsPreset;
-    QMap<QString,int> reportSummary;
+    QMap<QString,int> _reportSummary;
     QStringList dumpFileList;
     int currentDumpIndex=-1;
     QImage galaxyMap;

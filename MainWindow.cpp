@@ -363,8 +363,6 @@ bool MainWindow::parseDump()
 
 	if(ui->actionAutoSaveReport->isChecked()) {
 		saveReport();
-		duration = duration_cast<milliseconds>( high_resolution_clock::now() - tMapEnd ).count();
-		//timeTaken+="saving the report - "+to_string(duration/1000.0)+" s. ";
 	}
 	return true;
 }
@@ -414,9 +412,10 @@ void MainWindow::saveReport()
 
 	QVariantMap oldEqPreset=eqHeaderView->preset();
 	QVariantMap oldPlPreset=planetsHeaderView->preset();
-	reportSummary.clear();
+	_reportSummary.clear();
 
-	QString filename=_filename+".report";
+	QFileInfo fileInfo(_filename);
+	QString filename=fileInfo.path()+'/'+fileInfo.completeBaseName()+".report";
 	QFile ofile(filename);
 	if(ofile.exists()) {
 		//QString timestamp=QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
@@ -452,7 +451,7 @@ void MainWindow::saveReport()
 	{
 		planetsHeaderView->setPreset(loadPreset(fileName));
 		lastSummaryEntry=QFileInfo(fileName).baseName();
-		reportSummary[lastSummaryEntry]=planetsProxyModel.rowCount();
+		_reportSummary[lastSummaryEntry]=planetsProxyModel.rowCount();
 		lastSummaryEntry+=": "+QString::number(planetsProxyModel.rowCount());
 		planetsBuf+=lastSummaryEntry+'\n';
 		planetsBuf+=tabSeparatedValues(planetsProxyModel);
@@ -465,7 +464,7 @@ void MainWindow::saveReport()
 	{
 		eqHeaderView->setPreset(loadPreset(fileName));
 		lastSummaryEntry=QFileInfo(fileName).baseName();
-		reportSummary[lastSummaryEntry]=eqProxyModel.rowCount();
+		_reportSummary[lastSummaryEntry]=eqProxyModel.rowCount();
 		lastSummaryEntry+=": "+QString::number(eqProxyModel.rowCount());
 		eqBuf+=lastSummaryEntry+'\n';
 		eqBuf+=tabSeparatedValues(eqProxyModel);
@@ -483,7 +482,39 @@ void MainWindow::saveReport()
 	statusBar()->showMessage(tr("Report saved: ")+filename);
 	auto duration = duration_cast<milliseconds>( high_resolution_clock::now() - tStart ).count();
 	std::cout<<"Report saved: "+filename.toStdString()+" in "+
-		   to_string(duration/1000.0)+" s."<<std::endl;
+		   to_string(duration/1000.0)+" s.\n"+
+		   reportSummary().toStdString()<<std::endl;
+}
+
+void MainWindow::saveAllReports()
+{
+	QFileInfo fileInfo(_filename);
+	QString filename=fileInfo.path()+"/summary.report";
+	QFile ofile(filename);
+	if(ofile.exists()) {
+		//QString timestamp=QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
+		//QFile::rename(filename,_filename+timestamp+".report");
+		QFile::remove(filename);
+	}
+
+	if(!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		statusBar()->showMessage(tr("Could not create the summary report file ")+filename);
+		return;
+	}
+	QTextStream out(&ofile);
+	out.setCodec("UTF-8");
+	for(const QString& dumpFileName: dumpFileList)
+	{
+		_filename=dumpFileName;
+		parseDump();
+		if(!ui->actionAutoSaveReport->isChecked())
+		{
+			saveReport();
+		}
+		out << QFileInfo(dumpFileName).baseName()+"\t"+reportSummary()+'\n';
+	}
+	_filename=dumpFileList[currentDumpIndex];
+	parseDump();
 }
 
 void MainWindow::loadNextDump()
@@ -604,10 +635,12 @@ void MainWindow::updateDumpArrows()
 void MainWindow::saveMap()
 {
 	if(mapScale>0.f) {
-		if(QFileInfo(_filename+".map.png").exists()) {
-			QFile::remove(_filename+"_map.png");
+		QFileInfo fileInfo(_filename);
+		QString filename=fileInfo.path()+'/'+fileInfo.completeBaseName()+"_map.png";
+		if(QFileInfo(filename).exists()) {
+			QFile::remove(filename);
 		}
-		galaxyMap.save(_filename+"_map.png");
+		galaxyMap.save(filename);
 	}
 }
 
@@ -999,8 +1032,8 @@ void MainWindow::generateGalaxies()
 		else {
 			QFile::rename(prefix+".txt",prefix+timestamp+".txt");
 			QFile::rename(prefix+".sav",prefix+timestamp+".sav_");
-			QFile::rename(prefix+".txt.report",prefix+timestamp+".report");
-			QFile::rename(prefix+".txt_map.png",prefix+timestamp+"_map.png");
+			QFile::rename(prefix+".report",prefix+timestamp+".report");
+			QFile::rename(prefix+"_map.png",prefix+timestamp+"_map.png");
 		}
 
 		responsiveSleep(shortSleep*20);
@@ -1017,13 +1050,10 @@ void MainWindow::generateGalaxies()
 		responsiveSleep(shortSleep*40);
 		int iterationTime=duration_cast<seconds>( high_resolution_clock::now() - iterationStart ).count();
 		std::string logoutstr=timestamp.toStdString()+
-				      ": Iteration "+std::to_string(i)+" finished in "+to_string(iterationTime)+" s. ";
-		using MapStrIntCI=QMap<QString,int>::const_iterator;
-		for (MapStrIntCI i = reportSummary.begin(); i != reportSummary.end(); ++i)
-		{
-			logoutstr+=i.key().toStdString()+": "+to_string(i.value())+"; ";
-		}
-		logfile<<logoutstr<<endl;
+				      ": Iteration "+std::to_string(i)+
+				      " finished in "+to_string(iterationTime)+
+				      " s. ";
+		logfile<<logoutstr+reportSummary().toStdString()<<endl;
 		std::cout<<logoutstr<<endl;
 
 	}

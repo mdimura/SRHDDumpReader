@@ -8,5 +8,6 @@
         <file>icons/report.svg</file>
         <file>icons/go-next.svgz</file>
         <file>icons/go-previous.svgz</file>
+        <file>icons/all_reports.svg</file>
     </qresource>
 </RCC>
