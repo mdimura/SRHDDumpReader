@@ -14,7 +14,18 @@ QMap<QString,QColor> loadColors(const QString& fileName)
 				  {"Peleng",Qt::darkGreen},
 				  {"People",QColor("royalblue")},
 				  {"Fei",Qt::magenta},
-				  {"Gaal",QColor("yellow")}};
+				  {"Gaal",QColor("yellow")},
+
+				  {"lineKeller",Qt::blue},
+				  {"linePirates",QColor("grey")},
+				  {"lineTerron",Qt::darkGreen},
+				  {"lineBlazer",Qt::red},
+				  {"lineNormals",QColor("salmon")},
+				  {"lineMaloc",QColor("red")},
+				  {"linePeleng",Qt::darkGreen},
+				  {"linePeople",QColor("royalblue")},
+				  {"lineFei",Qt::magenta},
+				  {"lineGaal",QColor("yellow")}};
 	QFile file(fileName);
 	if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
 		return map;
@@ -522,8 +533,8 @@ QImage Galaxy::map(float scale) const
 		if(owner=="Klings") {
 			owner=star.domSeries();
 		}
+		p.setPen(Qt::white);
 		p.setBrush(QBrush(QColor(_ownerToColor[owner]),Qt::SolidPattern));
-		p.drawEllipse(pos,scale,scale);
 		QRectF nameRect=QRectF(pos+QPointF(-scale*10,scale),pos+QPointF(scale*10,scale*4));
 		p.drawText(nameRect,star.name(),QTextOption(Qt::AlignHCenter|Qt::AlignTop));
 		const QString& basesStr=starIdToBases.value(star.id());
@@ -535,6 +546,8 @@ QImage Galaxy::map(float scale) const
 				p.drawText(basesRect,basesStr.mid(3),QTextOption(Qt::AlignLeft|Qt::AlignVCenter));
 			}
 		}
+		p.setPen(QPen(QBrush(_ownerToColor["line"+owner]),scale/2.5));
+		p.drawEllipse(pos,scale,scale);
 		QStaticText planetsText(starIdToPlanets.value(star.id()));
 		planetsText.setTextFormat(Qt::RichText);
 		planetsText.prepare(QTransform(),font);

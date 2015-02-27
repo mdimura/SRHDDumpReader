@@ -1,12 +1,22 @@
 {
-  "Keller":"grey",
+  "Keller":"#A9A9A9",
   "Pirates":"white",
-  "Terron":"darkGreen",
-  "Blazer":"red",
+  "Terron":"darkgrey",
+  "Blazer":"darkgrey",
   "Normals":"salmon",
   "Maloc":"red",
   "Peleng":"darkGreen",
   "People":"royalblue",
   "Fei":"magenta",
-  "Gaal":"yellow"
+  "Gaal":"yellow",
+  "lineKeller":"blue",
+  "linePirates":"white",
+  "lineTerron":"darkGreen",
+  "lineBlazer":"red",
+  "lineNormals":"salmon",
+  "lineMaloc":"red",
+  "linePeleng":"darkGreen",
+  "linePeople":"royalblue",
+  "lineFei":"magenta",
+  "lineGaal":"yellow"
 }
