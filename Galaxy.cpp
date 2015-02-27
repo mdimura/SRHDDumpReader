@@ -1,5 +1,38 @@
 #include "Galaxy.h"
 #include <QStaticText>
+#include <QFile>
+#include <QJsonDocument>
+
+QMap<QString,QColor> loadColors(const QString& fileName)
+{
+	QMap<QString,QColor> map={{"Keller",Qt::blue},
+				  {"Pirates",Qt::white},
+				  {"Terron",Qt::darkGreen},
+				  {"Blazer",Qt::red},
+				  {"Normals",QColor("salmon")},
+				  {"Maloc",QColor("red")},
+				  {"Peleng",Qt::darkGreen},
+				  {"People",QColor("royalblue")},
+				  {"Fei",Qt::magenta},
+				  {"Gaal",QColor("yellow")}};
+	QFile file(fileName);
+	if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
+		return map;
+	}
+	QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
+	if(doc.isNull()) {
+		return map;
+	}
+	QVariantMap varMap=doc.toVariant().toMap();
+	using VarMapCI=QVariantMap::const_iterator;
+	for (VarMapCI i = varMap.begin(); i != varMap.end(); ++i)
+	{
+		map[i.key()]=QColor(i.value().toString());
+	}
+	return map;
+}
+
+const QMap<QString,QColor> Galaxy::_ownerToColor=loadColors("map_colors.json");
 
 Galaxy::Galaxy()
 {
@@ -439,16 +472,6 @@ unsigned Galaxy::blackHoleTurnsToClose(unsigned row) const
 
 QImage Galaxy::map(float scale) const
 {
-	const static QMap<QString,QColor> ownerToColor={{"Keller",Qt::blue},
-							{"Pirates",Qt::white},
-							{"Terron",Qt::darkGreen},
-							{"Blazer",Qt::red},
-							{"Normals",QColor("salmon")},
-							{"Maloc",QColor("red")},
-							{"Peleng",Qt::darkGreen},
-							{"People",QColor("royalblue")},
-							{"Fei",Qt::magenta},
-							{"Gaal",QColor("yellow")}};
 	QImage image((mapRect.width()+8)*scale,(mapRect.height()+6)*scale,QImage::Format_ARGB32);
 	image.fill(Qt::black);
 	QPainter p(&image);
@@ -484,7 +507,7 @@ QImage Galaxy::map(float scale) const
 		planetsStr+=' ';
 		QString economy=planet.economy().left(1).toLower();
 		int size=planet.size();
-		QString color=ownerToColor.value(planet.race()).name();
+		QString color=_ownerToColor.value(planet.race()).name();
 		planetsStr+=planetStr.arg(size).arg(economy).arg(color);
 	}
 	//Draw stars
@@ -499,7 +522,7 @@ QImage Galaxy::map(float scale) const
 		if(owner=="Klings") {
 			owner=star.domSeries();
 		}
-		p.setBrush(QBrush(QColor(ownerToColor[owner]),Qt::SolidPattern));
+		p.setBrush(QBrush(QColor(_ownerToColor[owner]),Qt::SolidPattern));
 		p.drawEllipse(pos,scale,scale);
 		QRectF nameRect=QRectF(pos+QPointF(-scale*10,scale),pos+QPointF(scale*10,scale*4));
 		p.drawText(nameRect,star.name(),QTextOption(Qt::AlignHCenter|Qt::AlignTop));

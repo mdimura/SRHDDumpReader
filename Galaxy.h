@@ -118,6 +118,7 @@ private:
 	mutable GoodsArr _maxBuyPrice;
 	mutable GoodsArr _minSellPrice;
 	QRectF mapRect;
+	static const QMap<QString,QColor> _ownerToColor;//name,description
 };
 
 #endif // GALAXY_H

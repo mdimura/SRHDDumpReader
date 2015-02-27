@@ -1,6 +1,6 @@
 #include "MainWindow.h"
 #include <QApplication>
-
+//TODO: user-customisable map colorsheme
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

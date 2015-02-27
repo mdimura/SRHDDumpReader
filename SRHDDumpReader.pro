@@ -78,4 +78,5 @@ DISTFILES += \
     bonus_descriptions_micromodules.json.ru \
     en-ru.txt \
     micromodules_ru-en.txt \
-    minRowsPreset.json
+    minRowsPreset.json \
+    map_colors.json

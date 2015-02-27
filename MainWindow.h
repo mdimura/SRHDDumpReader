@@ -126,7 +126,6 @@ private:
     int maxGenerationTime=120000;
     int screenSaveLag=200;
     int shortSleep=25;
-    int minHIGplanets=0;//Huge industrial gaal planets limit
     float mapScale=7.f;
     QStringList planetsReportPresets;
     QStringList eqReportPresets;
