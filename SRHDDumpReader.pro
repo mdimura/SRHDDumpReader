@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-VERSION = 20150218b
+VERSION = 20150227b
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 CONFIG(release, debug|release): DEFINES+=NDEBUG
 
@@ -18,7 +18,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
 
 TARGET = SRHDDumpReader
 TEMPLATE = app
-CONFIG += c++11
 
 win32:LIBS += -L"$$_PRO_FILE_PWD_/3rdparty/libs/" -lpsapi
 
