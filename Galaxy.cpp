@@ -122,6 +122,19 @@ void Galaxy::addPlanet(const Planet &&planet)
 	planetMap.insert(std::make_pair(planet.id(),planet));
 }
 
+QString Galaxy::starOwner(unsigned starId) const
+{
+	if(!starId)
+	{
+		return "";
+	}
+	const auto& star=starMap.at(starId);
+	if(star.owner()=="Klings") {
+		return star.domSeries();
+	}
+	return star.owner();
+}
+
 
 unsigned Galaxy::marketsCount() const
 {
@@ -369,11 +382,7 @@ double Galaxy::equipmentDistFromPlayer(unsigned row) const
 QString Galaxy::equipmentStarOwner(unsigned row) const
 {
 	unsigned eqStarId=equipmentStarId(row);
-	if(!eqStarId)
-	{
-		return "";
-	}
-	return starMap.at(eqStarId).owner();
+	return starOwner(eqStarId);
 }
 
 double Galaxy::equipmentDurability(unsigned row) const

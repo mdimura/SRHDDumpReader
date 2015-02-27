@@ -75,7 +75,7 @@ QVariant PlanetsTableModel::data(const QModelIndex &index, int role) const
 	case 2:
 	    return std::round(_galaxy->planetDistance(row));
 	case 3:
-	    return _galaxy->planet(row).owner();
+	    return _galaxy->planetOwner(row);
 	case 4:
 	    return _galaxy->planet(row).race();
 	case 5:
