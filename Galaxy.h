@@ -88,8 +88,13 @@ public:
 	}
 	QString planetOwner(unsigned row) const
 	{
-		unsigned planetStarId=planet(row).starId();
-		return starOwner(planetStarId);
+		const auto& pl=planet(row);
+		if (pl.owner()=="Kling")
+		{
+			unsigned planetStarId=pl.starId();
+			return starOwner(planetStarId);
+		}
+		return pl.owner();
 	}
 
 	const GoodsArr& maxBuyPrice() const
