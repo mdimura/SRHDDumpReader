@@ -1,0 +1,18 @@
+{
+  "GlobalScore":{
+    "01_GiperJump 45p":{	"weight":40, "isBool":true	},
+    "02_Nanitoids 45p":{	"weight":30, "isBool":false	},
+    "03_BlastLocaliser 45p":{	"weight":20, "isBool":true	},
+    "22_Antigrav 45p":{	"weight":25, "isBool":true	},
+    "23_MPA 45p":{	"weight":25, "isBool":true	},
+    "24_Forsage 45p":{	"weight":15, "isBool":true	},
+    "25_WeaponToSpeed 45p":{	"weight":25, "isBool":true	},
+    "31_Transmitters all":{	"weight":10, "isBool":false	},
+    "32_Arts_despensable 45p":{	"weight":5, "isBool":false	},
+    "41_treasure_arts 45p":{	"weight":2, "isBool":false	},
+    "52_treasure_micromodules_1 45p":{	"weight":1, "isBool":false	},
+    "53_treasure_micromodules_2 45p":{	"weight":0.5, "isBool":false	},
+    "54_treasure_micromodules_3 45p":{	"weight":0.5, "isBool":false	},
+    "huge_industrial_gaal 30p":{	"weight":1, "isBool":false	}
+  }
+}
