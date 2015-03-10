@@ -115,7 +115,7 @@ private:
 	}
 	QString reportSummary() const
 	{
-		QString summary=scoresSummary()+'\n';
+		QString summary=scoresSummary();
 		using MapStrIntCI=QMap<QString,int>::const_iterator;
 		for (MapStrIntCI i = _reportSummary.begin(); i != _reportSummary.end(); ++i)
 		{
