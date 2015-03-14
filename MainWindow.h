@@ -47,7 +47,7 @@ public:
 	void writeSettings() const;
 	void closeEvent(QCloseEvent *event);
 public slots:
-	bool parseDump();
+    bool parseDump(const QString &filename=QString());
 	bool openDump();
 	void showAbout();
 	void saveReport();

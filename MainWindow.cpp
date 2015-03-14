@@ -331,18 +331,21 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	event->accept();
 }
 
-bool MainWindow::parseDump()
+bool MainWindow::parseDump(const QString& filename)
 {
 	using namespace std;
 	using namespace std::chrono;
 	high_resolution_clock::time_point tStart = high_resolution_clock::now();
+    if(!filename.isEmpty()) {
+        _filename=filename;
+    }
 	QFile file(_filename);
 	if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		statusBar()->showMessage(tr("File could not be open: ")+_filename);
 		return false;
 	}
-	if(QFileInfo(_filename).lastModified()==_fileModified)
+    if(filename.isEmpty() && QFileInfo(_filename).lastModified()==_fileModified)
 	{
 		//dump was parsed earlier
 		statusBar()->showMessage(tr("dump was parsed earlier, skipping")+_filename);
@@ -415,7 +418,7 @@ bool MainWindow::openDump()
 							tr("SRHD Dump (*.txt);;All Files (*)"));
 	if (fileName.isEmpty())
 		return false;
-	_filename=fileName;
+    //_filename=fileName;
 	QDir currentDir=QFileInfo(fileName).dir();
 	currentDir.setNameFilters(QStringList("*.txt"));
 	currentDir.setFilter(QDir::Files);
@@ -428,7 +431,7 @@ bool MainWindow::openDump()
 	currentDumpIndex=dumpFileList.indexOf(fileName);
 	std::cout<<currentDumpIndex<<'\n'<<dumpFileList.join('\n').toStdString()<<std::endl;
 	updateDumpArrows();
-	return parseDump();
+    return parseDump(fileName);
 }
 
 void MainWindow::showAbout()
@@ -545,38 +548,32 @@ void MainWindow::saveAllReports()
 	out.setCodec("UTF-8");
 	for(const QString& dumpFileName: dumpFileList)
 	{
-		_filename=dumpFileName;
-		parseDump();
+        parseDump(dumpFileName);
 		if(!ui->actionAutoSaveReport->isChecked())
 		{
 			saveReport();
 		}
 		out << QFileInfo(dumpFileName).baseName()+"\t"+reportSummary()+'\n';
 	}
-	_filename=dumpFileList[currentDumpIndex];
-	parseDump();
+    parseDump(dumpFileList[currentDumpIndex]);
 }
 
 void MainWindow::loadNextDump()
 {
-	if(currentDumpIndex<0 || currentDumpIndex>=dumpFileList.size()-1)
-	{
+    if(currentDumpIndex<0 || currentDumpIndex>=dumpFileList.size()-1) {
 		return;
 	}
-	_filename=dumpFileList[++currentDumpIndex];
-	updateDumpArrows();
-	parseDump();
+    parseDump(dumpFileList[++currentDumpIndex]);
+    updateDumpArrows();
 }
 
 void MainWindow::loadPreviousDump()
 {
-	if(currentDumpIndex<=0)
-	{
+    if(currentDumpIndex<=0) {
 		return;
 	}
-	_filename=dumpFileList[--currentDumpIndex];
-	updateDumpArrows();
-	parseDump();
+    parseDump(dumpFileList[--currentDumpIndex]);
+    updateDumpArrows();
 }
 
 void MainWindow::savePreset(const QVariantMap &preset, const QString &fileName) const
