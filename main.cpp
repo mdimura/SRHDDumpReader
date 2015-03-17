@@ -1,10 +1,12 @@
 #include "MainWindow.h"
 #include <QApplication>
-//TODO: user-customisable map colorsheme
+#include <QDir>
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setApplicationVersion(APP_VERSION);
+    QDir::setCurrent(QCoreApplication::applicationDirPath());
     MainWindow w;
 #ifdef _WIN32
     RegisterHotKey((HWND)w.winId(), 100, 0, 0x76);//F7

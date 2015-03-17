@@ -224,6 +224,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	_filename=rangersDir+"/save/autodump.txt";
 	loadPresets();
+	openDump(QCoreApplication::arguments().value(1));
 }
 void copySelectedText(const QItemSelectionModel* selModel, bool bbcode=false)
 {
@@ -336,16 +337,16 @@ bool MainWindow::parseDump(const QString& filename)
 	using namespace std;
 	using namespace std::chrono;
 	high_resolution_clock::time_point tStart = high_resolution_clock::now();
-    if(!filename.isEmpty()) {
-        _filename=filename;
-    }
+	if(!filename.isEmpty()) {
+		_filename=filename;
+	}
 	QFile file(_filename);
 	if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		statusBar()->showMessage(tr("File could not be open: ")+_filename);
 		return false;
 	}
-    if(filename.isEmpty() && QFileInfo(_filename).lastModified()==_fileModified)
+	if(filename.isEmpty() && QFileInfo(_filename).lastModified()==_fileModified)
 	{
 		//dump was parsed earlier
 		statusBar()->showMessage(tr("dump was parsed earlier, skipping")+_filename);
@@ -416,22 +417,8 @@ bool MainWindow::openDump()
 	QString fileName = QFileDialog::getOpenFileName(this,
 							tr("Open Dump File"), rangersDir+"/save/",
 							tr("SRHD Dump (*.txt);;All Files (*)"));
-	if (fileName.isEmpty())
-		return false;
-    //_filename=fileName;
-	QDir currentDir=QFileInfo(fileName).dir();
-	currentDir.setNameFilters(QStringList("*.txt"));
-	currentDir.setFilter(QDir::Files);
-	const QFileInfoList& infoList=currentDir.entryInfoList();
-	dumpFileList.clear();
-	for(const auto& info:infoList)
-	{
-		dumpFileList<<info.absoluteFilePath();
-	}
-	currentDumpIndex=dumpFileList.indexOf(fileName);
-	std::cout<<currentDumpIndex<<'\n'<<dumpFileList.join('\n').toStdString()<<std::endl;
-	updateDumpArrows();
-    return parseDump(fileName);
+
+	return openDump(fileName);
 }
 
 void MainWindow::showAbout()
@@ -548,32 +535,52 @@ void MainWindow::saveAllReports()
 	out.setCodec("UTF-8");
 	for(const QString& dumpFileName: dumpFileList)
 	{
-        parseDump(dumpFileName);
+		parseDump(dumpFileName);
 		if(!ui->actionAutoSaveReport->isChecked())
 		{
 			saveReport();
 		}
 		out << QFileInfo(dumpFileName).baseName()+"\t"+reportSummary()+'\n';
 	}
-    parseDump(dumpFileList[currentDumpIndex]);
+	parseDump(dumpFileList[currentDumpIndex]);
 }
 
 void MainWindow::loadNextDump()
 {
-    if(currentDumpIndex<0 || currentDumpIndex>=dumpFileList.size()-1) {
+	if(currentDumpIndex<0 || currentDumpIndex>=dumpFileList.size()-1) {
 		return;
 	}
-    parseDump(dumpFileList[++currentDumpIndex]);
-    updateDumpArrows();
+	parseDump(dumpFileList[++currentDumpIndex]);
+	updateDumpArrows();
 }
 
 void MainWindow::loadPreviousDump()
 {
-    if(currentDumpIndex<=0) {
+	if(currentDumpIndex<=0) {
 		return;
 	}
-    parseDump(dumpFileList[--currentDumpIndex]);
-    updateDumpArrows();
+	parseDump(dumpFileList[--currentDumpIndex]);
+	updateDumpArrows();
+}
+
+bool MainWindow::openDump(const QString &fileName)
+{
+	if (fileName.isEmpty())
+		return false;
+	//_filename=fileName;
+	QDir currentDir=QFileInfo(fileName).dir();
+	currentDir.setNameFilters(QStringList("*.txt"));
+	currentDir.setFilter(QDir::Files);
+	const QFileInfoList& infoList=currentDir.entryInfoList();
+	dumpFileList.clear();
+	for(const auto& info:infoList)
+	{
+		dumpFileList<<info.absoluteFilePath();
+	}
+	currentDumpIndex=dumpFileList.indexOf(fileName);
+	std::cout<<currentDumpIndex<<'\n'<<dumpFileList.join('\n').toStdString()<<std::endl;
+	updateDumpArrows();
+	return parseDump(fileName);
 }
 
 void MainWindow::savePreset(const QVariantMap &preset, const QString &fileName) const

@@ -47,7 +47,7 @@ public:
 	void writeSettings() const;
 	void closeEvent(QCloseEvent *event);
 public slots:
-    bool parseDump(const QString &filename=QString());
+	bool parseDump(const QString &filename=QString());
 	bool openDump();
 	void showAbout();
 	void saveReport();
@@ -91,7 +91,7 @@ private:
 		QVector<double> weights;
 		QVector<bool> areBoolean;
 	};
-
+	bool openDump(const QString& fileName);
 	void savePreset(const QVariantMap& preset, const QString& fileName) const;
 	void generateGalaxies();
 	void responsiveSleep(int msec) const;
