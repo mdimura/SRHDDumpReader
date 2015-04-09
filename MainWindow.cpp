@@ -286,8 +286,6 @@ void MainWindow::readSettings()
 	restoreState(settings.value("windowState").toByteArray());
 	std::cout<<"rangersDir:"<<rangersDir.toStdString()<<std::endl;
 
-
-
 	QFile file("minRowsPreset.json");
 	if (file.open(QIODevice::ReadOnly|QIODevice::Text)) {
 		QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
@@ -344,13 +342,15 @@ bool MainWindow::parseDump(const QString& filename)
 	if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		statusBar()->showMessage(tr("File could not be open: ")+_filename);
+        std::cout<<"File could not be open: "+_filename.toStdString();
 		return false;
 	}
 	if(filename.isEmpty() && QFileInfo(_filename).lastModified()==_fileModified)
 	{
 		//dump was parsed earlier
 		statusBar()->showMessage(tr("dump was parsed earlier, skipping")+_filename);
-		return false;
+        std::cout<<"dump was parsed earlier, skipping"+_filename.toStdString();
+        return false;
 	}
 	_fileModified=QFileInfo(_filename).lastModified();
 	setWindowTitle(QStringLiteral("SRHDDumpReader - ")+QFileInfo(_filename).baseName());
@@ -456,6 +456,7 @@ void MainWindow::saveReport()
 
 	if(!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		statusBar()->showMessage(tr("Could not create the report file ")+filename);
+        std::cout<<"Could not create the report file "+filename.toStdString()<<std::endl;
 		return;
 	}
 
@@ -529,7 +530,8 @@ void MainWindow::saveAllReports()
 
 	if(!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		statusBar()->showMessage(tr("Could not create the summary report file ")+filename);
-		return;
+        std::cout<<"Could not create the summary report file "+filename.toStdString()<<std::endl;
+        return;
 	}
 	QTextStream out(&ofile);
 	out.setCodec("UTF-8");
@@ -588,6 +590,7 @@ void MainWindow::savePreset(const QVariantMap &preset, const QString &fileName) 
 	QFile file(fileName);
 	if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		statusBar()->showMessage(tr("Could not save: ")+fileName);
+        std::cout<<"Could not save: "+filename.toStdString();
 		return;
 	}
 	file.write(QJsonDocument::fromVariant(preset).toJson());
@@ -617,6 +620,7 @@ void MainWindow::loadPresets()
 	//presets to show in context menus
 	std::cout<<"loading presets for context menus:"<<std::endl;
 	QDir plDir(presetDirPlanets);
+    std::cout<<plDir.absolutePath().toStdString()<<std::endl;
 	QDir eqDir(presetDirEq);
 	for(const QString& fileName:plDir.entryList(QDir::Files))
 	{
@@ -694,11 +698,13 @@ QVariantMap MainWindow::loadPreset(const QString &fileName) const
 	if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
 		statusBar()->showMessage(tr("Unable to open file ")+
 					 file.errorString()+" "+file.fileName());
+        std::cout<<"Unable to open file "+file.fileName().toStdString();
 		return QVariantMap();
 	}
 	QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
 	if(doc.isNull()) {
 		statusBar()->showMessage(tr("Unable to parse JSON file"));
+        std::cout<<"Unable to parse JSON file"<<std::endl;
 		return QVariantMap();
 	}
 	return doc.toVariant().toMap();
@@ -1090,8 +1096,8 @@ void MainWindow::generateGalaxies()
 		if(isUseless(_reportSummary,minRowsPreset)) {//useless save
 			QFile::remove(prefix+".txt");
 			QFile::remove(prefix+".sav");
-			QFile::remove(prefix+".txt.report");
-			QFile::remove(prefix+".txt_map.png");
+            QFile::remove(prefix+".report");
+            QFile::remove(prefix+"_map.png");
 		}
 		else {
 			QFile::rename(prefix+".txt",prefix+timestamp+".txt");
