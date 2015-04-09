@@ -17,6 +17,7 @@
 #include <QStandardPaths>
 #include <QMutex>
 #include <QWaitCondition>
+#include <QStatusBar>
 
 #include "Equipment.h"
 #include "Ship.h"
@@ -91,6 +92,11 @@ private:
 		QVector<double> weights;
 		QVector<bool> areBoolean;
 	};
+	void showMessage(const QString& str,int timeout=0) const
+	{
+		std::cout<<str.toStdString()<<std::endl;
+		statusBar()->showMessage(str,timeout);
+	}
 	bool openDump(const QString& fileName);
 	void savePreset(const QVariantMap& preset, const QString& fileName) const;
 	void generateGalaxies();

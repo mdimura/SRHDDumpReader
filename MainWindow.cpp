@@ -77,7 +77,7 @@ QString tabSeparatedValues(const QItemSelectionModel *selectionModel)
 {
 	const QAbstractItemModel* model=selectionModel->model();
 	QModelIndexList indexes = selectionModel->selectedIndexes();
-	if(indexes.size() < 1){
+	if(indexes.size() < 1) {
 		return "";
 	}
 	std::sort(indexes.begin(), indexes.end());
@@ -341,16 +341,14 @@ bool MainWindow::parseDump(const QString& filename)
 	QFile file(_filename);
 	if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
-		statusBar()->showMessage(tr("File could not be open: ")+_filename);
-        std::cout<<"File could not be open: "+_filename.toStdString();
+		showMessage(tr("File could not be open: ")+_filename);
 		return false;
 	}
 	if(filename.isEmpty() && QFileInfo(_filename).lastModified()==_fileModified)
 	{
 		//dump was parsed earlier
-		statusBar()->showMessage(tr("dump was parsed earlier, skipping")+_filename);
-        std::cout<<"dump was parsed earlier, skipping"+_filename.toStdString();
-        return false;
+		showMessage(tr("dump was parsed earlier, skipping")+_filename);
+		return false;
 	}
 	_fileModified=QFileInfo(_filename).lastModified();
 	setWindowTitle(QStringLiteral("SRHDDumpReader - ")+QFileInfo(_filename).baseName());
@@ -372,7 +370,7 @@ bool MainWindow::parseDump(const QString& filename)
 	auto duration = duration_cast<milliseconds>( tReadEnd - tStart ).count();
 	string timeTaken="Reading the file took "+to_string(duration/1000.0)+" s. ";
 	galaxy.parseDump(stream);
-	statusBar()->showMessage(tr("Parsed %1 stars, %2 planets, %3 black holes, %4 ships and %5 items").
+	showMessage(tr("Parsed %1 stars, %2 planets, %3 black holes, %4 ships and %5 items").
 				 arg(galaxy.starCount()).arg(galaxy.planetCount()).
 				 arg(galaxy.blackHoleCount()).
 				 arg(galaxy.shipCount()).arg(galaxy.equipmentCount()),
@@ -455,8 +453,7 @@ void MainWindow::saveReport()
 	}
 
 	if(!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		statusBar()->showMessage(tr("Could not create the report file ")+filename);
-        std::cout<<"Could not create the report file "+filename.toStdString()<<std::endl;
+		showMessage(tr("Could not create the report file ")+filename);
 		return;
 	}
 
@@ -529,9 +526,8 @@ void MainWindow::saveAllReports()
 	}
 
 	if(!ofile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		statusBar()->showMessage(tr("Could not create the summary report file ")+filename);
-        std::cout<<"Could not create the summary report file "+filename.toStdString()<<std::endl;
-        return;
+		showMessage(tr("Could not create the summary report file ")+filename);
+		return;
 	}
 	QTextStream out(&ofile);
 	out.setCodec("UTF-8");
@@ -589,12 +585,11 @@ void MainWindow::savePreset(const QVariantMap &preset, const QString &fileName) 
 {
 	QFile file(fileName);
 	if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		statusBar()->showMessage(tr("Could not save: ")+fileName);
-        std::cout<<"Could not save: "+filename.toStdString();
+		showMessage(tr("Could not save: ")+fileName);
 		return;
 	}
 	file.write(QJsonDocument::fromVariant(preset).toJson());
-	statusBar()->showMessage(tr("Preset saved: ")+fileName);
+	showMessage(tr("Preset saved: ")+fileName);
 }
 
 void MainWindow::responsiveSleep(int msec) const
@@ -620,7 +615,7 @@ void MainWindow::loadPresets()
 	//presets to show in context menus
 	std::cout<<"loading presets for context menus:"<<std::endl;
 	QDir plDir(presetDirPlanets);
-    std::cout<<plDir.absolutePath().toStdString()<<std::endl;
+	std::cout<<plDir.absolutePath().toStdString()<<std::endl;
 	QDir eqDir(presetDirEq);
 	for(const QString& fileName:plDir.entryList(QDir::Files))
 	{
@@ -696,15 +691,13 @@ QVariantMap MainWindow::loadPreset(const QString &fileName) const
 {
 	QFile file(fileName);
 	if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
-		statusBar()->showMessage(tr("Unable to open file ")+
+		showMessage(tr("Unable to open file ")+
 					 file.errorString()+" "+file.fileName());
-        std::cout<<"Unable to open file "+file.fileName().toStdString();
 		return QVariantMap();
 	}
 	QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
 	if(doc.isNull()) {
-		statusBar()->showMessage(tr("Unable to parse JSON file"));
-        std::cout<<"Unable to parse JSON file"<<std::endl;
+		showMessage(tr("Unable to parse JSON file"));
 		return QVariantMap();
 	}
 	return doc.toVariant().toMap();
@@ -838,7 +831,7 @@ bool MainWindow::simulateInput(const std::string& str) const
 		}
 	}
 	if(!rangersWindowActive()) {
-		statusBar()->showMessage(tr("Rangers are not in focus, aborting input simulation."));
+		showMessage(tr("Rangers are not in focus, aborting input simulation."));
 		return false;
 	}
 	SendInput(ip.size(), ip.data(), sizeof(INPUT));
@@ -851,7 +844,7 @@ void MainWindow::saveDumpWin()
 {
 	//TODO: make function bool, return status
 	if(!rangersWindowActive()) {
-		statusBar()->showMessage(tr("Rangers are not in focus, aborting QuickDump."));
+		showMessage(tr("Rangers are not in focus, aborting QuickDump."));
 		return;
 	}
 	_filename=rangersDir+"/save/autodump";
@@ -924,7 +917,7 @@ void MainWindow::saveDumpWin()
 		}
 		oldSize=size;
 	}
-	statusBar()->showMessage(tr("Could not save the dump, timeot reached. Not parsing."));
+	showMessage(tr("Could not save the dump, timeot reached. Not parsing."));
 }
 
 QImage MainWindow::currentScreen(float kx, float ky, float kw, float kh)
@@ -998,12 +991,12 @@ void MainWindow::generateGalaxies()
 	std::string filename=QFile::encodeName(rangersDir+"/SRHDDumpReader_generation.log").toStdString();
 	ofstream logfile(filename,std::ofstream::out | std::ofstream::app);
 	if(!logfile.good()) {
-		statusBar()->showMessage(tr("Could not open the log file ")+QString::fromStdString(filename));
+		showMessage(tr("Could not open the log file ")+QString::fromStdString(filename));
 	}
 
 	auto originalMainMenu=currentScreen(0,0.9,0.05,0.1);
 	if(originalMainMenu.height()==0) {
-		statusBar()->showMessage(tr("could not get reference screenshot for the main menu. Generation stopped."));
+		showMessage(tr("could not get reference screenshot for the main menu. Generation stopped."));
 		return;
 	}
 	originalMainMenu.save("originalMainMenu.png");
@@ -1022,7 +1015,7 @@ void MainWindow::generateGalaxies()
 		auto currentMainMenu=currentScreen(0,0.9,0.05,0.1);
 		if(currentMainMenu!=originalMainMenu) {
 			currentMainMenu.save("failedMainMenu.png");
-			statusBar()->showMessage(tr("Main menu is expected, but does not match. Generation stopped. "));
+			showMessage(tr("Main menu is expected, but does not match. Generation stopped. "));
 			return;
 		}
 
@@ -1062,7 +1055,7 @@ void MainWindow::generateGalaxies()
 			}
 			if(t>=maxGenerationTime) {
 				currentGenerationFinished.save("failedGenerationFinished.png");
-				statusBar()->showMessage(tr("Galaxy_generation_finished is expected, but does not match. Generation stopped"));
+				showMessage(tr("Galaxy_generation_finished is expected, but does not match. Generation stopped"));
 				return;
 			}
 			high_resolution_clock::time_point tGenerationFinished = high_resolution_clock::now();
@@ -1096,8 +1089,8 @@ void MainWindow::generateGalaxies()
 		if(isUseless(_reportSummary,minRowsPreset)) {//useless save
 			QFile::remove(prefix+".txt");
 			QFile::remove(prefix+".sav");
-            QFile::remove(prefix+".report");
-            QFile::remove(prefix+"_map.png");
+			QFile::remove(prefix+".report");
+			QFile::remove(prefix+"_map.png");
 		}
 		else {
 			QFile::rename(prefix+".txt",prefix+timestamp+".txt");
