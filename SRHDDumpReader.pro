@@ -4,7 +4,10 @@
 #
 #-------------------------------------------------
 
-DEFINES += APP_VERSION="\\\"$(shell echo \$\$(git show -s --format="%ci" | cut -c1-10)-\$\$(git rev-parse --abbrev-ref HEAD) )\\\""
+COMMIT_BRANCH = $$system(git rev-parse --abbrev-ref HEAD)
+COMMIT_DATE = $$system(git show -s --pretty='%ci')
+COMMIT_DATE = $$first(COMMIT_DATE)
+DEFINES += APP_VERSION=\\\"$$COMMIT_DATE-$$COMMIT_BRANCH\\\"
 CONFIG(release, debug|release): DEFINES+=NDEBUG
 
 RC_FILE = SRHDDumpReader.rc
