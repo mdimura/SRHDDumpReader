@@ -4,15 +4,16 @@
 #
 #-------------------------------------------------
 
-VERSION = 20150409b
-DEFINES += APP_VERSION=\\\"$$VERSION\\\"
+DEFINES += APP_VERSION="\\\"$(shell echo \$\$(git show -s --format="%ci" | cut -c1-10)-\$\$(git rev-parse --abbrev-ref HEAD) )\\\""
 CONFIG(release, debug|release): DEFINES+=NDEBUG
 
 RC_FILE = SRHDDumpReader.rc
 
 QT       += core gui
 CONFIG += c++14
-QMAKE_CXXFLAGS += -std=c++1y
+QMAKE_CXXFLAGS += -std=c++14 #-pthread -Wl,--no-as-needed
+QMAKE_LFLAGS += -std=c++14 #-pthread -Wl,--no-as-needed
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
 
