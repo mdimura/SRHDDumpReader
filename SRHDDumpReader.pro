@@ -7,7 +7,8 @@
 COMMIT_BRANCH = $$system(git rev-parse --abbrev-ref HEAD)
 COMMIT_DATE = $$system(git show -s --pretty='%ci')
 COMMIT_DATE = $$first(COMMIT_DATE)
-DEFINES += APP_VERSION=\\\"$$COMMIT_DATE-$$COMMIT_BRANCH\\\"
+COMMIT_HASH = $$system(git log --pretty=format:'%h' -n 1)
+DEFINES += APP_VERSION=\\\"$$COMMIT_DATE-$$COMMIT_BRANCH-$$COMMIT_HASH\\\"
 CONFIG(release, debug|release): DEFINES+=NDEBUG
 
 RC_FILE = SRHDDumpReader.rc
@@ -113,4 +114,5 @@ DISTFILES += \
     presets/planets/huge fei 45p.dr.json \
     presets/planets/huge gaal-fei 45p.dr.json \
     presets/planets/huge industrial gaal 30p.dr.json \
-    presets/planetsReport/huge industrial gaal 30p.dr.json
+    presets/planetsReport/huge industrial gaal 30p.dr.json \
+    SRHDDumpReader_ru.ts
