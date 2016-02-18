@@ -1,5 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #include <unordered_map>
 
