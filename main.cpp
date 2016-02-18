@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include <QTranslator>
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
@@ -9,12 +10,12 @@ int main(int argc, char *argv[])
     QTranslator translator;
     translator.load("SRHDDumpReader_ru");
     a.installTranslator(&translator);
+    MainWindow w;
 #ifdef _WIN32
     RegisterHotKey((HWND)w.winId(), 100, 0, 0x76);//F7
     RegisterHotKey((HWND)w.winId(), 101, 0, 0x75);//F6
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 #endif
-    MainWindow w;
     w.show();
 
     return a.exec();
