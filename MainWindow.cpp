@@ -16,6 +16,7 @@
 #include <QTextCodec>
 #include <QItemSelectionModel>
 #include <QClipboard>
+#include <QItemEditorFactory>
 
 #include <iostream>
 #include <fstream>
@@ -112,6 +113,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow),tradeModel(&galaxy,this),tradeProxyModel(this),
 	eqModel(&galaxy,this),bhModel(&galaxy,this),planetsModel(&galaxy,this)
 {
+	QItemEditorFactory *factory = new QItemEditorFactory;
+	QItemEditorCreatorBase *colorListCreator =
+			new QStandardItemEditorCreator<ColorListEditor>();
+	factory->registerEditor(QVariant::Color, colorListCreator);
+	QItemEditorFactory::setDefaultFactory(factory);
+
 	ui->setupUi(this);
 
 	ui->planetsTableView->installEventFilter(this);
@@ -187,23 +194,24 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->planetsTableView->resizeColumnsToContents();
 
 	ui->equipmentTableView->setModel(&eqProxyModel);
-	eqHeaderView=
-			new FilterHorizontalHeaderView(&eqProxyModel,ui->equipmentTableView);
+
+	eqHeaderView=new FilterHorizontalHeaderView(&eqProxyModel,ui->equipmentTableView);
 	ui->equipmentTableView->setHorizontalHeader(eqHeaderView);
 	ui->equipmentTableView->resizeColumnsToContents();
-	ui->equipmentTableView->setColumnWidth(0,tableFontWidth*24);
-	ui->equipmentTableView->setColumnWidth(1,tableFontWidth*12);
-	ui->equipmentTableView->setColumnWidth(2,tableFontWidth*6);//Size
-	ui->equipmentTableView->setColumnWidth(3,tableFontWidth*7);//Made
-	ui->equipmentTableView->setColumnWidth(4,tableFontWidth*7);//Cost
-	ui->equipmentTableView->setColumnWidth(5,tableFontWidth*5);//TL
-	ui->equipmentTableView->setColumnWidth(6,tableFontWidth*14);//L T
-	ui->equipmentTableView->setColumnWidth(7,tableFontWidth*24);//Loc
-	ui->equipmentTableView->setColumnWidth(8,tableFontWidth*10);//Star
-	ui->equipmentTableView->setColumnWidth(9,tableFontWidth*8);//Dist
-	ui->equipmentTableView->setColumnWidth(10,tableFontWidth*8);//Owner
-	ui->equipmentTableView->setColumnWidth(11,tableFontWidth*8);//Durab
-	ui->equipmentTableView->setColumnWidth(12,tableFontWidth*48);//Bonus
+	ui->equipmentTableView->setColumnWidth(0,tableFontWidth*2);
+	ui->equipmentTableView->setColumnWidth(1,tableFontWidth*24);
+	ui->equipmentTableView->setColumnWidth(2,tableFontWidth*12);
+	ui->equipmentTableView->setColumnWidth(3,tableFontWidth*6);//Size
+	ui->equipmentTableView->setColumnWidth(4,tableFontWidth*7);//Made
+	ui->equipmentTableView->setColumnWidth(5,tableFontWidth*7);//Cost
+	ui->equipmentTableView->setColumnWidth(6,tableFontWidth*5);//TL
+	ui->equipmentTableView->setColumnWidth(7,tableFontWidth*14);//L T
+	ui->equipmentTableView->setColumnWidth(8,tableFontWidth*24);//Loc
+	ui->equipmentTableView->setColumnWidth(9,tableFontWidth*10);//Star
+	ui->equipmentTableView->setColumnWidth(10,tableFontWidth*8);//Dist
+	ui->equipmentTableView->setColumnWidth(11,tableFontWidth*8);//Owner
+	ui->equipmentTableView->setColumnWidth(12,tableFontWidth*8);//Durab
+	ui->equipmentTableView->setColumnWidth(13,tableFontWidth*48);//Bonus
 	//ui->equipmentTableView->resizeRowsToContents();
 	//ui->equipmentTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
 
@@ -371,10 +379,10 @@ bool MainWindow::parseDump(const QString& filename)
 	string timeTaken="Reading the file took "+to_string(duration/1000.0)+" s. ";
 	galaxy.parseDump(stream);
 	showMessage(tr("Parsed %1 stars, %2 planets, %3 black holes, %4 ships and %5 items").
-				 arg(galaxy.starCount()).arg(galaxy.planetCount()).
-				 arg(galaxy.blackHoleCount()).
-				 arg(galaxy.shipCount()).arg(galaxy.equipmentCount()),
-				 5000);
+		    arg(galaxy.starCount()).arg(galaxy.planetCount()).
+		    arg(galaxy.blackHoleCount()).
+		    arg(galaxy.shipCount()).arg(galaxy.equipmentCount()),
+		    5000);
 	high_resolution_clock::time_point tParseEnd = high_resolution_clock::now();
 	duration = duration_cast<milliseconds>( tParseEnd - tReadEnd ).count();
 	timeTaken+="Parsing - "+to_string(duration/1000.0)+" s. ";
@@ -692,7 +700,7 @@ QVariantMap MainWindow::loadPreset(const QString &fileName) const
 	QFile file(fileName);
 	if (!file.open(QIODevice::ReadOnly|QIODevice::Text)) {
 		showMessage(tr("Unable to open file ")+
-					 file.errorString()+" "+file.fileName());
+			    file.errorString()+" "+file.fileName());
 		return QVariantMap();
 	}
 	QJsonDocument doc=QJsonDocument::fromJson(file.readAll());
@@ -722,6 +730,19 @@ QMap<QString, MainWindow::Scorer> MainWindow::readScorers(const QString &filenam
 	}
 	return scorers;
 }
+bool isUseless(const QMap<QString, int>& val, const QMap<QString, int>& min)
+{
+	using MapStrIntCI=QMap<QString,int>::const_iterator;
+	for (MapStrIntCI i = min.begin(); i != min.end(); ++i)
+	{
+		if(val.value(i.key(),0)<i.value()) {
+			std::cout<<i.key().toStdString()<<" < "<<i.value()<<std::endl;
+			return true;
+		}
+	}
+	return false;
+}
+
 #ifdef _WIN32
 bool rangersWindowActive()
 {
@@ -969,19 +990,6 @@ QImage MainWindow::currentScreen(float kx, float ky, float kw, float kh)
 				       currentImage.width()*kw,currentImage.height()*kh);
 	QFile::remove(screenFilename);
 	return currentImage;
-}
-
-bool isUseless(const QMap<QString, int>& val, const QMap<QString, int>& min)
-{
-	using MapStrIntCI=QMap<QString,int>::const_iterator;
-	for (MapStrIntCI i = min.begin(); i != min.end(); ++i)
-	{
-		if(val.value(i.key(),0)<i.value()) {
-			std::cout<<i.key().toStdString()<<" < "<<i.value()<<std::endl;
-			return true;
-		}
-	}
-	return false;
 }
 
 void MainWindow::generateGalaxies()

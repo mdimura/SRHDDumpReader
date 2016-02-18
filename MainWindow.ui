@@ -71,18 +71,10 @@
 {
   font: 9pt &quot;Sans Serif&quot;;
 }
-QTableView::item
-{
-  border: 0px;
-  padding: 0px;
-  margin: 0px;
-}</string>
+</string>
        </property>
        <property name="sizeAdjustPolicy">
         <enum>QAbstractScrollArea::AdjustToContents</enum>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
        <property name="showDropIndicator" stdset="0">
         <bool>false</bool>
