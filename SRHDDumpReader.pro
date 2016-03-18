@@ -115,4 +115,5 @@ DISTFILES += \
     presets/planets/huge gaal-fei 45p.dr.json \
     presets/planets/huge industrial gaal 30p.dr.json \
     presets/planetsReport/huge industrial gaal 30p.dr.json \
-    SRHDDumpReader_ru.ts
+    SRHDDumpReader_ru.ts \
+    selection_colors.json

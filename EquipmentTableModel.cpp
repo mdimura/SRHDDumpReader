@@ -28,13 +28,22 @@ int EquipmentTableModel::columnCount(const QModelIndex &parent) const
 QVariant EquipmentTableModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::BackgroundRole) {
-		return QBrush(colors.value(index.row(),QColor(0,0,0,0)));
+		return QBrush(colors.value(index.row(),QColor("white")));
 	}
 	int col=index.column();
 	if (role == Qt::EditRole) {
 		if (col==0) {
 			return colors.value(index.row(),QColor("white"));
 		}
+	}
+	if (role == Qt::ForegroundRole) {
+		QColor bg=colors.value(index.row(),QColor("white"));
+		int lightness;//=bg.lightness();
+		lightness=bg.red()*0.299 + bg.green()*0.587 + bg.blue()*0.114;
+		if(lightness<128) {
+			return QBrush(QColor("white"));
+		}
+		return QBrush(QColor("black"));
 	}
 	if (role == Qt::DisplayRole)
 	{

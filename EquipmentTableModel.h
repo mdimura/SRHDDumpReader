@@ -25,6 +25,7 @@ public:
     {
 	beginResetModel();
 	endResetModel();
+	colors.clear();
     }
     void initialiseFilterWidgets();
     QString colorName(const QColor& c) const {
