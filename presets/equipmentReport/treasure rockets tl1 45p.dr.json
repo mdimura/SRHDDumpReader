@@ -1,11 +1,11 @@
 {
     "match": {
-        "2": "Nod",
+        "2": "W04",
         "7": "treasure"
     },
     "maxInt": {
         "10": "45"
     },
-    "sortColumn": 10,
+    "sortColumn": 8,
     "sortOrder": 0
 }

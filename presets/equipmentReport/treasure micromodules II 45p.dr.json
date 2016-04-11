@@ -1,6 +1,7 @@
 {
     "match": {
         "2": "Nod",
+        "13": "^II:",
         "7": "treasure"
     },
     "maxInt": {

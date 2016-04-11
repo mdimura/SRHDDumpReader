@@ -10,13 +10,13 @@
     "treasure Transmitters all":        {	"weight":10,	"isBool":false	},
     "treasure despensable arts 45p":	{	"weight":5,     "isBool":false	},
     "treasure arts 45p":                {	"weight":2,     "isBool":false	},
-    "treasure micromodules I 45p":      {	"weight":1,     "isBool":false	},
-    "treasure micromodules II 45p":     {	"weight":0.5,	"isBool":false	},
+    "treasure micromodules I 45p":      {	"weight":2,     "isBool":false	},
+    "treasure micromodules II 45p":     {	"weight":1,		"isBool":false	},
     "treasure micromodules III 45p":	{	"weight":0.5,	"isBool":false	},
-    "treasure rockets tl4 45p":         {	"weight":10,	"isBool":false	},
-    "treasure rockets tl3 45p":         {	"weight":5,     "isBool":false	},
-    "treasure rockets tl2 45p":         {	"weight":2,     "isBool":false	},
-    "treasure rockets tl1 45p":         {	"weight":1,     "isBool":false	},
-    "huge industrial gaal 30p":         {	"weight":1,     "isBool":false	}
+    "treasure rockets tl4 45p":         {	"weight":4,		"isBool":false	},
+    "treasure rockets tl3 45p":         {	"weight":2,     "isBool":false	},
+    "treasure rockets tl2 45p":         {	"weight":0.5,     "isBool":false	},
+    "treasure rockets tl1 45p":         {	"weight":0.1,     "isBool":false	},
+    "huge industrial gaal 30p":         {	"weight":5,     "isBool":false	}
   }
 }

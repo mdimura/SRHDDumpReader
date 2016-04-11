@@ -1,0 +1,10 @@
+{
+    "match": {
+        "2": "ArtMiniExpl"
+    },
+    "maxInt": {
+        "10": "45"
+    },
+    "sortColumn": 10,
+    "sortOrder": 0
+}
