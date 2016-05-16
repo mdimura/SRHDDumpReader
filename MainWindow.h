@@ -176,6 +176,10 @@ private:
 		}
 		return summary;
 	}
+    void renameCyrillicDump()
+    {
+        QFile::rename("фгещвгьз.txt","autodump.txt");
+    }
 	static QMap<QString,Scorer> readScorers(const QString &filename);
 
 private:

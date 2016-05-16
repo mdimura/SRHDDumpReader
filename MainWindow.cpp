@@ -927,13 +927,24 @@ void MainWindow::saveDumpWin()
 	const int dt=300;
 	int oldSize=0;
 	QFileInfo fileInfo(_filename);
+    QString cyrFilename=_filename;
+    cyrFilename.replace("autodump.txt","фгещвгьз.txt");
+    auto cyrFileInfo=QFileInfo(cyrFilename);
 	for(int t=0; t<30000; t+=dt)
 	{
 		responsiveSleep(dt);
 		fileInfo.refresh();
+        if(fileInfo.size()==0) {
+            cyrFileInfo.refresh();
+            if(cyrFileInfo.size()>0) {
+                fileInfo=cyrFileInfo;
+            }
+        }
 		int size=fileInfo.size();
 		if(size && size==oldSize) {
-			parseDump();
+            QFile::rename(cyrFilename, _filename)
+            QFile::rename(cyrFilename.left(string.length() - 4)+".sav", _filename.left(string.length() - 4)+".sav")
+            parseDump();
 			return;
 		}
 		oldSize=size;
