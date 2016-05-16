@@ -67,6 +67,7 @@ public:
 	QString blackHoleStar2(unsigned row) const;
 	float blackHoleStar2Distance(unsigned row) const;
 	unsigned blackHoleTurnsToClose(unsigned row) const;
+    QString blackHoleNextLootChange(unsigned row) const;
 
 	const Planet& planet(unsigned row) const
 	{
@@ -119,6 +120,7 @@ private:
 	std::vector<unsigned> shipMarkets;
 	std::vector<unsigned> eqVec;
 	std::vector<unsigned> planetVec;
+    unsigned currentDay=0;
 
 	mutable GoodsArr _maxBuyPrice;
 	mutable GoodsArr _minSellPrice;

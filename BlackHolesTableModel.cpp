@@ -14,7 +14,7 @@ int BlackHolesTableModel::rowCount(const QModelIndex &parent) const
 
 int BlackHolesTableModel::columnCount(const QModelIndex &parent) const
 {
-    return 5;
+    return 6;
 }
 
 QVariant BlackHolesTableModel::data(const QModelIndex &index, int role) const
@@ -35,6 +35,8 @@ QVariant BlackHolesTableModel::data(const QModelIndex &index, int role) const
             return std::round(_galaxy->blackHoleStar2Distance(row)*10.0)*0.1;
         case 4:
             return _galaxy->blackHoleTurnsToClose(row);
+        case 5:
+            return _galaxy->blackHoleNextLootChange(row);
         default:
             return QVariant();
         }
@@ -47,7 +49,7 @@ QVariant BlackHolesTableModel::data(const QModelIndex &index, int role) const
 QVariant BlackHolesTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     static const QVector<QString> header={tr("Star 1"),tr("Dist."),tr("Star 2"),
-                                          tr("Dist."), tr("Days left")};
+                                          tr("Dist."), tr("Days left"),tr("Next loot change")};
     if (role == Qt::DisplayRole)
     {
         if (orientation == Qt::Vertical)

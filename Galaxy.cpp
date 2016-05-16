@@ -2,6 +2,7 @@
 #include <QStaticText>
 #include <QFile>
 #include <QJsonDocument>
+#include <QDate>
 
 QMap<QString,QColor> loadColors(const QString& fileName)
 {
@@ -53,7 +54,7 @@ void Galaxy::parseDump(QTextStream &stream)
 {
 	clear();
 	const static QMap<QString,int> globalOptions={
-		{"Player ^{",0},{"StarList ^{",1},{"HoleList ^{",2}
+        {"Player ^{",0},{"StarList ^{",1},{"HoleList ^{",2}
 	};
 
 	QString line = stream.readLine();
@@ -74,8 +75,14 @@ void Galaxy::parseDump(QTextStream &stream)
 		case 2://HoleList
 			readBlackHoles(stream,*this);
 			break;
+        case 3://IDay
+            break;
 
 		default:
+            if (line.startsWith("IDay=")) {
+                currentDay=line.mid(5).toInt();
+                std::cout<<"currentDay="<<currentDay<<std::endl;
+            }
 			//skip record
 			break;
 		}
@@ -478,7 +485,18 @@ float Galaxy::blackHoleStar2Distance(unsigned row) const
 
 unsigned Galaxy::blackHoleTurnsToClose(unsigned row) const
 {
-	return blackHoles[row].turnsToClose();
+    return blackHoles[row].turnsToClose();
+}
+
+QString Galaxy::blackHoleNextLootChange(unsigned row) const
+{
+    QDate today=QDate(3300,1,1).addDays(currentDay-301);
+    QString changes;
+    unsigned ttclose=blackHoleTurnsToClose(row);
+    for (unsigned daysToChange=77-(currentDay%77);  daysToChange<ttclose; daysToChange+=77) {
+        changes+=today.addDays(daysToChange).toString("dd MMMM yyyy")+"; ";
+    }
+    return changes;
 }
 
 QImage Galaxy::map(float scale) const
