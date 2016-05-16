@@ -176,10 +176,6 @@ private:
 		}
 		return summary;
 	}
-    void renameCyrillicDump()
-    {
-        QFile::rename("фгещвгьз.txt","autodump.txt");
-    }
 	static QMap<QString,Scorer> readScorers(const QString &filename);
 
 private:
@@ -217,7 +213,7 @@ private:
 	int maxGenerationTime=120000;
 	int screenSaveLag=200;
 	int shortSleep=25;
-	float mapScale=7.f;
+    float mapScale=6.f;
 	QStringList planetsReportPresets;
 	QStringList eqReportPresets;
 	QMap<QString,int> minRowsPreset;

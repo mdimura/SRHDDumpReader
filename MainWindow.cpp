@@ -178,7 +178,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	hv->setSectionsClickable(true);
 	ui->tradeTableView->setHorizontalHeader(hv);
 
-	//int tableFontHeight=QFontMetrics(QFont("sans",9)).height();
+    int tableFontHeight=QFontMetrics(QFont("sans",9)).height();
 	int tableFontWidth=QFontMetrics(QFont("sans",9)).charWidth("o",0);
 
 	ui->tradeTableView->setModel(&tradeProxyModel);
@@ -213,7 +213,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->equipmentTableView->setColumnWidth(12,tableFontWidth*8);//Durab
 	ui->equipmentTableView->setColumnWidth(13,tableFontWidth*48);//Bonus
 	//ui->equipmentTableView->resizeRowsToContents();
-	//ui->equipmentTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
+    ui->equipmentTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
+    ui->tradeTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
+    ui->planetsTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
+    ui->bhTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
 
 	ui->bhTableView->setModel(&bhModel);
 	ui->bhTableView->resizeColumnsToContents();
@@ -942,8 +945,8 @@ void MainWindow::saveDumpWin()
         }
 		int size=fileInfo.size();
 		if(size && size==oldSize) {
-            QFile::rename(cyrFilename, _filename)
-            QFile::rename(cyrFilename.left(string.length() - 4)+".sav", _filename.left(string.length() - 4)+".sav")
+            QFile::rename(cyrFilename, _filename);
+            QFile::rename(cyrFilename.left(cyrFilename.length() - 4)+".sav", _filename.left(_filename.length() - 4)+".sav");
             parseDump();
 			return;
 		}
