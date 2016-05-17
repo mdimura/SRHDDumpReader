@@ -25,6 +25,8 @@ public:
 	unsigned blackHoleCount() const;
 	unsigned planetCount() const;
 
+	unsigned galaxyTechLevel() const;
+
 	void addEquipment(Equipment&& eq);
 	void addShip(const Ship&& ship);
 	void addStar(const Star&& star);

@@ -418,6 +418,10 @@ bool MainWindow::parseDump(const QString& filename)
 	//ui->equipmentTableView->resizeRowToContents(0);
 	//int sectionSize=ui->equipmentTableView->verticalHeader()->sectionSize(0);
 	//ui->equipmentTableView->verticalHeader()->setDefaultSectionSize(sectionSize);
+	setWindowTitle(QStringLiteral("SRHDDumpReader - ")
+		       +QFileInfo(_filename).baseName()+". Galaxy's tech level: "
+		       +QString::number(galaxy.galaxyTechLevel()));
+
 	high_resolution_clock::time_point tModelUpdateEnd = high_resolution_clock::now();
 	duration = duration_cast<milliseconds>( tModelUpdateEnd - tParseEnd ).count();
 	timeTaken+="Model update - "+to_string(duration/1000.0)+" s. ";

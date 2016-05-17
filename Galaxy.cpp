@@ -134,6 +134,31 @@ unsigned Galaxy::planetCount() const
 	return planetMap.size();
 }
 
+unsigned Galaxy::galaxyTechLevel() const
+{
+	unsigned maxPtl=0;
+	unsigned atMaxPtlCount=0;
+	for (const auto &pair:planetMap) {
+		const Planet& p=pair.second;
+		if(p.owner()=="PirateClan" || p.owner()=="People"
+		   || p.owner()=="Peleng" || p.owner()=="Maloc"
+		   || p.owner()=="Gaal" || p.owner()=="Fei") {
+			if(maxPtl<p.techLevel()) {
+				atMaxPtlCount=1;
+				maxPtl=p.techLevel();
+			} else if(maxPtl==p.techLevel()) {
+				++atMaxPtlCount;
+			}
+		}
+	}
+	if(atMaxPtlCount>=5) {
+		return maxPtl;
+	} else if(atMaxPtlCount>=2) {
+		return maxPtl-1;
+	}
+	return maxPtl-2;
+}
+
 
 void Galaxy::addEquipment(Equipment &&eq)
 {
