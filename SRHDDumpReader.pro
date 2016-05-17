@@ -164,4 +164,5 @@ DISTFILES += \
     presets/planetsReport/big+ industrial gaal 45p.dr.json \
     presets/planetsReport/huge industrial fei 45p.dr.json \
     presets/planetsReport/huge industrial gaal 30p.dr.json \
-    presets/planetsReport/huge industrial gaal-fei 45p.dr.json
+    presets/planetsReport/huge industrial gaal-fei 45p.dr.json \
+    README.md
