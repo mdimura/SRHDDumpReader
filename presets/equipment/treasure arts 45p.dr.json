@@ -1,0 +1,11 @@
+{
+    "match": {
+        "2": "Art",
+        "7": "treasure"    },
+    
+    "maxInt": {
+        "10": "45"
+    },
+    "sortColumn": 10,
+    "sortOrder": 0
+}
