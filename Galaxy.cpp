@@ -3,6 +3,8 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QDate>
+#include <QGuiApplication>
+
 
 QMap<QString,QColor> loadColors(const QString& fileName)
 {
@@ -54,7 +56,7 @@ void Galaxy::parseDump(QTextStream &stream)
 {
 	clear();
 	const static QMap<QString,int> globalOptions={
-        {"Player ^{",0},{"StarList ^{",1},{"HoleList ^{",2}
+	{"Player ^{",0},{"StarList ^{",1},{"HoleList ^{",2}
 	};
 
 	QString line = stream.readLine();
@@ -75,14 +77,14 @@ void Galaxy::parseDump(QTextStream &stream)
 		case 2://HoleList
 			readBlackHoles(stream,*this);
 			break;
-        case 3://IDay
-            break;
+	case 3://IDay
+	    break;
 
 		default:
-            if (line.startsWith("IDay=")) {
-                currentDay=line.mid(5).toInt();
-                std::cout<<"currentDay="<<currentDay<<std::endl;
-            }
+	    if (line.startsWith("IDay=")) {
+		currentDay=line.mid(5).toInt();
+		std::cout<<"currentDay="<<currentDay<<std::endl;
+	    }
 			//skip record
 			break;
 		}
@@ -494,7 +496,7 @@ QString Galaxy::blackHoleNextLootChange(unsigned row) const
     QString changes;
     unsigned ttclose=blackHoleTurnsToClose(row);
     for (unsigned daysToChange=77-(currentDay%77);  daysToChange<ttclose; daysToChange+=77) {
-        changes+=today.addDays(daysToChange).toString("dd MMMM yyyy")+"; ";
+	changes+=today.addDays(daysToChange).toString("dd MMMM yyyy")+"; ";
     }
     return changes;
 }
@@ -507,7 +509,7 @@ QImage Galaxy::map(float scale) const
 	p.setPen(QPen(QColor(Qt::white)));
 	p.setBrush(QBrush(QColor(Qt::white),Qt::SolidPattern));
 	p.setRenderHint(QPainter::Antialiasing, true);
-	QFont font("Verdana",int(scale*1.2));
+	QFont font("Verdana",int(scale*1.2/qGuiApp->devicePixelRatio()));
 	p.setFont(font);
 	//prepare base names
 	QMap<unsigned,QString> starIdToBases;
