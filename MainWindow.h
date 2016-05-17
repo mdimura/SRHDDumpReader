@@ -40,6 +40,7 @@
 namespace Ui {
 class MainWindow;
 }
+QStringList supportedColors();
 
 class ColorListEditor : public QComboBox
 {
@@ -49,7 +50,7 @@ class ColorListEditor : public QComboBox
 public:
 	ColorListEditor(QWidget *widget = 0): QComboBox(widget)
 	{
-	    populateList();
+		populateList(supportedColors());
 	}
 
 public:
@@ -63,22 +64,11 @@ public:
 	}
 
 private:
-	void populateList()
+	void populateList(const QStringList& colorNames)
 	{
-		QVariantList colorNames;
-		QFile file("selection_colors.json");
-		if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-			std::cerr<<"could not open selection_colors.json"<<std::endl;
-			QStringList tmp=QColor::colorNames();
-			qCopy(tmp.begin(), tmp.end(), colorNames.begin());
-		}
-		else {
-			QByteArray data = file.readAll();
-			colorNames=QJsonDocument::fromJson(data).array().toVariantList();
-		}
 		for (int i = 0; i < colorNames.size(); ++i) {
-			QColor color(colorNames[i].toString());
-			insertItem(i, colorNames[i].toString());
+			QColor color(colorNames[i]);
+			insertItem(i, colorNames[i]);
 			setItemData(i, color, Qt::DecorationRole);
 		}
 	}
@@ -116,6 +106,9 @@ public:
 	bool simulateInput(const std::string& str) const;
 	QImage currentScreen(float kx, float ky, float kw, float kh);
 #endif
+
+private slots:
+	void customHeaderMenuRequested(QPoint pos);
 
 private:
 	//    using Scorer=std::vector<std::tuple<QString,double,bool>>;
@@ -190,6 +183,8 @@ private:
 	EquipmentTableModel eqModel;
 	FilterHorizontalHeaderView* eqHeaderView;
 	SortMultiFilterProxyModel eqProxyModel;
+	QMenu eqMenu;
+	unsigned eqMenuRow=0;
 
 	BlackHolesTableModel bhModel;
 
@@ -213,7 +208,7 @@ private:
 	int maxGenerationTime=120000;
 	int screenSaveLag=200;
 	int shortSleep=25;
-    float mapScale=6.f;
+	float mapScale=6.f;
 	QStringList planetsReportPresets;
 	QStringList eqReportPresets;
 	QMap<QString,int> minRowsPreset;

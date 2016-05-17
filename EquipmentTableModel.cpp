@@ -9,9 +9,9 @@
 EquipmentTableModel::EquipmentTableModel(const Galaxy *galaxy, QObject *parent) :
 	QAbstractTableModel(parent),_galaxy(galaxy)
 {
-	QStringList list=QColor::colorNames();
-	for(const QString& name:list) {
-		colorNames[QColor(name)]=name;
+	for(const QString& name:QColor::colorNames()) {
+		QColor c(name);
+		colorNames[c.rgb()]=name;
 	}
 }
 

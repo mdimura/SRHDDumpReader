@@ -178,7 +178,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	hv->setSectionsClickable(true);
 	ui->tradeTableView->setHorizontalHeader(hv);
 
-    int tableFontHeight=QFontMetrics(QFont("sans",9)).height();
+	int tableFontHeight=QFontMetrics(QFont("sans",9)).height();
 	int tableFontWidth=QFontMetrics(QFont("sans",9)).charWidth("o",0);
 
 	ui->tradeTableView->setModel(&tradeProxyModel);
@@ -213,10 +213,26 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->equipmentTableView->setColumnWidth(12,tableFontWidth*8);//Durab
 	ui->equipmentTableView->setColumnWidth(13,tableFontWidth*48);//Bonus
 	//ui->equipmentTableView->resizeRowsToContents();
-    ui->equipmentTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
-    ui->tradeTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
-    ui->planetsTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
-    ui->bhTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
+	ui->equipmentTableView->verticalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui->equipmentTableView->verticalHeader(),
+		SIGNAL(customContextMenuRequested(QPoint)),
+		SLOT(customHeaderMenuRequested(QPoint)));
+	QStringList colorNames=supportedColors();
+	for (const QString& name:colorNames) {
+		QPixmap pix(100,100);
+		QColor color(name);
+		pix.fill(color);
+		QAction* act=new QAction(QIcon(pix),name, this);
+		connect(act,&QAction::triggered,[this,color](){
+			eqProxyModel.setData(eqProxyModel.index(eqMenuRow,0),color);
+		});
+		eqMenu.addAction(act);
+	}
+
+	ui->equipmentTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
+	ui->tradeTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
+	ui->planetsTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
+	ui->bhTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
 
 	ui->bhTableView->setModel(&bhModel);
 	ui->bhTableView->resizeColumnsToContents();
@@ -570,6 +586,11 @@ void MainWindow::loadPreviousDump()
 	}
 	parseDump(dumpFileList[--currentDumpIndex]);
 	updateDumpArrows();
+}
+
+void MainWindow::customHeaderMenuRequested(QPoint pos){
+	eqMenuRow=ui->equipmentTableView->verticalHeader()->logicalIndexAt(pos);
+	eqMenu.popup(ui->equipmentTableView->verticalHeader()->viewport()->mapToGlobal(pos));
 }
 
 bool MainWindow::openDump(const QString &fileName)
@@ -930,24 +951,24 @@ void MainWindow::saveDumpWin()
 	const int dt=300;
 	int oldSize=0;
 	QFileInfo fileInfo(_filename);
-    QString cyrFilename=_filename;
-    cyrFilename.replace("autodump.txt","фгещвгьз.txt");
-    auto cyrFileInfo=QFileInfo(cyrFilename);
+	QString cyrFilename=_filename;
+	cyrFilename.replace("autodump.txt","фгещвгьз.txt");
+	auto cyrFileInfo=QFileInfo(cyrFilename);
 	for(int t=0; t<30000; t+=dt)
 	{
 		responsiveSleep(dt);
 		fileInfo.refresh();
-        if(fileInfo.size()==0) {
-            cyrFileInfo.refresh();
-            if(cyrFileInfo.size()>0) {
-                fileInfo=cyrFileInfo;
-            }
-        }
+		if(fileInfo.size()==0) {
+			cyrFileInfo.refresh();
+			if(cyrFileInfo.size()>0) {
+				fileInfo=cyrFileInfo;
+			}
+		}
 		int size=fileInfo.size();
 		if(size && size==oldSize) {
-            QFile::rename(cyrFilename, _filename);
-            QFile::rename(cyrFilename.left(cyrFilename.length() - 4)+".sav", _filename.left(_filename.length() - 4)+".sav");
-            parseDump();
+			QFile::rename(cyrFilename, _filename);
+			QFile::rename(cyrFilename.left(cyrFilename.length() - 4)+".sav", _filename.left(_filename.length() - 4)+".sav");
+			parseDump();
 			return;
 		}
 		oldSize=size;
@@ -1167,4 +1188,25 @@ void MainWindow::Scorer::addPreset(const QString presetName, double weight, bool
 	presetNames.push_back(presetName);
 	weights.push_back(weight);
 	areBoolean.push_back(isBool);
+}
+
+QStringList supportedColors()
+{
+	QVariantList colorNames;
+	QFile file("selection_colors.json");
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+		std::cerr<<"could not open selection_colors.json"<<std::endl;
+		for (const QString& name:QColor::colorNames()) {
+			colorNames.append(name);
+		}
+	}
+	else {
+		QByteArray data = file.readAll();
+		colorNames=QJsonDocument::fromJson(data).array().toVariantList();
+	}
+	QStringList strs;
+	for (int i = 0; i < colorNames.size(); ++i) {
+		strs.append(colorNames[i].toString());
+	}
+	return strs;
 }

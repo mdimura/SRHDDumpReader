@@ -4,6 +4,7 @@
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QColor>
+#include <iostream>
 
 class Galaxy;
 
@@ -29,7 +30,7 @@ public:
     }
     void initialiseFilterWidgets();
     QString colorName(const QColor& c) const {
-	    return colorNames.value(c,c.name());
+	    return colorNames.value(c.rgb(),c.name());
     }
 
 signals:
@@ -39,7 +40,7 @@ public slots:
 private:
     const Galaxy *_galaxy;
     QMap<int,QColor> colors;
-    QMap<QColor,QString> colorNames;
+    QMap<QRgb,QString> colorNames;
 };
 
 #endif // EQUIPMENTTABLEMODEL_H
