@@ -526,15 +526,18 @@ QString Galaxy::blackHoleNextLootChange(unsigned row) const
     return changes;
 }
 
-QImage Galaxy::map(float scale) const
+QImage Galaxy::map(const unsigned width) const
 {
-	QImage image((mapRect.width()+8)*scale,(mapRect.height()+6)*scale,QImage::Format_ARGB32);
+    //QImage image((mapRect.width()+8)*scale,(mapRect.height()+6)*scale,QImage::Format_ARGB32);
+    unsigned height=width*mapRect.height()/mapRect.width();
+    QImage image(width,height,QImage::Format_ARGB32);
 	image.fill(Qt::black);
 	QPainter p(&image);
 	p.setPen(QPen(QColor(Qt::white)));
 	p.setBrush(QBrush(QColor(Qt::white),Qt::SolidPattern));
 	p.setRenderHint(QPainter::Antialiasing, true);
-	QFont font("Verdana",int(scale*1.2/qGuiApp->devicePixelRatio()));
+    QFont font("Verdana");
+    font.setPixelSize(height*0.020);
 	p.setFont(font);
 	//prepare base names
 	QMap<unsigned,QString> starIdToBases;
@@ -567,11 +570,12 @@ QImage Galaxy::map(float scale) const
 		planetsStr+=planetStr.arg(size).arg(economy).arg(color);
 	}
 	//Draw stars
+    double scale=double(width*0.92)/mapRect.width();
 	//QMap<unsigned,QPointF> starIdToPos;
 	for(const auto& pair:starMap)
 	{
 		const Star& star=pair.second;
-		QPointF pos=star.position()-mapRect.topLeft()+QPointF(4,3);
+        QPointF pos=star.position()-mapRect.topLeft()+QPointF(6,4);
 		pos*=scale;
 		//starIdtoPos[star.id()]=pos;
 		QString owner=star.owner();
@@ -596,7 +600,7 @@ QImage Galaxy::map(float scale) const
 		QStaticText planetsText(starIdToPlanets.value(star.id()));
 		planetsText.setTextFormat(Qt::RichText);
 		planetsText.prepare(QTransform(),font);
-		QPointF panetsPos=pos+QPointF(-planetsText.size().width()*0.5,-scale*3.0);
+        QPointF panetsPos=pos+QPointF(-planetsText.size().width()*0.5,-scale*3.3);
 		p.drawStaticText(panetsPos,planetsText);
 	}
 	return image;

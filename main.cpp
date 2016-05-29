@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QDir>
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
     RegisterHotKey((HWND)w.winId(), 101, 0, 0x75);//F6
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 #endif
+    std::cout<<"devicePixelRatio()="<<qGuiApp->devicePixelRatio()<<std::endl;
     w.show();
 
     return a.exec();

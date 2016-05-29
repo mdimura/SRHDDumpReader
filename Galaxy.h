@@ -108,7 +108,7 @@ public:
 	{
 		return _minSellPrice;
 	}
-	QImage map(float scale=10) const;
+    QImage map(const unsigned width=10) const;
 private:
 	unsigned marketStarId(unsigned row) const;
 	unsigned equipmentStarId(unsigned row) const;

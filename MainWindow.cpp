@@ -151,11 +151,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	reportButton->setMenu(&saveReportMenu);
 	reportButton->setPopupMode(QToolButton::MenuButtonPopup);
 
-	_mapScaleSpinBox.setPrefix("x");
-	_mapScaleSpinBox.setToolTip(tr("Map scale"));
-	_mapScaleSpinBox.setWhatsThis(tr("Map scale"));
+    //_mapScaleSpinBox.setPrefix("x");
+    _mapScaleSpinBox.setMaximum(10000);
+    _mapScaleSpinBox.setSingleStep(50);
+    _mapScaleSpinBox.setToolTip(tr("Map width"));
+    _mapScaleSpinBox.setWhatsThis(tr("Map width"));
 	ui->mainToolBar->insertWidget(ui->mainToolBar->actions()[3],&_mapScaleSpinBox);
-	connect(&_mapScaleSpinBox,SIGNAL(valueChanged(double)),this,SLOT(setMapScale(double)));
+    connect(&_mapScaleSpinBox,SIGNAL(valueChanged(int)),this,SLOT(setMapScale(int)));
 
 	sound.setSource(QUrl::fromLocalFile("Click1.wav"));
 	sound.setVolume(1.0);
@@ -297,8 +299,8 @@ void MainWindow::readSettings()
 
 	shortSleep=settings.value("shortSleep",25).toInt();
 	maxGenerationTime=settings.value("maxGenerationTime",120000).toInt();
-	mapScale=settings.value("mapScale",7.f).toFloat();
-	_mapScaleSpinBox.setValue(mapScale);
+    mapWidth=std::max(10,settings.value("mapWidth",800).toInt());
+    _mapScaleSpinBox.setValue(mapWidth);
 
 	bool autoSaveReport=settings.value("autoSaveReport",false).toBool();
 	ui->actionAutoSaveReport->setChecked(autoSaveReport);
@@ -333,9 +335,10 @@ void MainWindow::readSettings()
 void MainWindow::writeSettings() const
 {
 	QSettings settings("p-s team", "SRHDDumpReader");
+
 	settings.setValue("shortSleep", shortSleep);
 	settings.setValue("maxGenerationTime", maxGenerationTime);
-	settings.setValue("mapScale", (double)mapScale);
+    settings.setValue("mapWidth", mapWidth);
 
 	settings.setValue("autoReload",ui->actionAutoReload->isChecked());
 	settings.setValue("autoSaveReport",ui->actionAutoSaveReport->isChecked());
@@ -686,7 +689,7 @@ void MainWindow::loadPresets()
 
 void MainWindow::updateMap()
 {
-	galaxyMap=galaxy.map(mapScale);
+    galaxyMap=galaxy.map(mapWidth);
 	ui->mapImageLabel->setPixmap(QPixmap::fromImage(galaxyMap));
 	ui->mapImageLabel->resize(galaxyMap.size());
 }
@@ -713,7 +716,7 @@ void MainWindow::updateDumpArrows()
 
 void MainWindow::saveMap()
 {
-	if(mapScale>0.f) {
+    if(mapWidth>10) {
 		QFileInfo fileInfo(_filename);
 		QString filename=fileInfo.path()+'/'+fileInfo.completeBaseName()+"_map.png";
 		if(QFileInfo(filename).exists()) {
