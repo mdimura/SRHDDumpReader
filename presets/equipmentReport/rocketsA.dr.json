@@ -4,8 +4,13 @@
         "7": "treasure"
     },
     "maxInt": {
+
+        "6": "1",
         "10": "45"
     },
-    "sortColumn": 8,
+    "minInt": {
+        "6": "1"
+    },
+    "sortColumn": 10,
     "sortOrder": 0
 }

@@ -92,7 +92,7 @@ public slots:
 	void saveAllReports();
     void setMapScale(int width)
 	{
-        mapWidth=width;
+	mapWidth=width;
 		updateMap();
 	}
 	void loadNextDump();
@@ -115,15 +115,31 @@ private:
 	struct Scorer
 	{
 		void read(const QVariantMap& map);
-		void addPreset(const QString presetName,double weight,bool isBool);
-		double score(const QMap<QString,int>& reportSummary) const
+		void addPreset(const QString presetName,double weight,bool isBool,bool depthPenalize);
+		double score(const QMap<QString,int>& reportSummary,const QMap<QString,QVector<int>>& _reportDepthList) const
 		{
 			double score=0.0;
-			for(int i=0; i<presetNames.size(); i++)
+			const double depthOffset=100;
+			for(int iPreset=0; iPreset<presetNames.size(); iPreset++)
 			{
-				double numRows=reportSummary.value(presetNames[i]);
-				numRows=areBoolean[i]?std::min(numRows,1.0):numRows;
-				score+=numRows*weights[i];
+				double numRows=reportSummary.value(presetNames[iPreset]);
+				if(numRows==0.0) {continue;}
+				numRows=areBoolean[iPreset]?std::min(numRows,1.0):numRows;
+				if(depthPenalized[iPreset]) {
+					auto depthList=_reportDepthList.value(presetNames[iPreset]);
+					if(areBoolean[iPreset]) {
+						int minDepth=*std::min_element(depthList.constBegin(), depthList.constEnd());
+						minDepth+=depthOffset;
+						score+=1.0*weights[iPreset]/minDepth;
+					} else {
+						for(int depth: depthList) {
+							depth+=depthOffset;
+							score+=1.0*weights[iPreset]/depth;
+						}
+					}
+				} else {
+					score+=numRows*weights[iPreset];
+				}
 			}
 			return score;
 		}
@@ -131,6 +147,7 @@ private:
 		QVector<QString> presetNames;
 		QVector<double> weights;
 		QVector<bool> areBoolean;
+		QVector<bool> depthPenalized;
 	};
 	void showMessage(const QString& str,int timeout=0) const
 	{
@@ -147,25 +164,46 @@ private:
 	void saveMap();
 	bool eventFilter(QObject* object, QEvent* event);
 	QVariantMap loadPreset(const QString &fileName) const;
-	QString scoresSummary() const
+	QString scoresSummary(bool desc=true) const
 	{
 		QString summary;
 		using MapStrScorerCI=QMap<QString,Scorer>::const_iterator;
 		for (MapStrScorerCI i = scorers.begin(); i != scorers.end(); ++i)
 		{
-			summary+=i.key()+" = "+
-				 QString::number(i.value().score(_reportSummary))+
-				 "; ";
+			if(desc) {summary+=i.key()+" = ";}
+			summary+=QString::number(i.value().score(_reportSummary,_reportDepthList))+
+				 "\t";
 		}
 		return summary;
 	}
-	QString reportSummary() const
+	QString scoresSummaryHeader() const
 	{
-		QString summary=scoresSummary();
+		QString summary;
+		using MapStrScorerCI=QMap<QString,Scorer>::const_iterator;
+		for (MapStrScorerCI i = scorers.begin(); i != scorers.end(); ++i)
+		{
+			summary+=i.key()+"\t";
+		}
+		return summary;
+	}
+	QString reportSummary(bool desc=true) const
+	{
+		QString summary=scoresSummary(desc);
 		using MapStrIntCI=QMap<QString,int>::const_iterator;
 		for (MapStrIntCI i = _reportSummary.begin(); i != _reportSummary.end(); ++i)
 		{
-			summary+=i.key()+": "+QString::number(i.value())+"; ";
+			if (desc) { summary+=i.key()+": ";}
+			summary+=QString::number(i.value())+"\t";
+		}
+		return summary;
+	}
+	QString reportSummaryHeader() const
+	{
+		QString summary="dump name\t"+scoresSummaryHeader();
+		using MapStrIntCI=QMap<QString,int>::const_iterator;
+		for (MapStrIntCI i = _reportSummary.begin(); i != _reportSummary.end(); ++i)
+		{
+			summary+=i.key()+"\t";
 		}
 		return summary;
 	}
@@ -213,6 +251,7 @@ private:
 	QStringList eqReportPresets;
 	QMap<QString,int> minRowsPreset;
 	QMap<QString,int> _reportSummary;
+	QMap<QString,QVector<int>> _reportDepthList;
 	QStringList dumpFileList;
 	int currentDumpIndex=-1;
 	QImage galaxyMap;

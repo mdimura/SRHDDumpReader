@@ -4,9 +4,10 @@
         "7": "treasure"
     },
     "maxInt": {
-
-        "6": "4",
         "10": "45"
+    },
+    "minInt": {
+        "6": "5"
     },
     "sortColumn": 10,
     "sortOrder": 0

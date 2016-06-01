@@ -165,4 +165,57 @@ DISTFILES += \
     presets/planetsReport/huge industrial fei 45p.dr.json \
     presets/planetsReport/huge industrial gaal 30p.dr.json \
     presets/planetsReport/huge industrial gaal-fei 45p.dr.json \
-    README.md
+    README.md \
+    presets/equipment/treasure arts 45p.dr.json \
+    presets/equipment/treasure micromodules 45p.dr.json \
+    presets/equipment/treasure rockets tl4 45p.dr.json \
+    presets/equipment/treasure Transmitters all.dr.json \
+    presets/equipmentReport/treasure Antigrav 45p.dr.json \
+    presets/equipmentReport/treasure arts 45p.dr.json \
+    presets/equipmentReport/treasure BlastLocaliser 45p.dr.json \
+    presets/equipmentReport/treasure despensable arts 45p.dr.json \
+    presets/equipmentReport/treasure Forsage 45p.dr.json \
+    presets/equipmentReport/treasure GiperJump 45p.dr.json \
+    presets/equipmentReport/treasure micromodules 45p.dr.json \
+    presets/equipmentReport/treasure micromodules I 45p.dr.json \
+    presets/equipmentReport/treasure micromodules II 45p.dr.json \
+    presets/equipmentReport/treasure micromodules III 45p.dr.json \
+    presets/equipmentReport/treasure MPA 45p.dr.json \
+    presets/equipmentReport/treasure Nanitoids 45p.dr.json \
+    presets/equipmentReport/treasure rockets tl1 45p.dr.json \
+    presets/equipmentReport/treasure rockets tl2 45p.dr.json \
+    presets/equipmentReport/treasure rockets tl3 45p.dr.json \
+    presets/equipmentReport/treasure rockets tl4 45p.dr.json \
+    presets/equipmentReport/treasure Transmitters all.dr.json \
+    presets/equipmentReport/treasure WeaponToSpeed 45p.dr.json \
+    presets/planets/huge industrial gaal 30p.dr.json \
+    presets/planets/huge industrial gaal-fei 45p.dr.json \
+    presets/planetsReport/big+ industrial gaal 45p.dr.json \
+    presets/planetsReport/huge industrial fei 45p.dr.json \
+    presets/planetsReport/huge industrial gaal 30p.dr.json \
+    presets/planetsReport/huge industrial gaal-fei 45p.dr.json \
+    presets/equipment/rockets.dr.json \
+    presets/equipment/treasure arts 45p.dr.json \
+    presets/equipment/treasure micromodules 45p.dr.json \
+    presets/equipment/treasure Transmitters all.dr.json \
+    presets/equipmentReport/Antigrav.dr.json \
+    presets/equipmentReport/arts.dr.json \
+    presets/equipmentReport/BH.dr.json \
+    presets/equipmentReport/BlastLocaliser.dr.json \
+    presets/equipmentReport/Forsage.dr.json \
+    presets/equipmentReport/GiperJump.dr.json \
+    presets/equipmentReport/micromodules I.dr.json \
+    presets/equipmentReport/micromodules II.dr.json \
+    presets/equipmentReport/micromodules III.dr.json \
+    presets/equipmentReport/MPA.dr.json \
+    presets/equipmentReport/Nanitoids.dr.json \
+    presets/equipmentReport/rocketsA.dr.json \
+    presets/equipmentReport/rocketsB.dr.json \
+    presets/equipmentReport/rocketsC.dr.json \
+    presets/equipmentReport/rocketsD.dr.json \
+    presets/equipmentReport/rocketsE.dr.json \
+    presets/equipmentReport/Transmitters.dr.json \
+    presets/equipmentReport/WeaponToSpeed.dr.json \
+    presets/planets/huge industrial gaal 30p.dr.json \
+    presets/planets/huge industrial gaal-fei 45p.dr.json \
+    presets/planetsReport/huge industrial gaal 30p.dr.json

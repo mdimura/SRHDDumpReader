@@ -57,6 +57,7 @@ public:
 	unsigned equipmentTechLevel(unsigned row) const;
 	QString equipmentLocationType(unsigned row) const;
 	QString equipmentLocationName(unsigned row) const;
+	int equipmentDepth(unsigned row) const;
 	QString equipmentStarName(unsigned row) const;
 	double equipmentDistFromPlayer(unsigned row) const;
 	QString equipmentStarOwner(unsigned row) const;

@@ -404,6 +404,16 @@ QString Galaxy::equipmentLocationName(unsigned row) const
 	return "";
 }
 
+int Galaxy::equipmentDepth(unsigned row) const
+{
+	const Equipment& eq=eqMap.at(eqVec.at(row));
+	Equipment::LocationType locType=eq.locationType();
+	if (locType==Equipment::kPlanetTreasure) {
+		return eq.extra("Depth").toInt();
+	}
+	return -1;
+}
+
 QString Galaxy::equipmentStarName(unsigned row) const
 {
 	int starId=equipmentStarId(row);
@@ -575,7 +585,7 @@ QImage Galaxy::map(const unsigned width) const
 	for(const auto& pair:starMap)
 	{
 		const Star& star=pair.second;
-        QPointF pos=star.position()-mapRect.topLeft()+QPointF(6,4);
+	QPointF pos=star.position()-mapRect.topLeft()+QPointF(6,4);
 		pos*=scale;
 		//starIdtoPos[star.id()]=pos;
 		QString owner=star.owner();
@@ -600,7 +610,7 @@ QImage Galaxy::map(const unsigned width) const
 		QStaticText planetsText(starIdToPlanets.value(star.id()));
 		planetsText.setTextFormat(Qt::RichText);
 		planetsText.prepare(QTransform(),font);
-        QPointF panetsPos=pos+QPointF(-planetsText.size().width()*0.5,-scale*3.3);
+	QPointF panetsPos=pos+QPointF(-planetsText.size().width()*0.5,-scale*3.3);
 		p.drawStaticText(panetsPos,planetsText);
 	}
 	return image;

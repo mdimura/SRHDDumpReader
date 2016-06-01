@@ -1,10 +1,15 @@
 {
     "match": {
-        "2": "Nod",
+        "2": "W04",
         "7": "treasure"
     },
     "maxInt": {
+
+        "6": "3",
         "10": "45"
+    },
+    "minInt": {
+        "6": "3"
     },
     "sortColumn": 10,
     "sortOrder": 0

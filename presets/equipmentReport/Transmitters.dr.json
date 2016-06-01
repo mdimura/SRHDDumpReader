@@ -1,9 +1,9 @@
 {
     "match": {
-        "2": "ArtBomb|ArtTranclucator|ArtBlackHole"
+        "2": "ArtTransmitter"
     },
     "maxInt": {
-        "10": "45"
+        "10": "60"
     },
     "sortColumn": 10,
     "sortOrder": 0

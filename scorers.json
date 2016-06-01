@@ -1,22 +1,52 @@
 {
-  "TotalScore":{
-    "treasure GiperJump 45p":           {	"weight":40,	"isBool":true	},
-    "treasure Nanitoids 45p":           {	"weight":30,	"isBool":false	},
-    "treasure BlastLocaliser 45p":      {	"weight":20,	"isBool":true	},
-    "treasure Antigrav 45p":            {	"weight":25,	"isBool":true	},
-    "treasure MPA 45p":                 {	"weight":25,	"isBool":true	},
-    "treasure Forsage 45p":             {	"weight":15,	"isBool":true	},
-    "treasure WeaponToSpeed 45p":       {	"weight":25,	"isBool":true	},
-    "treasure Transmitters all":        {	"weight":10,	"isBool":false	},
-    "treasure despensable arts 45p":	{	"weight":5,     "isBool":false	},
-    "treasure arts 45p":                {	"weight":2,     "isBool":false	},
-    "treasure micromodules I 45p":      {	"weight":2,     "isBool":false	},
-    "treasure micromodules II 45p":     {	"weight":1,		"isBool":false	},
-    "treasure micromodules III 45p":	{	"weight":0.5,	"isBool":false	},
-    "treasure rockets tl4 45p":         {	"weight":4,		"isBool":false	},
-    "treasure rockets tl3 45p":         {	"weight":2,     "isBool":false	},
-    "treasure rockets tl2 45p":         {	"weight":0.5,     "isBool":false	},
-    "treasure rockets tl1 45p":         {	"weight":0.1,     "isBool":false	},
-    "huge industrial gaal 30p":         {	"weight":5,     "isBool":false	}
-  }
+    "TotalScore":{
+        "BH":                  {	"weight":10000,  "isBool":false, "depthPenalize":true	},
+        "GiperJump":           {	"weight":10000,	"isBool":true,  "depthPenalize":true	},
+        "Nanitoids":           {	"weight":8000,	"isBool":false, "depthPenalize":true	},
+        "MPA":                 {	"weight":8000,	"isBool":true,  "depthPenalize":true	},
+        "WeaponToSpeed":       {	"weight":8000,	"isBool":true,  "depthPenalize":true	},
+        "Forsage":             {	"weight":6000,	"isBool":true,  "depthPenalize":true	},
+        "Transmitters all":        {	"weight":3000,	"isBool":false, "depthPenalize":true	},
+        "Antigrav":            {	"weight":3000,	"isBool":true,  "depthPenalize":true	},
+        "BlastLocaliser":      {	"weight":3000,     "isBool":true,  "depthPenalize":true	},
+
+        "arts":                {	"weight":500,     "isBool":false, "depthPenalize":true	},
+
+        "rocketsE":         {	"weight":4000,		"isBool":false, "depthPenalize":true	},
+        "rocketsD":         {	"weight":3000,		"isBool":false, "depthPenalize":true	},
+        "rocketsC":         {	"weight":1500,     "isBool":false, "depthPenalize":true	},
+        "rocketsB":         {	"weight":500,   "isBool":false, "depthPenalize":true	},
+        "rocketsA":         {	"weight":250,   "isBool":false, "depthPenalize":true	},
+
+        "micromodules I":      {	"weight":500,     "isBool":false, "depthPenalize":true	},
+        "micromodules II":     {	"weight":200,		"isBool":false, "depthPenalize":true	},
+        "micromodules III":	{	"weight":50,	"isBool":false, "depthPenalize":true	},
+
+        "huge industrial gaal 30p":         {	"weight":5,     "isBool":false, "depthPenalize":false	}
+    },
+    "TotalScore_unw":{
+        "BH":                  {	"weight":50,  "isBool":false, "depthPenalize":false	},
+        "GiperJump":           {	"weight":50,	"isBool":true,  "depthPenalize":false	},
+        "Nanitoids":           {	"weight":40,	"isBool":false, "depthPenalize":false	},
+        "MPA":                 {	"weight":40,	"isBool":true,  "depthPenalize":false	},
+        "WeaponToSpeed":       {	"weight":40,	"isBool":true,  "depthPenalize":false	},
+        "Forsage":             {	"weight":30,	"isBool":true,  "depthPenalize":false	},
+        "Transmitters all":        {	"weight":15,	"isBool":false, "depthPenalize":false	},
+        "Antigrav":            {	"weight":15,	"isBool":true,  "depthPenalize":false	},
+        "BlastLocaliser":      {	"weight":15,     "isBool":true,  "depthPenalize":false	},
+
+        "arts":                {	"weight":2,     "isBool":false, "depthPenalize":false	},
+
+        "rocketsE":         {	"weight":20,		"isBool":false, "depthPenalize":false	},
+        "rocketsD":         {	"weight":15,		"isBool":false, "depthPenalize":false	},
+        "rocketsC":         {	"weight":7,     "isBool":false, "depthPenalize":false	},
+        "rocketsB":         {	"weight":2,   "isBool":false, "depthPenalize":false	},
+        "rocketsA":         {	"weight":1,   "isBool":false, "depthPenalize":false	},
+
+        "micromodules I":      {	"weight":2,     "isBool":false, "depthPenalize":false	},
+        "micromodules II":     {	"weight":1,		"isBool":false, "depthPenalize":false	},
+        "micromodules III":	{	"weight":0.2,	"isBool":false, "depthPenalize":false	},
+
+        "huge industrial gaal 30p":         {	"weight":5,     "isBool":false, "depthPenalize":false	}
+    }
 }

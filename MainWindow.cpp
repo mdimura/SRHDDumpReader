@@ -476,6 +476,7 @@ void MainWindow::saveReport()
 	QVariantMap oldEqPreset=eqHeaderView->preset();
 	QVariantMap oldPlPreset=planetsHeaderView->preset();
 	_reportSummary.clear();
+	_reportDepthList.clear();
 
 	QFileInfo fileInfo(_filename);
 	QString filename=fileInfo.path()+'/'+fileInfo.completeBaseName()+".report";
@@ -528,6 +529,13 @@ void MainWindow::saveReport()
 		eqHeaderView->setPreset(loadPreset(fileName));
 		lastSummaryEntry=QFileInfo(fileName).baseName();
 		_reportSummary[lastSummaryEntry]=eqProxyModel.rowCount();
+		QVector<int> depthList;
+		for(int proxyRow=0; proxyRow<eqProxyModel.rowCount();++proxyRow) {
+			auto pIndex=eqProxyModel.index(proxyRow,0);
+			int sourceRow=eqProxyModel.mapToSource(pIndex).row();
+			depthList.push_back(galaxy.equipmentDepth(sourceRow));
+		}
+		_reportDepthList[lastSummaryEntry]=depthList;
 		lastSummaryEntry+=": "+QString::number(eqProxyModel.rowCount());
 		eqBuf+=lastSummaryEntry+'\n';
 		eqBuf+=tabSeparatedValues(eqProxyModel);
@@ -565,6 +573,7 @@ void MainWindow::saveAllReports()
 	}
 	QTextStream out(&ofile);
 	out.setCodec("UTF-8");
+	out << reportSummaryHeader()+'\n';
 	for(const QString& dumpFileName: dumpFileList)
 	{
 		parseDump(dumpFileName);
@@ -572,7 +581,7 @@ void MainWindow::saveAllReports()
 		{
 			saveReport();
 		}
-		out << QFileInfo(dumpFileName).baseName()+"\t"+reportSummary()+'\n';
+		out << QFileInfo(dumpFileName).baseName()+"\t"+reportSummary(false)+'\n';
 	}
 	parseDump(dumpFileList[currentDumpIndex]);
 }
@@ -1186,15 +1195,17 @@ void MainWindow::Scorer::read(const QVariantMap &map)
 		const QString& presetName=i.key();
 		double weight=score.value("weight").toDouble();
 		bool isBool=score.value("isBool").toBool();
-		addPreset(presetName,weight,isBool);
+		bool penalize=score.value("depthPenalize").toBool();
+		addPreset(presetName,weight,isBool,penalize);
 	}
 }
 
-void MainWindow::Scorer::addPreset(const QString presetName, double weight, bool isBool)
+void MainWindow::Scorer::addPreset(const QString presetName, double weight, bool isBool, bool depthPenalize)
 {
 	presetNames.push_back(presetName);
 	weights.push_back(weight);
 	areBoolean.push_back(isBool);
+	depthPenalized.push_back(depthPenalize);
 }
 
 QStringList supportedColors()
