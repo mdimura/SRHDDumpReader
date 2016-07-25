@@ -546,8 +546,9 @@ QImage Galaxy::map(const unsigned width) const
 	p.setPen(QPen(QColor(Qt::white)));
 	p.setBrush(QBrush(QColor(Qt::white),Qt::SolidPattern));
 	p.setRenderHint(QPainter::Antialiasing, true);
-    QFont font("Verdana");
-    font.setPixelSize(height*0.020);
+    QFont font("Arial");
+    font.setStretch(QFont::SemiCondensed);
+    font.setPixelSize(height*0.024);
 	p.setFont(font);
 	//prepare base names
 	QMap<unsigned,QString> starIdToBases;
