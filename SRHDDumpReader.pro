@@ -218,4 +218,5 @@ DISTFILES += \
     presets/equipmentReport/WeaponToSpeed.dr.json \
     presets/planets/huge industrial gaal 30p.dr.json \
     presets/planets/huge industrial gaal-fei 45p.dr.json \
-    presets/planetsReport/huge industrial gaal 30p.dr.json
+    presets/planetsReport/huge industrial gaal 30p.dr.json \
+    .gitlab-ci.yml

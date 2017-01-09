@@ -6,7 +6,7 @@
         "MPA":                 {	"weight":8000,	"isBool":true,  "depthPenalize":true	},
         "WeaponToSpeed":       {	"weight":8000,	"isBool":true,  "depthPenalize":true	},
         "Forsage":             {	"weight":6000,	"isBool":true,  "depthPenalize":true	},
-        "Transmitters all":        {	"weight":3000,	"isBool":false, "depthPenalize":true	},
+        "Transmitters":        {	"weight":3000,	"isBool":false, "depthPenalize":true	},
         "Antigrav":            {	"weight":3000,	"isBool":true,  "depthPenalize":true	},
         "BlastLocaliser":      {	"weight":3000,     "isBool":true,  "depthPenalize":true	},
 
@@ -31,7 +31,7 @@
         "MPA":                 {	"weight":40,	"isBool":true,  "depthPenalize":false	},
         "WeaponToSpeed":       {	"weight":40,	"isBool":true,  "depthPenalize":false	},
         "Forsage":             {	"weight":30,	"isBool":true,  "depthPenalize":false	},
-        "Transmitters all":        {	"weight":15,	"isBool":false, "depthPenalize":false	},
+        "Transmitters":        {	"weight":15,	"isBool":false, "depthPenalize":false	},
         "Antigrav":            {	"weight":15,	"isBool":true,  "depthPenalize":false	},
         "BlastLocaliser":      {	"weight":15,     "isBool":true,  "depthPenalize":false	},
 

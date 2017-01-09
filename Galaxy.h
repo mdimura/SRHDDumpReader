@@ -11,6 +11,7 @@
 #include <QRectF>
 #include <iostream>
 #include <unordered_map>
+#include <cmath>
 
 class Galaxy
 {
@@ -83,7 +84,7 @@ public:
 		QPointF playerPos=starMap.at(playerStarId).position();
 		QPointF planetPos=starMap.at(planetStarId).position();
 		QPointF delta=playerPos-planetPos;
-		return sqrt(pow(delta.x(), 2) + pow(delta.y(), 2));
+		return std::sqrt(std::pow(delta.x(), 2) + std::pow(delta.y(), 2));
 	}
 	QString planetStarName(unsigned row) const
 	{
@@ -93,8 +94,7 @@ public:
 	QString planetOwner(unsigned row) const
 	{
 		const auto& pl=planet(row);
-		if (pl.owner()=="Kling")
-		{
+		if (pl.owner()=="Kling") {
 			unsigned planetStarId=pl.starId();
 			return starOwner(planetStarId);
 		}

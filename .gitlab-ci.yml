@@ -1,0 +1,80 @@
+stages:
+  - compile
+  - package
+
+build-ubuntu16.04:
+  stage: compile
+  image: cm0x4d/ubuntu-qt5-cmake
+  script:
+    - apt-get update -qy
+    - apt-get install -y qtmultimedia5-dev
+    - mkdir build-ubuntu16.04
+    - cd build-ubuntu16.04; qmake ..; make
+  artifacts:
+    paths:
+      - build-ubuntu16.04/SRHDDumpReader
+  # depending on your build setup it's most likely a good idea to cache outputs to reduce the build time
+  # cache:
+  #   paths:
+  #     - "*.o"
+
+build-win64:
+  stage: compile
+  image: haffmans/mingw-qt5
+  script:
+    - mkdir build-win64
+    - cd build-win64; x86_64-w64-mingw32-qmake-qt5 ..; make
+  artifacts:
+    paths:
+      - build-win64/release/SRHDDumpReader.exe
+
+build-win32:
+  stage: compile
+  image: haffmans/mingw-qt5
+  script:
+    - mkdir build-win32
+    - cd build-win32; i686-w64-mingw32-qmake-qt5 ..; make
+  artifacts:
+    paths:
+      - build-win32/release/SRHDDumpReader.exe
+
+pack-win64:
+  stage: package
+  image: haffmans/mingw-qt5
+  script:
+    - mkdir -p ./SRHDDumpReader/platforms/
+    - mkdir -p ./SRHDDumpReader/imageformats/
+    - cp build-win64/release/SRHDDumpReader.exe ./SRHDDumpReader/
+    - cp /usr/x86_64-w64-mingw32/bin/{libbz2-1,libGLESv2,libiconv-2,libpcre-1,libwinpthread-1,Qt5Multimedia,zlib1,libfreetype-6,libglib-2.0-0,libintl-8,libpng16-16,Qt5Core,Qt5Network,libgcc_s_seh-1,libharfbuzz-0,libpcre16-0,libstdc++-6,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
+    - cp /usr/x86_64-w64-mingw32/lib/qt/plugins/platforms/qwindows.dll ./SRHDDumpReader/platforms/
+    - cp /usr/x86_64-w64-mingw32/lib/qt/plugins/imageformats/{qsvg,qico,qtiff,qjpeg}.dll ./SRHDDumpReader/imageformats/
+    - cp -r presets ./SRHDDumpReader/
+    - cp ./*.json ./SRHDDumpReader/
+    - cp ./Click1.wav ./SRHDDumpReader/
+#    - tar -czf SRHDDumpReader.tgz ./SRHDDumpReader/
+  artifacts:
+    paths:
+#      - SRHDDumpReader.tgz
+      - SRHDDumpReader
+
+pack-win32:
+  stage: package
+  image: haffmans/mingw-qt5
+  script:
+    - mkdir -p ./SRHDDumpReader/platforms/
+    - mkdir -p ./SRHDDumpReader/imageformats/
+    - cp build-win32/release/SRHDDumpReader.exe ./SRHDDumpReader/
+    - cp /usr/i686-w64-mingw32/bin/{libbz2-1,libGLESv2,libiconv-2,libpcre-1,libwinpthread-1,Qt5Multimedia,zlib1,libfreetype-6,libglib-2.0-0,libintl-8,libpng16-16,Qt5Core,Qt5Network,libgcc_s_sjlj-1,libharfbuzz-0,libpcre16-0,libstdc++-6,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
+    - cp /usr/i686-w64-mingw32/lib/qt/plugins/platforms/qwindows.dll ./SRHDDumpReader/platforms/
+    - cp /usr/i686-w64-mingw32/lib/qt/plugins/imageformats/{qsvg,qico,qtiff,qjpeg}.dll ./SRHDDumpReader/imageformats/
+    - cp -r presets ./SRHDDumpReader/
+    - cp ./*.json ./SRHDDumpReader/
+    - cp ./Click1.wav ./SRHDDumpReader/
+  artifacts:
+    paths:
+      - SRHDDumpReader
+
+#test:
+#  stage: test
+#  script:
+#    - ./runmytests.sh
