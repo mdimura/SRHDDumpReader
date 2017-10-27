@@ -4,6 +4,7 @@
 #include <QJsonDocument>
 #include <QDate>
 #include <QGuiApplication>
+#include <set>
 
 
 QMap<QString,QColor> loadColors(const QString& fileName)
@@ -538,7 +539,7 @@ QString Galaxy::blackHoleNextLootChange(unsigned row) const
 QImage Galaxy::map(const unsigned width, const int fontSize) const
 {
         //QImage image((mapRect.width()+8)*scale,(mapRect.height()+6)*scale,QImage::Format_ARGB32);
-        const unsigned padding=fontSize * 5;
+        const unsigned padding=fontSize * 3;
         const unsigned netWidth=width - 2.0 * padding;
         const unsigned height=2.0*padding + netWidth*galaxyMapRect.height()
                               / galaxyMapRect.width();
@@ -581,10 +582,16 @@ QImage Galaxy::map(const unsigned width, const int fontSize) const
                 QString color=_ownerToColor.value(planet.race()).name();
                 planetsStr+=planetTemplate.arg(size).arg(economy).arg(color);
         }
+        std::set<unsigned> bhStarIds;
+        for (const BlackHole& bh: blackHoles) {
+                bhStarIds.insert(bh.star1Id());
+                bhStarIds.insert(bh.star2Id());
+        }
+
         //Draw stars
         const double scale=double(netWidth)/galaxyMapRect.width();
         const double starR=0.5*fontSize;
-        const double starLineW=0.3*fontSize;
+        const double starLineW=0.5*starR;
 
         //QMap<unsigned,QPointF> starIdToPos;
         for(const auto& pair:starMap)
@@ -601,8 +608,8 @@ QImage Galaxy::map(const unsigned width, const int fontSize) const
                 p.setPen(Qt::white);
                 p.setBrush(QBrush(QColor(_ownerToColor[owner]),Qt::SolidPattern));
                 QRectF nameRect;
-                nameRect.setTopLeft(pos+QPointF(-5*fontSize,starR));
-                nameRect.setBottomRight(pos+QPointF(fontSize*5,fontSize*2+starR));
+                nameRect.setTopLeft(pos+QPointF(-6*fontSize,starR));
+                nameRect.setBottomRight(pos+QPointF(fontSize*6,fontSize*2+starR));
                 //p.drawRect(nameRect);
                 p.drawText(nameRect,star.name(),QTextOption(Qt::AlignHCenter|Qt::AlignTop));
 
@@ -624,6 +631,12 @@ QImage Galaxy::map(const unsigned width, const int fontSize) const
                 topLeft.rx()-=0.5*planetsText.size().width();
                 topLeft.ry()-=1.5*fontSize+starR;
                 p.drawStaticText(topLeft,planetsText);
+
+                if(bhStarIds.count(star.id())) {
+                        p.setBrush(QBrush(QColor("darkblue"),Qt::SolidPattern));
+                        p.setPen(QPen(QBrush(QColor("deepskyblue")),starR*0.4));
+                        p.drawEllipse(pos+QPointF(starR*0.8,starR*0.8),starR*0.7,starR*0.7);
+                }
         }
         return image;
 }
