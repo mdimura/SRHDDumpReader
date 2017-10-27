@@ -90,9 +90,14 @@ public slots:
 	void showAbout();
 	void saveReport();
 	void saveAllReports();
-    void setMapScale(int width)
+	void setMapScale(int width)
 	{
-	mapWidth=width;
+		mapWidth=width;
+		updateMap();
+	}
+	void setMapFontSize(int pt)
+	{
+		mapFontSize=pt;
 		updateMap();
 	}
 	void loadNextDump();
@@ -231,7 +236,8 @@ private:
 	FilterHorizontalHeaderView *planetsHeaderView;
 
 	QTimer reloadTimer;
-    QSpinBox _mapScaleSpinBox{this};
+	QSpinBox _mapScaleSpinBox{this};
+	QSpinBox _mapFontSpinBox{this};
 
 	QMenu reloadMenu;
 	QMenu saveReportMenu;
@@ -246,7 +252,8 @@ private:
 	int maxGenerationTime=120000;
 	int screenSaveLag=200;
 	int shortSleep=25;
-    unsigned mapWidth=800;
+	unsigned mapWidth=700;
+	unsigned mapFontSize=8;
 	QStringList planetsReportPresets;
 	QStringList eqReportPresets;
 	QMap<QString,int> minRowsPreset;

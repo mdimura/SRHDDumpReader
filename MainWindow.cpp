@@ -151,13 +151,20 @@ MainWindow::MainWindow(QWidget *parent) :
 	reportButton->setMenu(&saveReportMenu);
 	reportButton->setPopupMode(QToolButton::MenuButtonPopup);
 
-    //_mapScaleSpinBox.setPrefix("x");
-    _mapScaleSpinBox.setMaximum(10000);
-    _mapScaleSpinBox.setSingleStep(50);
-    _mapScaleSpinBox.setToolTip(tr("Map width"));
-    _mapScaleSpinBox.setWhatsThis(tr("Map width"));
+	//_mapScaleSpinBox.setPrefix("x");
+	_mapScaleSpinBox.setMaximum(10000);
+	_mapScaleSpinBox.setSingleStep(50);
+	_mapScaleSpinBox.setToolTip(tr("Map width"));
+	_mapScaleSpinBox.setWhatsThis(tr("Map width"));
 	ui->mainToolBar->insertWidget(ui->mainToolBar->actions()[3],&_mapScaleSpinBox);
-    connect(&_mapScaleSpinBox,SIGNAL(valueChanged(int)),this,SLOT(setMapScale(int)));
+	connect(&_mapScaleSpinBox,SIGNAL(valueChanged(int)),this,SLOT(setMapScale(int)));
+
+	_mapFontSpinBox.setMaximum(99);
+	_mapFontSpinBox.setSingleStep(1);
+	_mapFontSpinBox.setToolTip(tr("Map font size"));
+	ui->mainToolBar->insertWidget(ui->mainToolBar->actions()[4],&_mapFontSpinBox);
+	connect(&_mapFontSpinBox,SIGNAL(valueChanged(int)),this,SLOT(setMapFontSize(int)));
+//	_mapFontSpinBox.setFixedWidth(40);
 
 	sound.setSource(QUrl::fromLocalFile("Click1.wav"));
 	sound.setVolume(1.0);
@@ -299,8 +306,10 @@ void MainWindow::readSettings()
 
 	shortSleep=settings.value("shortSleep",25).toInt();
 	maxGenerationTime=settings.value("maxGenerationTime",120000).toInt();
-    mapWidth=std::max(10,settings.value("mapWidth",800).toInt());
-    _mapScaleSpinBox.setValue(mapWidth);
+	mapWidth=std::max(10,settings.value("mapWidth",800).toInt());
+	_mapScaleSpinBox.setValue(mapWidth);
+	mapFontSize=std::max(0,settings.value("mapFontSize",8).toInt());
+	_mapFontSpinBox.setValue(mapFontSize);
 
 	bool autoSaveReport=settings.value("autoSaveReport",false).toBool();
 	ui->actionAutoSaveReport->setChecked(autoSaveReport);
@@ -338,7 +347,8 @@ void MainWindow::writeSettings() const
 
 	settings.setValue("shortSleep", shortSleep);
 	settings.setValue("maxGenerationTime", maxGenerationTime);
-    settings.setValue("mapWidth", mapWidth);
+	settings.setValue("mapWidth", mapWidth);
+	settings.setValue("mapFontSize", mapFontSize);
 
 	settings.setValue("autoReload",ui->actionAutoReload->isChecked());
 	settings.setValue("autoSaveReport",ui->actionAutoSaveReport->isChecked());
@@ -700,7 +710,7 @@ void MainWindow::loadPresets()
 
 void MainWindow::updateMap()
 {
-    galaxyMap=galaxy.map(mapWidth);
+	galaxyMap=galaxy.map(mapWidth,mapFontSize);
 	ui->mapImageLabel->setPixmap(QPixmap::fromImage(galaxyMap));
 	ui->mapImageLabel->resize(galaxyMap.size());
 }
@@ -727,7 +737,7 @@ void MainWindow::updateDumpArrows()
 
 void MainWindow::saveMap()
 {
-    if(mapWidth>10) {
+	if(mapWidth>10) {
 		QFileInfo fileInfo(_filename);
 		QString filename=fileInfo.path()+'/'+fileInfo.completeBaseName()+"_map.png";
 		if(QFileInfo(filename).exists()) {

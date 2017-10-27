@@ -71,7 +71,7 @@ public:
 	QString blackHoleStar2(unsigned row) const;
 	float blackHoleStar2Distance(unsigned row) const;
 	unsigned blackHoleTurnsToClose(unsigned row) const;
-    QString blackHoleNextLootChange(unsigned row) const;
+	QString blackHoleNextLootChange(unsigned row) const;
 
 	const Planet& planet(unsigned row) const
 	{
@@ -109,7 +109,7 @@ public:
 	{
 		return _minSellPrice;
 	}
-    QImage map(const unsigned width=10) const;
+	QImage map(const unsigned width=700, const int fontSize=8) const;
 private:
 	unsigned marketStarId(unsigned row) const;
 	unsigned equipmentStarId(unsigned row) const;
@@ -123,11 +123,11 @@ private:
 	std::vector<unsigned> shipMarkets;
 	std::vector<unsigned> eqVec;
 	std::vector<unsigned> planetVec;
-    unsigned currentDay=0;
+	unsigned currentDay=0;
 
 	mutable GoodsArr _maxBuyPrice;
 	mutable GoodsArr _minSellPrice;
-	QRectF mapRect;
+	QRectF galaxyMapRect;
 	static const QMap<QString,QColor> _ownerToColor;//name,description
 };
 

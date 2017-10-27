@@ -56,7 +56,7 @@ void Galaxy::parseDump(QTextStream &stream)
 {
 	clear();
 	const static QMap<QString,int> globalOptions={
-	{"Player ^{",0},{"StarList ^{",1},{"HoleList ^{",2}
+		{"Player ^{",0},{"StarList ^{",1},{"HoleList ^{",2}
 	};
 
 	QString line = stream.readLine();
@@ -77,14 +77,14 @@ void Galaxy::parseDump(QTextStream &stream)
 		case 2://HoleList
 			readBlackHoles(stream,*this);
 			break;
-	case 3://IDay
-	    break;
+		case 3://IDay
+			break;
 
 		default:
-	    if (line.startsWith("IDay=")) {
-		currentDay=line.mid(5).toInt();
-		std::cout<<"currentDay="<<currentDay<<std::endl;
-	    }
+			if (line.startsWith("IDay=")) {
+				currentDay=line.mid(5).toInt();
+				std::cout<<"currentDay="<<currentDay<<std::endl;
+			}
 			//skip record
 			break;
 		}
@@ -106,7 +106,6 @@ void Galaxy::clear()
 	planetVec.clear();
 	_minSellPrice.set(std::numeric_limits<unsigned>::max());
 	_maxBuyPrice.set(0);
-	mapRect=QRectF(50,50,0,0);
 }
 
 unsigned Galaxy::shipCount() const
@@ -179,7 +178,7 @@ void Galaxy::addShip(const Ship &&ship)
 void Galaxy::addStar(const Star &&star)
 {
 	assert(starMap.find(star.id()) == starMap.end());//"Galaxy: Tried to add a star which is already existing. This should not happen!"
-	mapRect|=QRectF(star.position(),star.position()+QPointF(1,1));
+	galaxyMapRect|=QRectF(star.position().x(),star.position().y(),1.0,1.0);
 	starMap.insert(std::move(std::make_pair(star.id(),std::move(star))));
 }
 
@@ -426,26 +425,26 @@ QString Galaxy::equipmentStarName(unsigned row) const
     case Equipment::kShipStorage:
     case Equipment::kShipShop:
     {
-	unsigned starId=shipMap.at(locId).starId();
-	if(starId){
-	    return starMap.at(starId).name();
-	}
-	else {//tranclucator
-	    return "(Tranclucator)";
-	}
+        unsigned starId=shipMap.at(locId).starId();
+        if(starId){
+            return starMap.at(starId).name();
+        }
+        else {//tranclucator
+            return "(Tranclucator)";
+        }
     }
     break;
 
     case Equipment::kJunk:
-	return starMap.at(locId).name();
+        return starMap.at(locId).name();
     case Equipment::kPlanetShop:
     case Equipment::kPlanetStorage:
     case Equipment::kPlanetTreasure:
     {
-	unsigned starId=planetMap.at(locId).starId();
-	if(starId){
-	   return starMap.at(starId).name();
-	}
+        unsigned starId=planetMap.at(locId).starId();
+        if(starId){
+           return starMap.at(starId).name();
+        }
     }
     break;
     }
@@ -522,99 +521,111 @@ float Galaxy::blackHoleStar2Distance(unsigned row) const
 
 unsigned Galaxy::blackHoleTurnsToClose(unsigned row) const
 {
-    return blackHoles[row].turnsToClose();
+	return blackHoles[row].turnsToClose();
 }
 
 QString Galaxy::blackHoleNextLootChange(unsigned row) const
 {
-    QDate today=QDate(3300,1,1).addDays(currentDay-301);
-    QString changes;
-    unsigned ttclose=blackHoleTurnsToClose(row);
-    for (unsigned daysToChange=77-(currentDay%77);  daysToChange<ttclose; daysToChange+=77) {
-	changes+=today.addDays(daysToChange).toString("dd MMMM yyyy")+"; ";
-    }
-    return changes;
+        QDate today=QDate(3300,1,1).addDays(currentDay-301);
+        QString changes;
+        unsigned ttclose=blackHoleTurnsToClose(row);
+        for (unsigned daysToChange=77-(currentDay%77);  daysToChange<ttclose; daysToChange+=77) {
+                changes+=today.addDays(daysToChange).toString("dd MMMM yyyy")+"; ";
+        }
+        return changes;
 }
 
-QImage Galaxy::map(const unsigned width) const
+QImage Galaxy::map(const unsigned width, const int fontSize) const
 {
-    //QImage image((mapRect.width()+8)*scale,(mapRect.height()+6)*scale,QImage::Format_ARGB32);
-    unsigned height=width*mapRect.height()/mapRect.width();
-    QImage image(width,height,QImage::Format_ARGB32);
-	image.fill(Qt::black);
-	QPainter p(&image);
-	p.setPen(QPen(QColor(Qt::white)));
-	p.setBrush(QBrush(QColor(Qt::white),Qt::SolidPattern));
-	p.setRenderHint(QPainter::Antialiasing, true);
-    QFont font("Arial");
-    font.setStretch(QFont::SemiCondensed);
-    font.setPixelSize(height*0.024);
-	p.setFont(font);
-	//prepare base names
-	QMap<unsigned,QString> starIdToBases;
-	for(unsigned baseId:shipMarkets)
-	{
-		const Ship& ship=shipMap.at(baseId);
-		QString base=ship.name().left(2);
-		unsigned starId=ship.starId();
-		QString& basesStr=starIdToBases[starId];
-		if(basesStr.length()) {
-			basesStr+=',';
-		}
-		basesStr+=base;
-	}
-	//prepare planets
-	QMap<unsigned,QString> starIdToPlanets;
-	const QString planetStr("<font color=%3><b>%1</b>%2<color>");
-	for(const auto& pair:planetMap)
-	{
-		const Planet& planet=pair.second;
-		if(planet.owner()=="None") {
-			continue;
-		}
-		unsigned starId=planet.starId();
-		QString& planetsStr=starIdToPlanets[starId];
-		planetsStr+=' ';
-		QString economy=planet.economy().left(1).toLower();
-		int size=planet.size();
-		QString color=_ownerToColor.value(planet.race()).name();
-		planetsStr+=planetStr.arg(size).arg(economy).arg(color);
-	}
-	//Draw stars
-    double scale=double(width*0.92)/mapRect.width();
-	//QMap<unsigned,QPointF> starIdToPos;
-	for(const auto& pair:starMap)
-	{
-		const Star& star=pair.second;
-	QPointF pos=star.position()-mapRect.topLeft()+QPointF(6,4);
-		pos*=scale;
-		//starIdtoPos[star.id()]=pos;
-		QString owner=star.owner();
-		if(owner=="Klings") {
-			owner=star.domSeries();
-		}
-		p.setPen(Qt::white);
-		p.setBrush(QBrush(QColor(_ownerToColor[owner]),Qt::SolidPattern));
-		QRectF nameRect=QRectF(pos+QPointF(-scale*10,scale),pos+QPointF(scale*10,scale*4));
-		p.drawText(nameRect,star.name(),QTextOption(Qt::AlignHCenter|Qt::AlignTop));
-		const QString& basesStr=starIdToBases.value(star.id());
-		if(!basesStr.isEmpty()) {
-			QRectF basesRect=QRectF(pos+QPointF(-8.0*scale,-scale),pos+QPointF(-1.1*scale,scale));
-			p.drawText(basesRect,basesStr.left(2),QTextOption(Qt::AlignRight|Qt::AlignVCenter));
-			if(basesStr.length()>3) {
-				basesRect.translate(9.2*scale,0);
-				p.drawText(basesRect,basesStr.mid(3),QTextOption(Qt::AlignLeft|Qt::AlignVCenter));
-			}
-		}
-		p.setPen(QPen(QBrush(_ownerToColor["line"+owner]),scale/2.5));
-		p.drawEllipse(pos,scale,scale);
-		QStaticText planetsText(starIdToPlanets.value(star.id()));
-		planetsText.setTextFormat(Qt::RichText);
-		planetsText.prepare(QTransform(),font);
-	QPointF panetsPos=pos+QPointF(-planetsText.size().width()*0.5,-scale*3.3);
-		p.drawStaticText(panetsPos,planetsText);
-	}
-	return image;
+        //QImage image((mapRect.width()+8)*scale,(mapRect.height()+6)*scale,QImage::Format_ARGB32);
+        const unsigned padding=fontSize * 5;
+        const unsigned netWidth=width - 2.0 * padding;
+        const unsigned height=2.0*padding + netWidth*galaxyMapRect.height()
+                              / galaxyMapRect.width();
+        QImage image(width,height,QImage::Format_ARGB32);
+        image.fill(Qt::black);
+        QPainter p(&image);
+        p.setPen(QPen(QColor(Qt::white)));
+        p.setBrush(QBrush(QColor(Qt::white),Qt::SolidPattern));
+        p.setRenderHint(QPainter::Antialiasing, true);
+        QFont font("Arial");
+//        font.setStretch(QFont::SemiCondensed);
+        font.setPointSize(fontSize);
+        p.setFont(font);
+        //prepare base names
+        QMap<unsigned,QString> starIdToBases;
+        for(unsigned baseId:shipMarkets)
+        {
+                const Ship& ship=shipMap.at(baseId);
+                QString base=ship.name().left(2);
+                unsigned starId=ship.starId();
+                QString& basesStr=starIdToBases[starId];
+                if(basesStr.length()) {
+                        basesStr+=',';
+                }
+                basesStr+=base;
+        }
+        //prepare planets
+        QMap<unsigned,QString> starIdToPlanets;
+        const QString planetTemplate("<font color=%3><b>%1</b>%2<color>");
+        for(const auto& pair:planetMap)
+        {
+                const Planet& planet=pair.second;
+                if(planet.owner()=="None") {
+                        continue;
+                }
+                unsigned starId=planet.starId();
+                QString& planetsStr=starIdToPlanets[starId];
+                QString economy=planet.economy().left(1).toLower();
+                int size=planet.size();
+                QString color=_ownerToColor.value(planet.race()).name();
+                planetsStr+=planetTemplate.arg(size).arg(economy).arg(color);
+        }
+        //Draw stars
+        const double scale=double(netWidth)/galaxyMapRect.width();
+        const double starR=0.5*fontSize;
+        const double starLineW=0.3*fontSize;
+
+        //QMap<unsigned,QPointF> starIdToPos;
+        for(const auto& pair:starMap)
+        {
+                const Star& star=pair.second;
+                QPointF pos=star.position()-galaxyMapRect.topLeft();
+                pos*=scale;
+                pos+=QPointF(padding,padding);
+                //starIdtoPos[star.id()]=pos;
+                QString owner=star.owner();
+                if(owner=="Klings") {
+                        owner=star.domSeries();
+                }
+                p.setPen(Qt::white);
+                p.setBrush(QBrush(QColor(_ownerToColor[owner]),Qt::SolidPattern));
+                QRectF nameRect;
+                nameRect.setTopLeft(pos+QPointF(-5*fontSize,starR));
+                nameRect.setBottomRight(pos+QPointF(fontSize*5,fontSize*2+starR));
+                //p.drawRect(nameRect);
+                p.drawText(nameRect,star.name(),QTextOption(Qt::AlignHCenter|Qt::AlignTop));
+
+                const QString& basesStr=starIdToBases.value(star.id());
+                if(!basesStr.isEmpty()) {
+                        QRectF basesRect=QRectF(pos+QPointF(-8.0*fontSize,-starR),pos+QPointF(-1.1*starR,starR));
+                        p.drawText(basesRect,basesStr.left(2),QTextOption(Qt::AlignRight|Qt::AlignVCenter));
+                        if(basesStr.length()>3) {
+                                basesRect.translate(8.0*fontSize+1.2*starR,0);
+                                p.drawText(basesRect,basesStr.mid(3),QTextOption(Qt::AlignLeft|Qt::AlignVCenter));
+                        }
+                }
+                p.setPen(QPen(QBrush(_ownerToColor["line"+owner]),starLineW));
+                p.drawEllipse(pos,starR,starR);
+                QStaticText planetsText(starIdToPlanets.value(star.id()));
+                planetsText.setTextFormat(Qt::RichText);
+                planetsText.prepare(QTransform(),font);
+                QPointF topLeft(pos);
+                topLeft.rx()-=0.5*planetsText.size().width();
+                topLeft.ry()-=1.5*fontSize+starR;
+                p.drawStaticText(topLeft,planetsText);
+        }
+        return image;
 }
 
 unsigned Galaxy::marketStarId(unsigned row) const
