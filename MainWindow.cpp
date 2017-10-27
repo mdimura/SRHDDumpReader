@@ -492,6 +492,8 @@ void MainWindow::saveReport()
 		return;
 	}
 
+	QString bhBuf=tr("Black holes: %1\n").arg(galaxy.blackHoleCount());
+
 	//Bases
 	ui->tradeTableView->sortByColumn(2,Qt::AscendingOrder);
 	QString basesBuf="Bases:\nname\tstar\tdistance\n";
@@ -547,7 +549,7 @@ void MainWindow::saveReport()
 
 	QTextStream out(&ofile); // we will serialize the data into the file
 	out.setCodec("UTF-8");
-	out << scoresSummary()+'\n'+planetsBuf+eqBuf+basesBuf+'\n'; // serialize a string
+	out << scoresSummary()+'\n'+planetsBuf+eqBuf+basesBuf+'\n'+bhBuf+'\n'; // serialize a string
 
 	statusBar()->showMessage(tr("Report saved: ")+filename);
 	auto duration = duration_cast<milliseconds>( high_resolution_clock::now() - tStart ).count();
