@@ -53,6 +53,7 @@ pack-win64:
     - cp ./Click1.wav ./SRHDDumpReader/
 #    - tar -czf SRHDDumpReader.tgz ./SRHDDumpReader/
   artifacts:
+    name: "SRHDDumpReader_win64_${CI_BUILD_REF_NAME}-${CI_BUILD_REF:0:8}"
     paths:
 #      - SRHDDumpReader.tgz
       - SRHDDumpReader
@@ -71,6 +72,7 @@ pack-win32:
     - cp ./*.json ./SRHDDumpReader/
     - cp ./Click1.wav ./SRHDDumpReader/
   artifacts:
+    name: "SRHDDumpReader_win32_${CI_BUILD_REF_NAME}-${CI_BUILD_REF:0:8}"
     paths:
       - SRHDDumpReader
 
