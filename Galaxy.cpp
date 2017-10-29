@@ -397,9 +397,7 @@ QString Galaxy::equipmentLocationName(unsigned row) const
 	case Equipment::kPlanetShop:
 	case Equipment::kPlanetStorage:
 	case Equipment::kPlanetTreasure:
-		return planetMap.at(locId).name()+", "
-				+eq.extra("LandType")+'/'
-				+eq.extra("Depth");
+		return planetMap.at(locId).name();
 	}
 	return "";
 }

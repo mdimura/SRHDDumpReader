@@ -214,8 +214,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->equipmentTableView->setColumnWidth(4,tableFontWidth*7);//Made
 	ui->equipmentTableView->setColumnWidth(5,tableFontWidth*7);//Cost
 	ui->equipmentTableView->setColumnWidth(6,tableFontWidth*5);//TL
-	ui->equipmentTableView->setColumnWidth(7,tableFontWidth*14);//L T
-	ui->equipmentTableView->setColumnWidth(8,tableFontWidth*24);//Loc
+	ui->equipmentTableView->setColumnWidth(7,tableFontWidth*15);//L T
+	ui->equipmentTableView->setColumnWidth(8,tableFontWidth*20);//Loc
 	ui->equipmentTableView->setColumnWidth(9,tableFontWidth*10);//Star
 	ui->equipmentTableView->setColumnWidth(10,tableFontWidth*8);//Dist
 	ui->equipmentTableView->setColumnWidth(11,tableFontWidth*8);//Owner

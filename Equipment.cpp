@@ -116,7 +116,9 @@ QString Equipment::locationTypeString() const
 	case kPlanetStorage:
 		return QObject::tr("Planet/storage");
 	case kPlanetTreasure:
-		return QObject::tr("treasure");
+		return QObject::tr("treasure")+" "+QString("%1")
+				.arg(extra("Depth").toInt(), 4, 10, QChar('0'))
+				+'/'+extra("LandType")[0];
 	}
 	return "";
 }
