@@ -214,7 +214,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->equipmentTableView->setColumnWidth(4,tableFontWidth*7);//Made
 	ui->equipmentTableView->setColumnWidth(5,tableFontWidth*7);//Cost
 	ui->equipmentTableView->setColumnWidth(6,tableFontWidth*5);//TL
-	ui->equipmentTableView->setColumnWidth(7,tableFontWidth*15);//L T
+	ui->equipmentTableView->setColumnWidth(7,tableFontWidth*16);//L T
 	ui->equipmentTableView->setColumnWidth(8,tableFontWidth*20);//Loc
 	ui->equipmentTableView->setColumnWidth(9,tableFontWidth*10);//Star
 	ui->equipmentTableView->setColumnWidth(10,tableFontWidth*8);//Dist
@@ -242,6 +242,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->tradeTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
 	ui->planetsTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
 	ui->bhTableView->verticalHeader()->setDefaultSectionSize(tableFontHeight);
+
+	ui->equipmentTableView->verticalHeader()->setFixedWidth(tableFontWidth*8);
+	ui->planetsTableView->verticalHeader()->setFixedWidth(tableFontWidth*5);
 
 	ui->bhTableView->setModel(&bhModel);
 	ui->bhTableView->resizeColumnsToContents();
