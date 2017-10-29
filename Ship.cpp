@@ -7,7 +7,7 @@ Ship::Ship(QTextStream &stream, Galaxy& galaxy, unsigned id, unsigned starId):_i
 		{"ICurStarId",0},{"IFullName",1},{"Goods",2},{"Money",3},
 		{"EqList ^{",4},
 		{"ArtsList ^{",5},{"EqShop ^{",6},{"Storage ^{",7},{"ShopGoods",8},
-		{"ShopGoodsSale",9},{"ShopGoodsBuy",10},{"IType",11}
+	        {"ShopGoodsSale",9},{"ShopGoodsBuy",10},{"IType",11},{"Skin",12}
 	};
 
 	int nesting=0;
@@ -93,7 +93,9 @@ Ship::Ship(QTextStream &stream, Galaxy& galaxy, unsigned id, unsigned starId):_i
 		case 11://IType
 			_type=value;
 			break;
-
+		case 12:
+			_skin=value;
+			break;
 		default:
 			//skip record
 			break;

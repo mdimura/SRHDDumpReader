@@ -39,6 +39,16 @@ public:
     {
         return _starId;
     }
+    QString race() const
+    {
+	    if (_type=="Kling") {
+		    return _skin.split('.')[1];
+	    }
+	    if (_type!="Pirate") {
+		    return "Normal";
+	    }
+	    return _type;
+    }
 
 private:
     void compactifyName();
@@ -46,6 +56,7 @@ private:
     unsigned _id;
     QString _type;
     QString _fullName;
+    QString _skin;
     GoodsArr _goodsQuantity;
     GoodsArr _goodsShopQuantity, _goodsSale, _goodsBuy;
     unsigned _relation;

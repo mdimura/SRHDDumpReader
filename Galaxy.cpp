@@ -9,11 +9,11 @@
 
 QMap<QString,QColor> loadColors(const QString& fileName)
 {
-	QMap<QString,QColor> map={{"Keller",Qt::blue},
+	QMap<QString,QColor> map={{"Keller",Qt::transparent},
 				  {"Pirates",Qt::white},
-				  {"Terron",Qt::darkGreen},
-				  {"Blazer",Qt::red},
-				  {"Normals",QColor("salmon")},
+	                          {"Terron",Qt::transparent},
+	                          {"Blazer",Qt::transparent},
+	                          {"Normals",QColor("orange")},
 				  {"Maloc",QColor("red")},
 				  {"Peleng",Qt::darkGreen},
 				  {"People",QColor("royalblue")},
@@ -24,7 +24,7 @@ QMap<QString,QColor> loadColors(const QString& fileName)
 				  {"linePirates",QColor("grey")},
 				  {"lineTerron",Qt::darkGreen},
 				  {"lineBlazer",Qt::red},
-				  {"lineNormals",QColor("salmon")},
+	                          {"lineNormals",QColor("orange")},
 				  {"lineMaloc",QColor("red")},
 				  {"linePeleng",Qt::darkGreen},
 				  {"linePeople",QColor("royalblue")},
@@ -534,6 +534,27 @@ QString Galaxy::blackHoleNextLootChange(unsigned row) const
         return changes;
 }
 
+struct NumShips
+{
+	int normals=0;
+	int pirates=0;
+	int kellers=0;
+	int terrons=0;
+	int blazers=0;
+	const QString dummy="<font color=%2>%1<color>/";
+	QString infoStr(const QMap<QString,QColor>& colMap)
+	{
+		QString str;
+		if (normals>0) str+=dummy.arg(normals).arg(colMap["lineNormals"].name());
+		if (pirates>0) str+=dummy.arg(pirates).arg(colMap["linePirates"].name());
+		if (kellers>0) str+=dummy.arg(kellers).arg(colMap["lineKeller"].name());
+		if (terrons>0) str+=dummy.arg(terrons).arg(colMap["lineTerron"].name());
+		if (blazers>0) str+=dummy.arg(blazers).arg(colMap["lineBlazer"].name());
+		if (! str.isEmpty()) str[str.length()-1]=' ';
+		return str;
+	}
+};
+
 QImage Galaxy::map(const unsigned width, const int fontSize) const
 {
         //QImage image((mapRect.width()+8)*scale,(mapRect.height()+6)*scale,QImage::Format_ARGB32);
@@ -566,7 +587,7 @@ QImage Galaxy::map(const unsigned width, const int fontSize) const
         }
         //prepare planets
         QMap<unsigned,QString> starIdToPlanets;
-        const QString planetTemplate("<font color=%3><b>%1</b>%2<color>");
+	const QString planetTemplate("<font color=%3>%1%2<color>");
         for(const auto& pair:planetMap)
         {
                 const Planet& planet=pair.second;
@@ -585,6 +606,19 @@ QImage Galaxy::map(const unsigned width, const int fontSize) const
                 bhStarIds.insert(bh.star1Id());
                 bhStarIds.insert(bh.star2Id());
         }
+
+	std::map<unsigned,NumShips> starShips;
+	for (const auto& pair:shipMap) {
+		const Ship& ship=pair.second;
+		const unsigned starid=ship.starId();
+		const QString race=ship.race();
+		if(race=="Normal") ++starShips[starid].normals;
+		else if(race=="Pirate") ++starShips[starid].pirates;
+		else if(race=="Keller") ++starShips[starid].kellers;
+		else if(race=="Terron") ++starShips[starid].terrons;
+		else if(race=="Blazer") ++starShips[starid].blazers;
+		else std::cerr<<"ERROR! Unexpeced ship race: "+race.toStdString()<<std::endl;
+	}
 
         //Draw stars
         const double scale=double(netWidth)/galaxyMapRect.width();
@@ -622,7 +656,8 @@ QImage Galaxy::map(const unsigned width, const int fontSize) const
                 }
                 p.setPen(QPen(QBrush(_ownerToColor["line"+owner]),starLineW));
                 p.drawEllipse(pos,starR,starR);
-                QStaticText planetsText(starIdToPlanets.value(star.id()));
+		QString shipsInfo=starShips[star.id()].infoStr(_ownerToColor);
+		QStaticText planetsText(shipsInfo+starIdToPlanets.value(star.id()));
                 planetsText.setTextFormat(Qt::RichText);
                 planetsText.prepare(QTransform(),font);
                 QPointF topLeft(pos);
