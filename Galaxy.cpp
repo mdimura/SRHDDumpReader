@@ -558,7 +558,7 @@ struct NumShips
 QImage Galaxy::map(const unsigned width, const int fontSize) const
 {
         //QImage image((mapRect.width()+8)*scale,(mapRect.height()+6)*scale,QImage::Format_ARGB32);
-        const unsigned padding=fontSize * 3;
+	const unsigned padding=fontSize * 4;
         const unsigned netWidth=width - 2.0 * padding;
         const unsigned height=2.0*padding + netWidth*galaxyMapRect.height()
                               / galaxyMapRect.width();
