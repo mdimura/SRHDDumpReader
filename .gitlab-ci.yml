@@ -45,7 +45,7 @@ pack-win64:
     - mkdir -p ./SRHDDumpReader/platforms/
     - mkdir -p ./SRHDDumpReader/imageformats/
     - cp build-win64/release/SRHDDumpReader.exe ./SRHDDumpReader/
-    - cp /usr/x86_64-w64-mingw32/bin/{libbz2-1,libGLESv2,libiconv-2,libpcre-1,libwinpthread-1,Qt5Multimedia,zlib1,libfreetype-6,libglib-2.0-0,libintl-8,libpng16-16,Qt5Core,Qt5Network,libgcc_s_seh-1,libharfbuzz-0,libpcre16-0,libstdc++-6,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
+    - cp /usr/x86_64-w64-mingw32/bin/{libbz2-1,libGLESv2,libiconv-2,libpcre-1,libwinpthread-1,Qt5Multimedia,zlib1,libfreetype-6,libglib-2.0-0,libintl-8,libpng16-16,Qt5Core,Qt5Network,libgcc_s_seh-1,libharfbuzz-0,libpcre16-0,libpcre2-16-0,libgraphite2,libstdc++-6,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
     - cp /usr/x86_64-w64-mingw32/lib/qt/plugins/platforms/qwindows.dll ./SRHDDumpReader/platforms/
     - cp /usr/x86_64-w64-mingw32/lib/qt/plugins/imageformats/{qsvg,qico,qtiff,qjpeg}.dll ./SRHDDumpReader/imageformats/
     - cp -r presets ./SRHDDumpReader/
@@ -65,7 +65,7 @@ pack-win32:
     - mkdir -p ./SRHDDumpReader/platforms/
     - mkdir -p ./SRHDDumpReader/imageformats/
     - cp build-win32/release/SRHDDumpReader.exe ./SRHDDumpReader/
-    - cp /usr/i686-w64-mingw32/bin/{libbz2-1,libGLESv2,libiconv-2,libpcre-1,libwinpthread-1,Qt5Multimedia,zlib1,libfreetype-6,libglib-2.0-0,libintl-8,libpng16-16,Qt5Core,Qt5Network,libgcc_s_sjlj-1,libharfbuzz-0,libpcre16-0,libstdc++-6,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
+    - cp /usr/i686-w64-mingw32/bin/{libbz2-1,libGLESv2,libiconv-2,libpcre-1,libwinpthread-1,Qt5Multimedia,zlib1,libfreetype-6,libglib-2.0-0,libintl-8,libpng16-16,Qt5Core,Qt5Network,libgcc_s_sjlj-1,libharfbuzz-0,libpcre16-0,libpcre2-16-0,libgraphite2,libstdc++-6,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
     - cp /usr/i686-w64-mingw32/lib/qt/plugins/platforms/qwindows.dll ./SRHDDumpReader/platforms/
     - cp /usr/i686-w64-mingw32/lib/qt/plugins/imageformats/{qsvg,qico,qtiff,qjpeg}.dll ./SRHDDumpReader/imageformats/
     - cp -r presets ./SRHDDumpReader/
