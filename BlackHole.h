@@ -9,12 +9,12 @@ public:
     unsigned id() const;
     unsigned star1Id() const;
     unsigned star2Id() const;
-    unsigned turnsToClose() const;
+    int turnsToClose() const;
 
 private:
     unsigned _id;
     unsigned _star1Id, _star2Id;
-    unsigned _turnsToClose;
+    int _turnsToClose;
 };
 void readBlackHoles(QTextStream &stream, Galaxy &galaxy);
 #endif // BLACKHOLE_H

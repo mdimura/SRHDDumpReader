@@ -524,7 +524,7 @@ float Galaxy::blackHoleStar2Distance(unsigned row) const
 	return sqrt(pow(delta.x(), 2) + pow(delta.y(), 2));
 }
 
-unsigned Galaxy::blackHoleTurnsToClose(unsigned row) const
+int Galaxy::blackHoleTurnsToClose(unsigned row) const
 {
 	return blackHoles[row].turnsToClose();
 }
@@ -533,11 +533,16 @@ QString Galaxy::blackHoleNextLootChange(unsigned row) const
 {
 	QDate today = QDate(3300, 1, 1).addDays(currentDay - 301);
 	QString changes;
-	unsigned ttclose = blackHoleTurnsToClose(row);
+	int ttclose = blackHoleTurnsToClose(row);
+	int lastChange = std::min(ttclose,77*5);
+	lastChange = ttclose<1?77*5:lastChange;
 	for (unsigned daysToChange = 77 - (currentDay % 77);
-	     daysToChange < ttclose; daysToChange += 77) {
+	     daysToChange < lastChange; daysToChange += 77) {
 		changes += today.addDays(daysToChange).toString("dd MMMM yyyy")
 			   + "; ";
+	}
+	if (lastChange<ttclose) {
+		changes+= " ...";
 	}
 	return changes;
 }

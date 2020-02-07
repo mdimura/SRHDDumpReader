@@ -63,7 +63,7 @@ unsigned BlackHole::star2Id() const
     return _star2Id;
 }
 
-unsigned BlackHole::turnsToClose() const
+int BlackHole::turnsToClose() const
 {
     return _turnsToClose;
 }

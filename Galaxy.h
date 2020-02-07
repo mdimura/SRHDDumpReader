@@ -70,7 +70,7 @@ public:
 	float blackHoleStar1Distance(unsigned row) const;
 	QString blackHoleStar2(unsigned row) const;
 	float blackHoleStar2Distance(unsigned row) const;
-	unsigned blackHoleTurnsToClose(unsigned row) const;
+	int blackHoleTurnsToClose(unsigned row) const;
 	QString blackHoleNextLootChange(unsigned row) const;
 
 	const Planet& planet(unsigned row) const
