@@ -1102,6 +1102,11 @@ void MainWindow::generateGalaxies()
 		if(!simulateInput("e")) {
 			return;
 		}
+		responsiveSleep(shortSleep*8);
+		//Enter (continue to generation if extra settings opened, ignored if it is already generating)
+		if(!simulateInput("e")) {
+			return;
+		}
 		//Wait until the galaxy is ready
 		high_resolution_clock::time_point tGenerationStarted = high_resolution_clock::now();
 		QImage currentGenerationFinished;
