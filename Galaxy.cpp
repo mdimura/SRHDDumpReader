@@ -149,10 +149,9 @@ unsigned Galaxy::galaxyTechLevel() const
 	auto maxPtlIt = std::find_if(ptlCount.rbegin(), ptlCount.rend(),
 				     [](const int &c) { return c > 0; });
 	unsigned maxPtl = std::distance(maxPtlIt, ptlCount.rend());
-	if (ptlCount[maxPtl] == 5) {
+	if (ptlCount[maxPtl] >= 5) {
 		return maxPtl;
-	}
-	if (ptlCount[maxPtl] == 2 || ptlCount[maxPtl - 1] == 4) {
+	} else if (ptlCount[maxPtl] >= 2 || ptlCount[maxPtl - 1] >= 4) {
 		return maxPtl - 1;
 	}
 	return maxPtl - 2;
