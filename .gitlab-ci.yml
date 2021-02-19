@@ -32,6 +32,20 @@ build-win32:
     paths:
       - build-win32/release/SRHDDumpReader.exe
 
+pack-ubuntu:
+  stage: package
+  image: burningdaylight/ubuntu-latest-devel
+  script:
+    - mkdir -p ./SRHDDumpReader
+    - cp build-ubuntu/SRHDDumpReader ./SRHDDumpReader/
+    - cp -r presets ./SRHDDumpReader/
+    - cp ./*.json ./SRHDDumpReader/
+    - cp ./Click1.wav ./SRHDDumpReader/
+  artifacts:
+    name: "SRHDDumpReader_linux_${CI_BUILD_REF_NAME}-${CI_BUILD_REF:0:8}"
+    paths:
+      - SRHDDumpReader
+
 pack-win64:
   stage: package
   image: burningdaylight/mingw-arch:qt
@@ -39,7 +53,8 @@ pack-win64:
     - mkdir -p ./SRHDDumpReader/platforms/
     - mkdir -p ./SRHDDumpReader/imageformats/
     - cp build-win64/release/SRHDDumpReader.exe ./SRHDDumpReader/
-    - cp /usr/x86_64-w64-mingw32/bin/{libssp-0,libbz2-1,libiconv-2,libpcre-1,libwinpthread-1,Qt5Multimedia,zlib1,libfreetype-6,libglib-2.0-0,libintl-8,libpng16-16,Qt5Core,Qt5Network,libgcc_s_seh-1,libharfbuzz-0,libpcre16-0,libpcre2-16-0,libgraphite2,libstdc++-6,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
+    - cp /usr/x86_64-w64-mingw32/bin/lib{gcc_s_seh-1,ssp-0,bz2-1,iconv-2,pcre-1,pcre2-16-0,winpthread-1,freetype-6,glib-2.0-0,intl-8,png16-16,harfbuzz-0,graphite2,stdc++-6}.dll ./SRHDDumpReader/
+    - cp /usr/x86_64-w64-mingw32/bin/{zlib1,Qt5Core,Qt5Network,Qt5Multimedia,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
     - cp /usr/x86_64-w64-mingw32/lib/qt/plugins/platforms/qwindows.dll ./SRHDDumpReader/platforms/
     - cp /usr/x86_64-w64-mingw32/lib/qt/plugins/imageformats/{qsvg,qico,qtiff,qjpeg}.dll ./SRHDDumpReader/imageformats/
     - cp -r presets ./SRHDDumpReader/
@@ -57,7 +72,8 @@ pack-win32:
     - mkdir -p ./SRHDDumpReader/platforms/
     - mkdir -p ./SRHDDumpReader/imageformats/
     - cp build-win32/release/SRHDDumpReader.exe ./SRHDDumpReader/
-    - cp /usr/i686-w64-mingw32/bin/{libssp-0,libbz2-1,libiconv-2,libpcre-1,libwinpthread-1,Qt5Multimedia,zlib1,libfreetype-6,libglib-2.0-0,libintl-8,libpng16-16,Qt5Core,Qt5Network,libgcc_s_sjlj-1,libharfbuzz-0,libpcre16-0,libpcre2-16-0,libgraphite2,libstdc++-6,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
+    - cp /usr/i686-w64-mingw32/bin/lib{gcc_s_dw2-1,ssp-0,bz2-1,iconv-2,pcre-1,pcre2-16-0,winpthread-1,freetype-6,glib-2.0-0,intl-8,png16-16,harfbuzz-0,graphite2,stdc++-6}.dll ./SRHDDumpReader/ || true
+    - cp /usr/i686-w64-mingw32/bin/{zlib1,Qt5Core,Qt5Network,Qt5Multimedia,Qt5Gui,Qt5Widgets,Qt5Svg}.dll ./SRHDDumpReader/
     - cp /usr/i686-w64-mingw32/lib/qt/plugins/platforms/qwindows.dll ./SRHDDumpReader/platforms/
     - cp /usr/i686-w64-mingw32/lib/qt/plugins/imageformats/{qsvg,qico,qtiff,qjpeg}.dll ./SRHDDumpReader/imageformats/
     - cp -r presets ./SRHDDumpReader/

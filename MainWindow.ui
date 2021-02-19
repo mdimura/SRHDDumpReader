@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>685</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
   </widget>
@@ -91,20 +91,20 @@
        <property name="cornerButtonEnabled">
         <bool>false</bool>
        </property>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>18</number>
-       </attribute>
        <attribute name="horizontalHeaderMinimumSectionSize">
         <number>10</number>
+       </attribute>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>18</number>
        </attribute>
        <attribute name="horizontalHeaderStretchLastSection">
         <bool>true</bool>
        </attribute>
-       <attribute name="verticalHeaderDefaultSectionSize">
-        <number>18</number>
-       </attribute>
        <attribute name="verticalHeaderMinimumSectionSize">
         <number>10</number>
+       </attribute>
+       <attribute name="verticalHeaderDefaultSectionSize">
+        <number>18</number>
        </attribute>
        <attribute name="verticalHeaderStretchLastSection">
         <bool>false</bool>
@@ -163,20 +163,20 @@ QTableView::item
        <property name="cornerButtonEnabled">
         <bool>false</bool>
        </property>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>18</number>
-       </attribute>
        <attribute name="horizontalHeaderMinimumSectionSize">
         <number>10</number>
+       </attribute>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>18</number>
        </attribute>
        <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
         <bool>true</bool>
        </attribute>
-       <attribute name="verticalHeaderDefaultSectionSize">
-        <number>18</number>
-       </attribute>
        <attribute name="verticalHeaderMinimumSectionSize">
         <number>10</number>
+       </attribute>
+       <attribute name="verticalHeaderDefaultSectionSize">
+        <number>18</number>
        </attribute>
       </widget>
      </item>
@@ -223,17 +223,17 @@ QTableView::item
        <property name="cornerButtonEnabled">
         <bool>false</bool>
        </property>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>18</number>
-       </attribute>
        <attribute name="horizontalHeaderMinimumSectionSize">
         <number>10</number>
        </attribute>
-       <attribute name="verticalHeaderDefaultSectionSize">
+       <attribute name="horizontalHeaderDefaultSectionSize">
         <number>18</number>
        </attribute>
        <attribute name="verticalHeaderMinimumSectionSize">
         <number>10</number>
+       </attribute>
+       <attribute name="verticalHeaderDefaultSectionSize">
+        <number>18</number>
        </attribute>
       </widget>
      </item>
@@ -256,12 +256,7 @@ QTableView::item
 {
   font: 9pt &quot;Sans Serif&quot;;
 }
-QTableView::item
-{
-  border: 0px;
-  padding: 0px;
-  margin: 0px;
-}</string>
+</string>
        </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
@@ -284,20 +279,20 @@ QTableView::item
        <property name="cornerButtonEnabled">
         <bool>false</bool>
        </property>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>18</number>
-       </attribute>
        <attribute name="horizontalHeaderMinimumSectionSize">
         <number>10</number>
+       </attribute>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>18</number>
        </attribute>
        <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
         <bool>true</bool>
        </attribute>
-       <attribute name="verticalHeaderDefaultSectionSize">
-        <number>18</number>
-       </attribute>
        <attribute name="verticalHeaderMinimumSectionSize">
         <number>10</number>
+       </attribute>
+       <attribute name="verticalHeaderDefaultSectionSize">
+        <number>18</number>
        </attribute>
       </widget>
      </item>
@@ -338,8 +333,8 @@ QTableView::item
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>270</width>
-          <height>73</height>
+          <width>264</width>
+          <height>85</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">

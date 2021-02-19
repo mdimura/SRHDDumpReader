@@ -59,8 +59,9 @@ void Galaxy::parseDump(QTextStream &stream)
 	const static QMap<QString, int> globalOptions = {
 		{"Player ^{", 0}, {"StarList ^{", 1}, {"HoleList ^{", 2}};
 
-	QString line = stream.readLine();
-	while (!line.isNull()) {
+	QString line;
+	do {
+		line = stream.readLine();
 		switch (globalOptions.value(line, -1)) {
 		case 0: // Player
 		{
@@ -86,9 +87,7 @@ void Galaxy::parseDump(QTextStream &stream)
 			// skip record
 			break;
 		}
-
-		line = stream.readLine();
-	}
+	} while (!line.isNull());
 }
 
 void Galaxy::clear()
@@ -149,6 +148,9 @@ unsigned Galaxy::galaxyTechLevel() const
 	auto maxPtlIt = std::find_if(ptlCount.rbegin(), ptlCount.rend(),
 				     [](const int &c) { return c > 0; });
 	unsigned maxPtl = std::distance(maxPtlIt, ptlCount.rend());
+	if (maxPtl < 1) {
+		return 0;
+	}
 	if (ptlCount[maxPtl] >= 5) {
 		return maxPtl;
 	} else if (ptlCount[maxPtl] >= 2 || ptlCount[maxPtl - 1] >= 4) {
@@ -533,15 +535,15 @@ QString Galaxy::blackHoleNextLootChange(unsigned row) const
 	QDate today = QDate(3300, 1, 1).addDays(currentDay - 301);
 	QString changes;
 	int ttclose = blackHoleTurnsToClose(row);
-	int lastChange = std::min(ttclose,77*5);
-	lastChange = ttclose<1?77*5:lastChange;
+	int lastChange = std::min(ttclose, 77 * 5);
+	lastChange = ttclose < 1 ? 77 * 5 : lastChange;
 	for (unsigned daysToChange = 77 - (currentDay % 77);
 	     daysToChange < lastChange; daysToChange += 77) {
 		changes += today.addDays(daysToChange).toString("dd MMMM yyyy")
 			   + "; ";
 	}
-	if (lastChange<ttclose) {
-		changes+= " ...";
+	if (lastChange < ttclose) {
+		changes += " ...";
 	}
 	return changes;
 }
